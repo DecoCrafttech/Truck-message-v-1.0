@@ -15,8 +15,8 @@ const Banner = () => {
 				<div className="ltn__slide-item-inner">
 					<div className="container">
 						<div className="row">
-							<div className="col-lg-12 row align-items-center">
-								<div className="slide-item-info">
+							<div className="col-lg-12 align-self-end">
+								<div className="slide-item-info w-100 h-100">
 									<div className="slide-item-info-inner ltn__slide-animation">
 										<h6 className="slide-sub-title white-color--- animated"><span><i class="fa-solid fa-truck"></i></span> All in one Truck Solution</h6>
 										<h2 className="slide-title animated ">Optimize Your Trucking Operations with  Our <br /> All-in-One Solutions</h2>

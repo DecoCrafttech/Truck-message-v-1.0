@@ -257,12 +257,12 @@ const Navbar = () => {
                                             <button type="button" class="btn ltn__utilize-toggle p-0 shadow" data-bs-toggle="dropdown" aria-expanded="false">
                                                 <i className="fa-solid fa-bars p-0" />
                                             </button>
-                                            <ul class="dropdown-menu end-0 dropdown-menu-lg-end">
-                                                <li className='m-0'><button class="dropdown-item py-1" type="button">Home</button></li>
-                                                <li className='m-0'><button class="dropdown-item py-1" type="button">Services</button></li>
-                                                <li className='m-0'><button class="dropdown-item py-1" type="button">About</button></li>
-                                                <li className='m-0'><button class="dropdown-item py-1" type="button">Blog</button></li>
-                                                <li className='m-0'><button class="dropdown-item py-1" type="button">Contact</button></li>
+                                            <ul class="dropdown-menu end-0 dropdown-menu-lg-end"> 
+                                                    <li className='mt-0'><Link to="/" class="dropdown-item">Home</Link></li>
+                                                    <li className='mt-0'><Link to="/service" class="dropdown-item">Services</Link></li>
+                                                    <li className='mt-0'><Link to="/about" class="dropdown-item">About</Link></li>
+                                                    <li className='mt-0'><Link to="/blog" class="dropdown-item">Blog</Link></li>
+                                                    <li className='mt-0'><Link to="/contact" class="dropdown-item">Contact</Link></li>  
                                             </ul>
                                         </div>
                                     </div>

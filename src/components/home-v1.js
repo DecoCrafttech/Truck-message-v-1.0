@@ -20,24 +20,24 @@ import { useSelector } from 'react-redux';
 
 const Home_V1 = () => {  
 
-    return <div>
+    return <>
         <Banner />
-        {/* <SearchForm /> */}
+            {/* <SearchForm /> */}
         <Aboutv1 />
         <ServiceV5 />
-        {/* <Category /> */}
+            {/* <Category /> */}
         <Counter />
-        {/* <AboutV2 /> */}
-        {/* <Featuresv1 customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---"/> */}
-        {/* <ProSlider />
-        <Apartment /> */}
-        {/* <VideoV1 /> */}
+            {/* <AboutV2 /> */}
+            {/* <Featuresv1 customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---"/> */}
+            {/* <ProSlider />
+            <Apartment /> */}
+            {/* <VideoV1 /> */}
         
         <Testimonial />
         <BlogSlider customClass="section-subtitle-2"/>
-        {/* <CallToActionV1 /> */}
+            {/* <CallToActionV1 /> */}
         
-    </div>
+    </>
 }
 
 export default Home_V1
