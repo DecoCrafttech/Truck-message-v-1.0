@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/Truck-message-v-1.0/static/css/main.89cc28f1.css",
-    "main.js": "/Truck-message-v-1.0/static/js/main.7e0c8204.js",
+    "main.js": "/Truck-message-v-1.0/static/js/main.47b705d9.js",
     "index.html": "/Truck-message-v-1.0/index.html",
     "main.89cc28f1.css.map": "/Truck-message-v-1.0/static/css/main.89cc28f1.css.map",
-    "main.7e0c8204.js.map": "/Truck-message-v-1.0/static/js/main.7e0c8204.js.map"
+    "main.47b705d9.js.map": "/Truck-message-v-1.0/static/js/main.47b705d9.js.map"
   },
   "entrypoints": [
     "static/css/main.89cc28f1.css",
-    "static/js/main.7e0c8204.js"
+    "static/js/main.47b705d9.js"
   ]
 }

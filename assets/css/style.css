@@ -6628,8 +6628,8 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 ---------------------------------------- */
 .ltn__header-4 .ltn__header-middle-area,
 .ltn__header-5 .ltn__header-middle-area {
-  padding-top: 22px;
-  padding-bottom: 22px;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
 }
 
 .ltn__header-4 .ltn__header-top-area {
@@ -7903,12 +7903,11 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 /* Slider Animation Start */
 .ltn__slide-animation {
   position: relative;
-  z-index: 9;
+  /* z-index: 9; */
 }
 
 .ltn__slide-animation>* {
   opacity: 0;
-  visibility: hidden;
   -webkit-animation-name: fadeOutUp;
   animation-name: fadeOutUp;
 }
@@ -8838,6 +8837,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+    height: 70%;
   }
 
   .ltn__slide-item-3 .slide-item-img.slide-img-left {
@@ -8865,7 +8865,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   .ltn__slide-item-3 .slide-item-img {
     width: 45%;
     right: 0px;
-    top: 65%;
+    top: 60%;
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
