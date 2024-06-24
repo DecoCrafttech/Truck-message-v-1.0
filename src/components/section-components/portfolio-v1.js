@@ -4,8 +4,11 @@ import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
 import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
+import { useSelector } from 'react-redux';
 
-function PortfolioV1() {
+const PortfolioV1 =()=> {
+    const LoginDetails = useSelector((state)=>state.login);
+
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [cardsPerPage] = useState(9); // Adjust the number of cards per page as needed
@@ -17,7 +20,7 @@ function PortfolioV1() {
 
     useEffect(() => {
         axios.get('https://truck.truckmessage.com/all_load_details')
-            .then(response => {
+            .then(response => { 
                 if (response.data.success && Array.isArray(response.data.data)) {
                     setCards(response.data.data);
                 } else {
@@ -95,7 +98,8 @@ function PortfolioV1() {
                                         </div>
                                     </li>
                                     <div className="header-top-btn">
-                                        <Link to="/add-listing"> + Add Load availability</Link>
+                                        {/* <Link to="/add-listing"> + Add Load availability</Link> */}
+                                        <button type="button" className='truck-brand-button'>+ Add Load availability</button>
                                     </div>
                                 </ul>
                             </div>
@@ -105,7 +109,6 @@ function PortfolioV1() {
                             <div className="ltn__search-widget mb-0">
                                 <form action="">
                                     <input type="text" name="search" placeholder="Search by" onChange={handleFilterChange} />
-                                    
                                 </form>
                             </div>
                         </div>
@@ -155,14 +158,14 @@ function PortfolioV1() {
                                 </div>
                                 <div className="card-footer mb-3">
                                     <div>
-                                        {isSignedIn ? (
+                                        {LoginDetails.isLoggedIn ? (
                                             <div className="d-flex gap-2 justify-content-between mt-3">
                                                 <button className="btn cardbutton" type="button">Call</button>
                                                 <button className="btn cardbutton" type="button">Message</button>
                                             </div>
                                         ) :
                                         <div className="d-grid gap-2">
-                                            <button className="btn cardbutton" type="button" onClick={handleViewDetails}>View Details</button>
+                                            <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">View Details</button>
                                         </div>
                                         }
                                     </div>

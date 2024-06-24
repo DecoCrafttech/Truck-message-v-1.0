@@ -83,3 +83,12 @@ button {
 button:hover {
     background-color: #45a049;
 }
+
+
+.truck-brand-button{
+    display: inline-block;
+    padding: 0 20px;
+    line-height: 40px;
+    background-color: var(--ltn__secondary-color);
+    color: var(--white);
+  }

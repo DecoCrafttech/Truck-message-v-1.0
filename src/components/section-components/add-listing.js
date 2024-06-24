@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
+import axios from 'axios'; 
+import Cookies from 'js-cookie';
 
-class AddListing extends Component {
-    handleSubmit = (event) => {
+const AddListing = () =>{
+    
+    const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-
+        const userId = window.atob(Cookies.get("usrin"))
         const data = {
             company_name: formData.get('company_name'),
             contact_no: formData.get('contact_number'),
@@ -17,8 +19,9 @@ class AddListing extends Component {
             truck_body_type: formData.get('truck_body_type'),
             no_of_tyres: formData.get('tyre_count'),
             description: formData.get('description'),
-            user_id: 3
+            user_id: userId
         };
+        
 
         axios.post('https://truck.truckmessage.com/load_details', data, {
             headers: {
@@ -35,14 +38,13 @@ class AddListing extends Component {
         });
     }
 
-    render() {
         return (
             <div className="ltn__appointment-area pb-5 pb-md-120">
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-lg-8 my-5">
                             <div className="ltn__appointment-inner">
-                                <form onSubmit={this.handleSubmit}>
+                                <form onSubmit={handleSubmit}>
                                     <div className="row">
                                         <div className="col-md-6">
                                             <h5>Company Name</h5>
@@ -138,8 +140,6 @@ class AddListing extends Component {
                     </div>
                 </div>
             </div>
-        );
+        )
     }
-}
-
 export default AddListing;
