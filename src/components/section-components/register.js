@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 const RegistrationForm = () => {
     const [step, setStep] = useState(1);
@@ -90,8 +90,7 @@ const RegistrationForm = () => {
     };
 
     return (
-        <section>
-            <Toaster />
+        <section> 
             <div className="container">
                 <div className="row">
                     <div className="col-lg-12 py-3">

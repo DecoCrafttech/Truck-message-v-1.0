@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    if (response.data.error_code === 0) {
+    if (response.data.error_code === 0 || response.data.error_code === 200) {
         toast.success(response.data.message);
     } else {
       toast.error(response.data.message);
