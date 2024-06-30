@@ -1607,8 +1607,9 @@ ul {
     left: auto;
   }
 }
- .card-text{
-border: none;
+
+.card-text {
+  border: none;
 }
 
 /* ----------------------------------------------------
@@ -6086,7 +6087,8 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   color: inherit;
 }
 
-.ltn__header-options-2 .mobile-menu-toggle>a,.mobile-menu-toggle.dropdown>.ltn__utilize-toggle{
+.ltn__header-options-2 .mobile-menu-toggle>a,
+.mobile-menu-toggle.dropdown>.ltn__utilize-toggle {
   width: 40px;
   height: 40px;
   background: var(--white);
@@ -6094,15 +6096,17 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   box-shadow: var(--ltn__box-shadow-1);
 }
 
-.mobile-menu-toggle.dropdown:hover>button{
+.mobile-menu-toggle.dropdown:hover>button {
   background: var(--ltn__secondary-color);
   color: var(--white) !important;
-  
+
 
 }
-.mobile-menu-toggle.dropdown:hover>.ltn__utilize-toggle>svg{
+
+.mobile-menu-toggle.dropdown:hover>.ltn__utilize-toggle>svg {
   stroke: var(--white);
 }
+
 /* ltn__drop-menu */
 .ltn__drop-menu {
   display: inline-block;
@@ -7059,7 +7063,8 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   margin: center;
 }
 
-.mobile-menu-toggle>a,.mobile-menu-toggle>div {
+.mobile-menu-toggle>a,
+.mobile-menu-toggle>div {
   width: 24px;
   height: 32px;
   position: relative;
@@ -19490,10 +19495,33 @@ input.cart-plus-minus-box {
 
 
 
-.user-icon-width{
+.user-icon-width {
   width: 3.5rem !important;
   border: 1px solid gray;
-  padding :0.2rem;
+  padding: 0.2rem;
   cursor: pointer;
   border-radius: 50%;
+}
+
+
+
+
+.action-header,
+.action-cell {
+  position: sticky;
+  right: 0;
+  background-color: white;
+  align-items: center;
+  /* Ensures the button doesn't overlap content */
+  z-index: 1;
+  /* Keeps the button and header on top of other content */
+}
+
+.action-header {
+  top: 0;
+}
+
+.fixed-button {
+  z-index: 2;
+  /* Keeps the button on top of the header */
 }
