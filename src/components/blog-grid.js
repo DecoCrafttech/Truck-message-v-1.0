@@ -7,9 +7,9 @@ import Footer from './global-components/footer';
 
 const BlogGridPage = () => {
     return <div>
-        <PageHeader headertitle="Blog Grid" />
+        {/* <PageHeader headertitle="Blog Grid" /> */}
         <BlogGrid />
-        <CallToActionV1 />
+        {/* <CallToActionV1 /> */}
     </div>
 }
 

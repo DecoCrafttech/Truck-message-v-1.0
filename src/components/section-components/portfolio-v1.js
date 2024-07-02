@@ -11,7 +11,7 @@ const PortfolioV1 =()=> {
 
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [cardsPerPage] = useState(9); // Adjust the number of cards per page as needed
+    const [cardsPerPage] = useState(21); // Adjust the number of cards per page as needed
     const [isSignedIn, setIsSignedIn] = useState(false); // State for user sign-in status
     const [showLoginPopup, setShowLoginPopup] = useState(false); // State to manage login popup visibility
     const [filters, setFilters] = useState({
@@ -99,7 +99,7 @@ const PortfolioV1 =()=> {
                                     </li>
                                     <div className="header-top-btn">
                                         {/* <Link to="/add-listing"> + Add Load availability</Link> */}
-                                        <button type="button" className='truck-brand-button'>+ Add Load availability</button>
+                                        <button type="button btn-primary" className='truck-brand-button'>+ Add Load availability</button>
                                     </div>
                                 </ul>
                             </div>
@@ -160,7 +160,9 @@ const PortfolioV1 =()=> {
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
                                             <div className="d-flex gap-2 justify-content-between mt-3">
-                                                <button className="btn cardbutton" type="button">Call</button>
+                                                <a href={`tel:${card.contact_no}`} className="btn cardbutton">Call</a>
+
+                                                {/* <button className="btn cardbutton" type="button">Call</button> */}
                                                 <button className="btn cardbutton" type="button">Message</button>
                                             </div>
                                         ) :

@@ -7,9 +7,9 @@ import Footer from './global-components/footer';
 
 const BlogLeftSidebar = () => {
     return <div>
-        <PageHeader headertitle="Blog Left Sidebar" subheader="Blog" />
+        {/* <PageHeader headertitle="Blog Left Sidebar" subheader="Blog" /> */}
         <BlogLeft />
-        <CallToActionV1 />
+        {/* <CallToActionV1 /> */}
     </div>
 }
 

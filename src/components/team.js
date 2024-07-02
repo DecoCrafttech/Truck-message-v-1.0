@@ -7,9 +7,9 @@ import Footer from './global-components/footer';
 
 const Team_V1 = () => {
     return <div>
-        <PageHeader headertitle="Our Agent" subheader="Agent" />
+        {/* <PageHeader headertitle="Our Agent" subheader="Agent" /> */}
         <TeamV1 />
-        <CallToActionV1 />
+        {/* <CallToActionV1 /> */}
     </div>
 }
 
