@@ -44,6 +44,7 @@ class ServiceDetails extends Component {
 						{/* Menu Widget */}
 						<div className="widget-2 ltn__menu-widget ltn__menu-widget-2 text-uppercase">
 						<ul className="go-top">
+							<li><Link to="/expense-calculator">Expence calculator <span><i className="fas fa-arrow-right" /></span></Link></li>
 							<li><Link to="/service">Property Management <span><i className="fas fa-arrow-right" /></span></Link></li>
 							<li className="active"><Link to="/service">Mortgage Service <span><i className="fas fa-arrow-right" /></span></Link></li>
 							<li><Link to="/service">Consulting Service <span><i className="fas fa-arrow-right" /></span></Link></li>

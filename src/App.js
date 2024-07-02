@@ -44,7 +44,8 @@ import { Toaster } from "react-hot-toast";
 import Navbar from "./components/global-components/navbar";
 import Footer from './components/global-components/footer';
 import Profile from "./components/Profile";
-
+import {ExpenseCalculator} from "./components/ExpenseCalculator";
+import ExpenseDetails from "./components/ExpenseDetails";
 
 function App() {
 
@@ -64,6 +65,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/service" element={<Service />} />
             <Route path="/service-details" element={<ServiceDetails />} />
+            <Route path="/expense-calculator" element={<ExpenseCalculator/>}/>
+            <Route path="/expense-details" element={<ExpenseDetails/>}/>
             <Route path="/load-availability" element={<Loadavailablity />} />
             <Route path="/portfolio-v2" element={<PortfolioV2 />} />
             {/* ? */}
