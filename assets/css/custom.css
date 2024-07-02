@@ -94,3 +94,54 @@ button:hover {
 }
 
 
+
+
+/*chat */
+
+.chat-container {
+    width: 300px;
+    margin: 0 auto;
+  }
+  
+  .tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+  
+  .tabs button {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .chat-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    height: 200px;
+    overflow-y: scroll;
+  }
+  
+  .chat-message {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  form {
+    display: flex;
+    margin-top: 10px;
+  }
+  
+  form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  form button {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #eee;
+    cursor: pointer;
+  }
+  
