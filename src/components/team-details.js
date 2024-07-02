@@ -7,9 +7,9 @@ import Footer from './global-components/footer';
 
 const Team_Details = () => {
     return <div>
-        <PageHeader headertitle="Agent Details" />
+        {/* <PageHeader headertitle="Agent Details" /> */}
         <TeamDetails />
-        <CallToActionV1 />
+        {/* <CallToActionV1 /> */}
     </div>
 }
 

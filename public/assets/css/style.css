@@ -19531,3 +19531,55 @@ input.cart-plus-minus-box {
 
 
 
+  /* Millage Calculator */
+
+  body {
+    background-color: #f8f9fa;
+  }
+  
+  .boxxing {
+    max-width: 500px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .textheadermil {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #CE0A3A;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  form {
+    margin-bottom: 20px;
+  }
+  
+  .result-section {
+    border-top: 1px solid #dee2e6;
+    padding-top: 20px;
+  }
+  
+  button.btn-primary {
+    background-color: #CE0A3A;
+    border-color: #CE0A3A;
+    margin-bottom: 30px;
+    padding: 12px;
+  }
+  .btn-primary:hover  {
+    background-color: #cf4949 !important; 
+    border-color: #CE0A3A !important;
+    margin-bottom: 30px;
+    padding: 12px;
+  }
+
+  button.btn-secondary {
+    background-color: #373737;
+    border-color: #000000;
+    margin-bottom: 30px;
+    padding: 12px;
+  }
+  
