@@ -42,6 +42,7 @@ const PortfolioV1 =()=> {
         return cards.filter(card => {
             const search = filters.search.toLowerCase();
             return (
+                card.company_name.toLowerCase().includes(search) ||
                 card.from_location.toLowerCase().includes(search) ||
                 card.to_location.toLowerCase().includes(search) ||
                 card.tone.toString().includes(search) ||
@@ -108,7 +109,7 @@ const PortfolioV1 =()=> {
                             {/* Search Widget */}
                             <div className="ltn__search-widget mb-0">
                                 <form action="">
-                                    <input type="text" name="search" placeholder="Search by" onChange={handleFilterChange} />
+                                    <input type="text" name="search" placeholder="Search by ..." onChange={handleFilterChange} />
                                 </form>
                             </div>
                         </div>

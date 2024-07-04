@@ -19563,23 +19563,39 @@ input.cart-plus-minus-box {
     padding-top: 20px;
   }
   
-  button.btn-primary {
+  button.mileage {
     background-color: #CE0A3A;
     border-color: #CE0A3A;
     margin-bottom: 30px;
     padding: 12px;
+    color: white;
+    font-weight: 500;
   }
-  .btn-primary:hover  {
-    background-color: #cf4949 !important; 
+  button.mileage:hover  {
+    background-color: #b50000 !important; 
     border-color: #CE0A3A !important;
     margin-bottom: 30px;
     padding: 12px;
+    color: white;
+    font-weight: 500;
+    
   }
 
-  button.btn-secondary {
+  button.mileageseconday {
     background-color: #373737;
     border-color: #000000;
     margin-bottom: 30px;
     padding: 12px;
+    color: white;
+    font-weight: 500;
+  }
+
+  button.mileageseconday:hover {
+    background-color: #787878;
+    border-color: #7f7f7f;
+    margin-bottom: 30px;
+    padding: 12px;
+    color: white;
+    font-weight: 500;
   }
   

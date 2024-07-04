@@ -247,10 +247,10 @@ function TeamDetails() {
           />
         </div>
         <div className="col-lg-12 d-flex gap-2">
-        <button type="button" className="btn btn-primary col-lg-6 " onClick={calculateMileage}>
+        <button type="button" className="btn mileage col-lg-6 " onClick={calculateMileage}>
           Calculate
         </button>
-        <button type="button" className="btn btn-secondary col-lg-6 " onClick={resetForm}>
+        <button type="button" className="btn mileageseconday col-lg-6 " onClick={resetForm}>
           Reset
         </button>
             

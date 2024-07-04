@@ -28,6 +28,7 @@ const AddListing = () =>{
                 'Content-Type': 'application/json'
             }
         })
+        console.log()
         .then(response => {
             toast.success('Form submitted successfully!');
             this.props.history.push('/');
