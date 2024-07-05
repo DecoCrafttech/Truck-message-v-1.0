@@ -8323,7 +8323,8 @@ fieldset:disabled .btn {
 }
 
 .bg-white {
-  background-color: #fff !important
+  background-color: #fff !important;
+  border-radius: 8px;
 }
 
 .bg-transparent {
