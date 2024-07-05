@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom'; // Assuming you are using react-router 
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 
-const PortfolioV1 =()=> {
-    const LoginDetails = useSelector((state)=>state.login);
+const TruckAvailability = () => {
+    const LoginDetails = useSelector((state) => state.login);
 
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,8 +24,8 @@ const PortfolioV1 =()=> {
     const modalRef = useRef(null);
 
     useEffect(() => {
-        axios.get('https://truck.truckmessage.com/all_load_details')
-            .then(response => { 
+        axios.get('https://truck.truckmessage.com/all_truck_details')
+            .then(response => {
                 if (response.data.success && Array.isArray(response.data.data)) {
                     setCards(response.data.data);
                 } else {
@@ -51,7 +51,7 @@ const PortfolioV1 =()=> {
                 card.from_location.toLowerCase().includes(search) ||
                 card.to_location.toLowerCase().includes(search) ||
                 card.tone.toString().includes(search) ||
-                card.material.toLowerCase().includes(search) ||
+                // card.material.toLowerCase().includes(search) ||
                 card.no_of_tyres.toString().includes(search) ||
                 card.truck_body_type.toLowerCase().includes(search)
             );
@@ -63,12 +63,12 @@ const PortfolioV1 =()=> {
         const formData = new FormData(event.target);
         const userId = window.atob(Cookies.get("usrin"));
         const data = {
-            // vehicle_number: formData.get('vehicle_number'),
+            vehicle_number: formData.get('vehicle_number'),
             company_name: formData.get('company_name'),
             contact_no: formData.get('contact_no'),
             from: formData.get('from_location'),
             to: formData.get('to_location'),
-            material: formData.get('material'),
+            truck_name: formData.get('truck_name'),
             tone: formData.get('tone'),
             truck_body_type: formData.get('truck_body_type'),
             no_of_tyres: formData.get('tyre_count'),
@@ -76,7 +76,7 @@ const PortfolioV1 =()=> {
             user_id: userId
         };
 
-        axios.post('https://truck.truckmessage.com/load_details', data, {
+        axios.post('https://truck.truckmessage.com/truck_entry', data, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -94,7 +94,6 @@ const PortfolioV1 =()=> {
         });
     };
 
-
     const filteredCards = filterCards(cards);
 
     // Calculate the index of the last card on the current page
@@ -110,16 +109,6 @@ const PortfolioV1 =()=> {
     // Handle page change
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    // Handle "View Details" button click
-    const handleViewDetails = () => {
-        setIsSignedIn(true);
-        // if (isSignedIn) {
-        //     // Logic to show call and message buttons
-        // } else {
-        //     setShowLoginPopup(false); // Show login popup if not signed in
-        // }
-    };
-
     // Handle login (dummy implementation for demonstration)
     const handleLogin = () => {
         setIsSignedIn(true);
@@ -128,22 +117,21 @@ const PortfolioV1 =()=> {
 
     return (
         <div>
+            <Toaster />
             <div className="ltn__product-area ltn__product-gutter mb-50 mt-60">
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="ltn__shop-options">
                                 <ul>
-                                    
                                     <li>
                                         <div className="showing-product-number text-right">
                                             <span>Showing {indexOfFirstCard + 1}-{Math.min(indexOfLastCard, filteredCards.length)} of {filteredCards.length} results</span>
                                         </div>
                                     </li>
-                                    
                                     <div className="header-top-btn">
                                         {/* <Link to="/add-listing"> + Add Load availability</Link> */}
-                                        <button type="button " className='cardbutton truck-brand-button' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
+                                        <button type="button " className='cardbutton truck-brand-button' data-bs-toggle="modal" data-bs-target="#addtruckavailability">+ Add Truck availability</button>
                                     </div>
                                 </ul>
                             </div>
@@ -152,7 +140,7 @@ const PortfolioV1 =()=> {
                             {/* Search Widget */}
                             <div className="ltn__search-widget mb-0">
                                 <form action="">
-                                    <input type="text" name="search" placeholder="Search by ..." onChange={handleFilterChange} />
+                                    <input type="text" name="search" placeholder="Search by" onChange={handleFilterChange} />
                                 </form>
                             </div>
                         </div>
@@ -160,9 +148,8 @@ const PortfolioV1 =()=> {
                 </div>
             </div>
 
-            {/* modal  */}
-              {/* modal */}
-              <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            {/* modal */}
+            <div className="modal fade" id="addtruckavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -173,14 +160,14 @@ const PortfolioV1 =()=> {
                             <div className="ltn__appointment-inner">
                                 <form ref={formRef} onSubmit={handleSubmit}>
                                     <div className="row">
-                                        {/* <div>
+                                        <div>
                                             <h6>Vehicle Number</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="vehicle_number" placeholder="Enter a Vehicle Number" required />
                                             </div>
-                                        </div> */}
+                                        </div>
                                         <div>
-                                            <h6>Comapny Name</h6>
+                                            <h6>Owner Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="company_name" placeholder="Name of the Owner" required/>
                                             </div>
@@ -216,9 +203,9 @@ const PortfolioV1 =()=> {
                                             </div>
                                         </div> */}
                                         <div>
-                                            <h6>Material</h6>
+                                            <h6>Truck Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="material" placeholder="What type of material" required />
+                                                <input type="text" name="truck_name" placeholder="What type of material" required />
                                             </div>
                                         </div> 
                                         <div>
@@ -278,8 +265,7 @@ const PortfolioV1 =()=> {
                 </div>
             </div>
 
-
-            {/* card  */}
+            {/* card */}
             <div className='container'>
                 <div className="row row-cols-1 row-cols-md-3 g-4 mb-60 ">
                     {currentCards.map(card => (
@@ -307,13 +293,16 @@ const PortfolioV1 =()=> {
                                             </div>
                                         </div>
                                         <div className="col-lg-6 cardicon">
-                                            <div><label><SiMaterialformkdocs className='me-2' />{card.material}</label></div>
+                                            <div><label><SiMaterialformkdocs className='me-2' />{card.truck_body_type}</label></div>
                                         </div>
                                         <div className="col-lg-6 cardicon">
                                             <label><GiCarWheel className='me-2' />{card.no_of_tyres} wheels</label>
                                         </div>
                                         <div className="col-lg-6 cardicon">
-                                            <label><FaTruck className='me-2' />{card.truck_body_type}</label>
+                                            <label><FaTruck className='me-2' />{card.truck_name}</label>
+                                        </div>
+                                        <div className="col-lg-6 cardicon">
+                                            <label><FaTruck className='me-2' />{card.vehicle_number}</label>
                                         </div>
                                     </div>
                                     <div className='m-2'>
@@ -326,14 +315,12 @@ const PortfolioV1 =()=> {
                                         {LoginDetails.isLoggedIn ? (
                                             <div className="d-flex gap-2 justify-content-between mt-3">
                                                 <a href={`tel:${card.contact_no}`} className="btn cardbutton">Call</a>
-
-                                                {/* <button className="btn cardbutton" type="button">Call</button> */}
                                                 <button className="btn cardbutton" type="button">Message</button>
                                             </div>
                                         ) :
-                                        <div className="d-grid gap-2">
-                                            <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">View Details</button>
-                                        </div>
+                                            <div className="d-grid gap-2">
+                                                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">View Details</button>
+                                            </div>
                                         }
                                     </div>
                                 </div>
@@ -360,4 +347,4 @@ const PortfolioV1 =()=> {
     );
 }
 
-export default PortfolioV1;
+export default TruckAvailability;

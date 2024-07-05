@@ -24,7 +24,7 @@ class ServiceV5 extends Component {
 							<div className="ltn__feature-icon">
 								<span><i className="flaticon-house" /></span>
 							</div>
-							<div className="ltn__feature-info">
+							<div className="ltn__feature-info ">
 								<h3><Link to="/service-details">Fast Tag</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>

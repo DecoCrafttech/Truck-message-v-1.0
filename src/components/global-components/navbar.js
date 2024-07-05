@@ -171,11 +171,11 @@ const Navbar = () => {
                         <div className="container">
                             <div className="row">
                                 <div className="col">
-                                    <div className="ltn__top-bar-menu text-start">
+                                    <div className="ltn__top-bar-menu text-start  mailtext">
                                         <ul>
                                             <li>
-                                                <a href="mailto:info@webmail.com?Subject=Flower%20greetings%20to%20you">
-                                                    <i className="icon-mail" /> info@truckmessage.com
+                                                <a className=' mailtext' href="mailto:info@webmail.com?Subject=Flower%20greetings%20to%20you">
+                                                    <i className="icon-mail    " /> info@truckmessage.com
                                                 </a>
                                             </li>
                                         </ul>

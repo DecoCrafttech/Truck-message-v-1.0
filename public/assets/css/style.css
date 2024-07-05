@@ -19599,3 +19599,8 @@ input.cart-plus-minus-box {
     font-weight: 500;
   }
   
+  .mailtext {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: white;
+  }

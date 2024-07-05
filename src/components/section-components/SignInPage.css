@@ -75,7 +75,7 @@ h2 {
 
 label {
   display: block;
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 input[type="text"],
@@ -112,8 +112,11 @@ para {
 }
 
 a {
-  color: #5c727d;
+  color: #0450ff;
   text-decoration: none;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 a:hover {
@@ -152,7 +155,11 @@ text-align: center;
   text-align: left;
 }
 .card-title {
-  margin-bottom: 0rem
+  margin-bottom: 0rem;
+  font-weight: 800;
+  font-size: 16px;
+  color: #1c1c1c;
+  
 }
 
 .cardshadow {
@@ -183,9 +190,10 @@ text-align: center;
 }
 
 .cardicon{
-  font-weight: 600;
   display: inline-block;
   position: relative;
   font-size: 16px;
   margin-top: 0;
+  font-weight: 500 !important;
+  color: #4e4e4e;
 }
