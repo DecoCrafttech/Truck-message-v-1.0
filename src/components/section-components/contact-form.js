@@ -58,7 +58,7 @@ class ContactForm extends Component {
 
 	let publicUrl = process.env.PUBLIC_URL+'/'
 
-    return <div className="ltn__contact-message-area mb-120 mb--100">
+    return <div className="ltn__contact-message-area mb-5">
 				<div className="container">
 				<div className="row">
 					<div className="col-lg-12">
@@ -80,12 +80,12 @@ class ContactForm extends Component {
 							<div className="input-item" >
 								<select className="nice-select" name="service">
 								<option>Select Service Type</option>
-								<option>Property Management </option>
-								<option>Mortgage Service </option>
-								<option>Consulting Service</option>
-								<option>Home Buying</option>
-								<option>Home Selling</option>
-								<option>Escrow Services</option>
+								<option>Service </option>
+								<option> Service </option>
+								<option> Service</option>
+								<option> Service</option>
+								<option> Service</option>
+								<option> Service</option>
 								</select>
 							</div>
 							</div>
@@ -99,10 +99,10 @@ class ContactForm extends Component {
 							<textarea name="message" placeholder="Enter message" defaultValue={""} />
 						</div>
 						<p><label className="input-info-save mb-0"><input type="checkbox" name="agree" /> Save my name, email, and website in this browser for the next time I comment.</label></p>
-						<div className="btn-wrapper mt-0">
-							<button className="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">get a free service</button>
+						<div className=" mt-0">
+							<button className="text-uppercase" type="submit">Submit</button>
 						</div>
-						<p className="form-messege mb-0 mt-20" />
+						{/* <p className="form-messege mb-0 mt-20" /> */}
 						</form>
 					</div>
 					</div>

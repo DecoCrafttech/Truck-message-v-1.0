@@ -25,7 +25,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-house" /></span>
 							</div>
 							<div className="ltn__feature-info ">
-								<h3><Link to="/service-details">Fast Tag</Link></h3>
+								<h3><Link to="/service-details" className='apara'>Fast Tag</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -36,7 +36,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-mortgage" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/service-details">Insurance</Link></h3>
+								<h3><Link to="/service-details" className='apara'>Insurance</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -47,7 +47,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-operator" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/service-details">Toll Calculator</Link></h3>
+								<h3><Link to="/service-details" className='apara'>Toll Calculator</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -58,7 +58,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-house-1" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/team-details">Mileage Calculator</Link></h3>
+								<h3><Link to="/team-details" className='apara'>Mileage Calculator</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -69,7 +69,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-house-3" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/service-details">Fuel Price</Link></h3>
+								<h3><Link to="/service-details" className='apara'>Fuel Price</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -80,7 +80,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-official-documents" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/service-details">Expense Calculator</Link></h3>
+								<h3><Link to="/service-details" className='apara'>Expense Calculator</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -91,7 +91,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-official-documents" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/blog-left-sidebar">Buy & sell</Link></h3>
+								<h3><Link to="/blog-left-sidebar" className='apara'>Buy & sell</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -102,7 +102,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-official-documents" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/load-availability">Load Availability</Link></h3>
+								<h3><Link to="/load-availability" className='apara'>Load Availability</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -113,7 +113,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-official-documents" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/blog-details">Truck Availability</Link></h3>
+								<h3><Link to="/blog-details" className='apara'>Truck Availability</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>
@@ -124,7 +124,7 @@ class ServiceV5 extends Component {
 								<span><i className="flaticon-official-documents" /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/blog-grid">Driver Needs</Link></h3>
+								<h3><Link to="/blog-grid" className='apara'>Driver Needs</Link></h3>
 								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
 							</div>
 						</div>

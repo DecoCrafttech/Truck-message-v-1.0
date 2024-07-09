@@ -253,7 +253,7 @@ const Navbar = () => {
                                                         </div>
                                                         <ul class="dropdown-menu dropdown-menu-lg-end">
                                                             <li className='m-0' onClick={() => pageRender("my_profile")}><button class="dropdown-item" type="button">My account</button></li>
-                                                            <li className='m-0'><button class="dropdown-item" type="button">My post</button></li>
+                                                            <li className='m-0' onClick={() => pageRender("wishlist")}><button class="dropdown-item" type="button">My post</button></li>
                                                             <li className='m-0'><button class="dropdown-item" type="button">Enquiry</button></li>
                                                             <li className='m-0' onClick={handleLogOut}><button class="dropdown-item" type="button">Log out</button></li>
                                                         </ul>
@@ -338,7 +338,7 @@ const Navbar = () => {
             <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header border-0">
+                        <div class="modal-header border-0 ">
                             <h1 class="modal-title fs-5 " id="staticBackdropLabel">Login</h1>
                             <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close" id="closeSignInModel"></button>
                         </div>
@@ -347,7 +347,7 @@ const Navbar = () => {
 
                                 <div className="row">
                                     <div className="col-lg-12">
-                                        <div className="card mx-auto p-5 pt-3 border-0" style={{ maxWidth: '520px' }}>
+                                        <div className="card mx-auto p-3 pt-2 border-0" style={{ maxWidth: '520px' }}>
                                             <div className="card-body">
                                                 <div className="form-group">
                                                     <label>Phone Number</label>
@@ -362,6 +362,9 @@ const Navbar = () => {
                                                     <label className="form-check-label" htmlFor="termsCheck">I agree to the terms and conditions</label>
                                                 </div>
                                                 <button type="button" className="btn btn-primary btn-block" onClick={signIn}>Sign In</button>
+                                                <div>
+                                                    
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -374,39 +377,40 @@ const Navbar = () => {
 
             {/* register modal  */}
             <div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header border-0">
-                            <h1 class="modal-title fs-5 " id="staticBackdropLabel">Registration</h1>
+                            <h1 class="modal-title fs-5  " id="staticBackdropLabel">Registration</h1>
                             <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close" id="registrationModalClose"></button>
                         </div>
                         <div class="modal-body">
                             <div className="row">
-                                <div className="col-lg-12 py-3">
-                                    <div className="card mx-auto p-5" style={{ maxWidth: '520px' }}>
+                                <div className="col-lg-12 p-2 border-0">
+                                    <div className="card mx-auto  border-0" style={{ maxWidth: '520px' }}>
                                         <div className="card-body">
-                                            <h4 className="card-title mb-4">Registration</h4>
+                                            {/* <h4 className="card-title mb-4">Registration</h4> */}
                                             <div id="step1" style={{ display: step === 1 ? 'block' : 'none' }}>
-                                                <div className="form-group">
-                                                    <label>Name</label>
+                                                <div className="form-group ">
+                                                    <label className='mb-1'>Name</label>
                                                     <input type="text" className="form-control" placeholder="Enter Your Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                                                 </div>
-                                                <div className="form-group">
+                                                
+                                                <div className="form-group ">
                                                     <label>Date of Birth</label>
-                                                    <input type="date" className="form-control" placeholder="Date of Birth" value={dob} onChange={(e) => setDob(e.target.value)} />
+                                                    <input type="date" className="form-control py-3" placeholder="Date of Birth" value={dob} onChange={(e) => setDob(e.target.value)} />
                                                 </div>
-                                                <div className="input-item ">
+                                                <div className="input-item mb-3">
                                                     <label>Phone Number</label>
                                                     <div className="input-group ">
                                                         <div className="input-group-prepend d-flex">
-                                                            <span className="input-group-text">+91</span>
+                                                            <span className="input-group-text py-3">+91</span>
                                                         </div>
-                                                        <input type="tel" className="form-control" placeholder="Phone number" value={phoneNumber} onInput={handlePhoneNumberInput} maxLength="10" />
+                                                        <input type="tel" className="form-control py-3" placeholder="Phone number" value={phoneNumber} onInput={handlePhoneNumberInput} maxLength="10" />
                                                     </div>
                                                 </div>
-                                                <div className="input-item">
+                                                <div className="input-item mb-3">
                                                     <label>Category</label>
-                                                    <select className="form-control nice-select" value={state} onChange={(e) => setState(e.target.value)}>
+                                                    <select className="form-control nice-select " value={state} onChange={(e) => setState(e.target.value)}>
                                                         <option value="">Category</option>
                                                         <option value="LORRY OWNER">Lorry Owner</option>
                                                         <option value="LOGISTICS">Logistics</option>
@@ -416,15 +420,15 @@ const Navbar = () => {
                                                         <option value="LORRY BUY & SELL DEALER/OWNER">Lorry Buy & Sell Dealer/Owner</option>
                                                     </select>
                                                 </div>
-                                                <div className="form-group">
+                                                <div className="form-group mb-3">
                                                     <label>Operating City</label>
                                                     <input type="text" className="form-control" placeholder="Enter Operating City" value={operatingCity} onChange={(e) => setOperatingCity(e.target.value)} />
                                                 </div>
-                                                <div className="form-group">
+                                                <div className="form-group mb-3">
                                                     <label>Password</label>
                                                     <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                                 </div>
-                                                <div className="form-group">
+                                                <div className="form-group mb-3">
                                                     <label>Confirm Password</label>
                                                     <input type="password" className="form-control" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                                                 </div>

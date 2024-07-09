@@ -9,11 +9,11 @@ import Footer from './global-components/footer';
 
 const ContactV1 = () => {
     return <div>
-        <PageHeader headertitle="Contact Us" subheader="Contact" />
+        {/* <PageHeader headertitle="Contact Us" subheader="Contact" /> */}
         <ContactInfo />
         <ContactForm />
-        <Map />
-        <CallToActionV1 />
+        {/* <Map /> */}
+        {/* <CallToActionV1 /> */}
     </div>
 }
 

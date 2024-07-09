@@ -7,9 +7,9 @@ import Footer from './global-components/footer';
 
 const WishlistPage = () => {
     return <div>
-        <PageHeader headertitle="Wishlist" />
+        {/* <PageHeader headertitle="Wishlist" /> */}
         <Wishlist />
-        <CallToActionV1 />
+        {/* <CallToActionV1 /> */}
     </div>
 }
 

@@ -5,143 +5,111 @@ import Copyright from './copyright';
 
 class Footer_v1 extends Component {
 
-    componentDidMount() {
+	componentDidMount() {
 
-    	const $ = window.$;
-    	
-        let publicUrl = process.env.PUBLIC_URL+'/'
-        const minscript = document.createElement("script");
-        minscript.async = true;
-        minscript.src = publicUrl + "assets/js/main.js";
+		const $ = window.$;
 
-        document.body.appendChild(minscript);
+		let publicUrl = process.env.PUBLIC_URL + '/'
+		const minscript = document.createElement("script");
+		minscript.async = true;
+		minscript.src = publicUrl + "assets/js/main.js";
 
-         $('.go-top').find('a').on('click', function () {
+		document.body.appendChild(minscript);
+
+		$('.go-top').find('a').on('click', function () {
 
 			$(".quarter-overlay").fadeIn(1);
 
-				$(window).scrollTop(0);
+			$(window).scrollTop(0);
 
-			setTimeout(function(){
-			    	$(".quarter-overlay").fadeOut(300);
-				}, 800);
+			setTimeout(function () {
+				$(".quarter-overlay").fadeOut(300);
+			}, 800);
 
-        });
+		});
 
 
-		$(document).on('click','.theme-btn-1 ', function(){ 
-            $( 'div' ).removeClass( 'modal-backdrop' );
-            $( 'div' ).removeClass( 'show' );
-            $( 'div' ).removeClass( 'fade' );
+		$(document).on('click', '.theme-btn-1 ', function () {
+			$('div').removeClass('modal-backdrop');
+			$('div').removeClass('show');
+			$('div').removeClass('fade');
 			$('body').attr("style", "");
-        });
-    }
+		});
+	}
 
-    render() {
+	render() {
 
-        let publicUrl = process.env.PUBLIC_URL+'/'
-        let imgattr = "Footer logo"
+		let publicUrl = process.env.PUBLIC_URL + '/'
+		let imgattr = "Footer logo"
 
-        return (
-				<footer className="ltn__footer-area  ">
-				  <div className="footer-top-area  section-bg-2 plr--5">
-				    <div className="container-fluid">
-				      <div className="row">
-				        <div className="col-xl-3 col-md-6 col-sm-6 col-12">
-				          <div className="footer-widget footer-about-widget">
-				            <div className="footer-logo">
-				              <div className="site-logo">
-				                <img src={publicUrl+"assets/img/logo.png"} alt="Logo" />
-				              </div>
-				            </div>
-				            <p className='para'>Lorem Ipsum is simply dummy text of the and typesetting industry. Lorem Ipsum is dummy text of the printing.</p>
-				            <div className="footer-address">
-				              <ul>
-				                <li>
-				                  <div className=" para footer-address-icon">
-				                    <i className=" para icon-placeholder" />
-				                  </div>
-				                  <div className="footer-address-info para">
-				                   Brooklyn, New York, United States
-				                  </div>
-				                </li>
-				                <li>
-				                  <div className="footer-address-icon para">
-				                    <i className="icon-call" />
-				                  </div>
-				                  <div className="footer-address-info para">
-				                    <a href="tel:+0123-456789">+0123-456789</a>
-				                  </div>
-				                </li>
-				                <li>
-				                  <div className="footer-address-icon para">
-				                    <i className="icon-mail " />
-				                  </div>
-				                  <div className="footer-address-info para">
-				                   <a href="mailto:example@example.com">example@example.com</a>
-				                  </div>
-				                </li>
-				              </ul>
-				            </div>
-				            <div className="ltn__social-media mt-20">
-						    	<Social />
-				            </div>
-				          </div>
-				        </div>
-				        <div className="col-xl-2 col-md-6 col-sm-6 col-12">
-				          <div className="footer-widget footer-menu-widget clearfix">
-				            <h4 className="footer-title">Company</h4>
-				            <div className="footer-menu go-top">
-				              <ul>
-				                <li><Link to="/about">About</Link></li>
-				                <li><Link to="/blog-grid">Blog</Link></li>
-				                <li><Link to="/shop">All Products</Link></li>
-				                <li><Link to="/contact">Contact</Link></li>
-				                <li><Link to="/faq">FAQ</Link></li>
-				                <li><Link to="/contact">Contact us</Link></li>
-				              </ul>
-				            </div>
-				          </div>
-				        </div>
-				        <div className="col-xl-2 col-md-6 col-sm-6 col-12">
-				          <div className="footer-widget footer-menu-widget clearfix">
-				            <h4 className="footer-title">Services</h4>
-				            <div className="footer-menu go-top">
-				              <ul>
-				                <li><Link to="/cart">Cart</Link></li>
-				                <li><Link to="/wishlist">Wish List</Link></li>
-				                <li><Link to="/login">Login</Link></li>
-				                <li><Link to="/checkout">Checkout</Link></li>
-				                <li><Link to="/about">Terms &amp; Conditions</Link></li>
-				                <li><Link to="/shop">Promotional Offers</Link></li>
-				              </ul>
-				            </div>
-				          </div>
-				        </div>
-				        
-				        {/* <div className="col-xl-3 col-md-6 col-sm-12 col-12">
-				          <div className="footer-widget footer-newsletter-widget">
-				            <h4 className="footer-title">Newsletter</h4>
-				            <p>Subscribe to our weekly Newsletter and receive updates via email.</p>
-				            <div className="footer-newsletter">
-				              <form action="#">
-				                <input type="email" name="email" placeholder="Email*" />
-				                <div className="btn-wrapper">
-				                  <button className="theme-btn-1 btn" type="submit"><i className="fas fa-location-arrow" /></button>
-				                </div>
-				              </form>
-				            </div>
-				            <h5 className="mt-30">We Accept</h5>
-				            <img src={publicUrl+"assets/img/icons/payment-4.png"} alt="Payment Image" />
-				          </div>
-				        </div> */}
-				      </div>
-				    </div>
-				  </div>
-				  <Copyright />
-				</footer>
-        )
-    }
+		return (
+			<footer className="ltn__footer-area  ">
+				<div className="footer-top-area  section-bg-2 plr--5">
+					<div className="container">
+						<div className="row">
+							<div className="col-8 ">
+								<div className="footer-widget footer-about-widget">
+									<div className="footer-logo">
+										<div  >
+											<img className="site-logofooter " src={publicUrl + "assets/img/logo.png"} alt="Logo" />
+										</div>
+									</div>
+									{/* <p className='footercls'>Truck Message</p>	 */}
+									<div className="footer-address">
+										<ul>
+											<li>
+												<div className=" para footer-address-icon">
+													<i className=" para icon-placeholder" />
+												</div>
+												<div className="footer-address-info footercls">
+													Brooklyn, New York, United States
+												</div>
+											</li>
+											<li>
+												<div className="footer-address-icon para">
+													<i className="icon-call footercls" />
+												</div>
+												<div className="footer-address-info">
+													<a href="tel:+0123-456789" className='footercls'>+0123-456789</a>
+												</div>
+											</li>
+											<li>
+												<div className="footer-address-icon">
+													<i className="icon-mail footercls " />
+												</div>
+												<div className="footer-address-info footercls'">
+													<a href="mailto:example@example.com" className='footercls'>example@example.com</a>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<div className="ltn__social-media mt-20">
+										<Social />
+									</div>
+								</div>
+							</div>
+							<div className="col-4 ">
+								<div className="footer-widget footer-menu-widget clearfix">
+									<h4 className="footer-title">TruckMessage </h4>
+									<div className="footer-menu go-top">
+										<ul>
+											<li><Link to="/service" className='footercls'>Services</Link></li>
+											<li><Link to="/about" className='footercls'>About</Link></li>
+											{/* <li><Link to="/shop" className='footercls'>All Products</Link></li> */}
+											<li><Link to="/blog" className='footercls'>Blogs</Link></li>
+											{/* <li><Link to="/faq" className='footercls'>FAQ</Link></li> */}
+											<li><Link to="/contact" className='footercls'>Contact us</Link></li>
+										</ul>
+									</div>
+								</div>
+								</div>
+						</div>
+					</div>
+				</div>
+				<Copyright />
+			</footer>
+		)
+	}
 }
 
 
