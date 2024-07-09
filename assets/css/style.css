@@ -5548,6 +5548,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   padding: 20px 10px;
   display: inline-block;
   white-space: nowrap;
+  text-decoration: none;
   color: var(--ltn__heading-color);
   font-weight: 600;
   font-family: var(--ltn__body-font);
@@ -19603,4 +19604,22 @@ input.cart-plus-minus-box {
     font-size: 16px !important;
     font-weight: 500 !important;
     color: white;
+    text-decoration: none;
+  }
+
+  .apara {
+    color: #0450ff;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .site-logofooter {
+    max-width: 40%;
+  }
+
+											
+  .a{
+    text-decoration: none;
   }
