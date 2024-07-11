@@ -166,7 +166,7 @@ const Navbar = () => {
     return (
         <>
             <div>
-                <header className="ltn__header-5 ltn__header-transparent--- gradient-color-4--- overflow-hidden">
+                <header className="ltn__header-5 ltn__header-transparent--- gradient-color-4---">
                     <div className="ltn__header-top-area section-bg-6 top-area-color-white---">
                         <div className="container">
                             <div className="row">

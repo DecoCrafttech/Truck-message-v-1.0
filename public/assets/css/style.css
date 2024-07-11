@@ -6552,8 +6552,15 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   font-weight: 700;
 }
 
-.ltn__currency-menu ul li ul {
-  min-width: 200px;
+@media (max-width:400px) {
+  .ltn__currency-menu ul li ul {
+    min-width: 170px;
+  }
+}
+@media (min-width:400px) {
+  .ltn__currency-menu ul li ul {
+    min-width: 200px;
+  }
 }
 
 .ltn__currency-menu .dropdown-toggle::after {
