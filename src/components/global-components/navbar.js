@@ -68,8 +68,8 @@ const Navbar = () => {
                 } else {
                     toast.error("Login failed")
                 }
-            } catch (err) {
-                console.log(err)
+            } catch (err) { 
+                toast.error(err.code)
             }
         }
     };
@@ -104,7 +104,7 @@ const Navbar = () => {
                 setStep(2); // Move to step 2 after registration
             }
         }catch(err){
-            console.log(err)
+            toast.error(err.code)
         }   
     };
 
@@ -112,7 +112,7 @@ const Navbar = () => {
         try{
             await axiosInstance.post('/send_signup_otp', { phone_number: phone })
         }catch(err){
-            console.log(err)
+             toast.error(err.code)
         }
     };
 
@@ -166,7 +166,7 @@ const Navbar = () => {
     return (
         <>
             <div>
-                <header className="ltn__header-5 ltn__header-transparent--- gradient-color-4---">
+                <header className="ltn__header-5 ltn__header-transparent--- gradient-color-4--- overflow-hidden">
                     <div className="ltn__header-top-area section-bg-6 top-area-color-white---">
                         <div className="container">
                             <div className="row">

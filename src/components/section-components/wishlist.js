@@ -5,24 +5,54 @@ import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
 import Cookies from 'js-cookie';
+import { NavLink } from 'react-router-dom';
 
 const WishList = () => {
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('Load');
   const [data, setData] = useState([]);
+  const [modalBoxData,setModalBoxData]= useState()
 
   useEffect(() => {
-    axios.get('https://truck.truckmessage.com/all_load_details')
-      .then(response => {
-        if (response.data.success && Array.isArray(response.data.data)) {
-          setData(response.data.data);
-        } else {
-          console.error('Unexpected response format:', response.data);
-        }
-      })
-      .catch(error => {
-        console.error('There was an error fetching the data!', error);
-      });
+    const getPath = window.location.pathname;
+    const splitPath = getPath.split('/');
+    if (splitPath.length === 4) {
+      const path = splitPath[3]
+      switch (path) {
+        case "load":
+          initialRender("all_load_details")
+          break;
+        case "truck":
+          initialRender("all_truck_details")
+          break;
+        case "driver":
+          initialRender("all_driver_details")
+          break;
+        case "buy_sell":
+          initialRender("all_buy_sell_details")
+          break;
+        default:
+          break;
+      }
+    }
   }, []);
+
+  const initialRender = async (newPath) => {
+    try {
+      axios.get(`https://truck.truckmessage.com/${newPath}`)
+        .then(response => {
+          if (response.data.success && Array.isArray(response.data.data)) {
+            setData(response.data.data); 
+          } else {
+            console.error('Unexpected response format:', response.data);
+          }
+        })
+        .catch(error => {
+          console.error('There was an error fetching the data!', error);
+        });
+    } catch (err) {
+      toast.error(err)
+    }
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -183,40 +213,39 @@ const WishList = () => {
     }
   };
 
+  const getWhishlistData = (tabEndpoint) => {
+    setData([]);
+    try {
+      axios.get(`https://truck.truckmessage.com/${tabEndpoint}`)
+        .then(response => {
+          if (response.data.success && Array.isArray(response.data.data)) {
+            setData(response.data.data);
+          } else {
+            console.error('Unexpected response format:', response.data);
+          }
+        })
+        .catch(error => {
+          console.error('There was an error fetching the data!', error);
+        });
+    } catch (err) {
+      toast.error(err)
+    }
+  }
+
   return (
     <div className='container'>
       <ul className="nav nav-tabs">
         <li className="nav-item">
-          <a
-            className={`nav-link ${activeTab === 'Load' ? 'active' : ''}`}
-            onClick={() => setActiveTab('Load')}
-          >
-            Load availability post
-          </a>
+          <NavLink to="/wishlist/load" className={"nav-link"} onClick={() => getWhishlistData('all_load_details')}>Load availability post</NavLink>
         </li>
         <li className="nav-item">
-          <a
-            className={`nav-link ${activeTab === 'Truck' ? 'active' : ''}`}
-            onClick={() => setActiveTab('Truck')}
-          >
-            Truck availability post
-          </a>
+          <NavLink to="/wishlist/truck" className={"nav-link"} onClick={() => getWhishlistData('all_truck_details')}>Truck availability post</NavLink>
         </li>
         <li className="nav-item">
-          <a
-            className={`nav-link ${activeTab === 'Driver' ? 'active' : ''}`}
-            onClick={() => setActiveTab('Driver')}
-          >
-            Driver availability post
-          </a>
+          <NavLink to="/wishlist/driver" className={"nav-link"} onClick={() => getWhishlistData('all_driver_details')}>Driver availability post</NavLink>
         </li>
         <li className="nav-item">
-          <a
-            className={`nav-link ${activeTab === 'Buy' ? 'active' : ''}`}
-            onClick={() => setActiveTab('Buy')}
-          >
-            Buy & Sell Post
-          </a>
+          <NavLink to="/wishlist/buy_sell" className={"nav-link"} onClick={() => getWhishlistData('all_buy_sell_details')}>Buy & Sell Post</NavLink>
         </li>
       </ul>
       <div className="tab-content mt-3">
@@ -225,103 +254,103 @@ const WishList = () => {
 
 
 
-{/* Modal 01 */}
+      {/* Modal 01 */}
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <div className=' d-flex gap-2 '>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-body">
-        ...
+
+
+
+      {/* Modal 02 */}
+
+      <div class="modal fade" id="exampleModaltwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <div className=' d-flex gap-2 '>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="modal-footer">
-        <div className=' d-flex gap-2 '>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button></div>
+
+
+      {/* Modal 03 */}
+
+      <div class="modal fade" id="exampleModalthree" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <div className=' d-flex gap-2 '>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button></div>
+            </div>
+          </div>
+        </div>
       </div>
+
+
+
+
+
+
+
+
+      {/* Modal 04 */}
+
+      <div class="modal fade" id="exampleModalfour" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <div className=' d-flex gap-2 '>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
-  </div>
-</div>
 
-
-
-{/* Modal 02 */}
-
-<div class="modal fade" id="exampleModaltwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <div className=' d-flex gap-2 '>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-{/* Modal 03 */}
-
-<div class="modal fade" id="exampleModalthree" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <div className=' d-flex gap-2 '>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-
-{/* Modal 04 */}
-
-<div class="modal fade" id="exampleModalfour" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <div className=' d-flex gap-2 '>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-    </div>
-    
   );
 };
 

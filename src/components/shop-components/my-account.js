@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TbCircleFilled } from "react-icons/tb";
 import { MdOutlineDeleteOutline, MdDeleteOutline } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoCallOutline } from "react-icons/io5";
 import axios from 'axios';
-import Cookies from 'js-cookie';
+import Cookies from 'js-cookie'; 
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const MyAccount = () => {
   const [profile, setProfile] = useState({});
@@ -12,35 +14,50 @@ const MyAccount = () => {
   const [newVehicleNumber, setNewVehicleNumber] = useState('');
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
 
+  //if user not exist move to home page
+  const LoginDetails = useSelector((state) => state.login);
+  const pageRender = useNavigate();
+
+  useEffect(()=>{ 
+    if(!Cookies.get("usrin")){
+      pageRender('/')
+    }
+  },[LoginDetails.isLoggedIn])
+  //
+
+
+
   useEffect(() => {
+    fetchUserProfile()
+  }, []);
+
+
+  const fetchUserProfile = () => {
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
-      fetchUserProfile(userId);
+
+      axios.post('https://truck.truckmessage.com/get_user_profile', {
+        user_id: userId,
+      })
+        .then(response => {
+          const { data } = response;
+          if (data.success && data.data.length > 0) {
+            const profileData = data.data.find(item => item.profile);
+            const vehicleData = data.data.find(item => item.vehicle_data);
+
+            setProfile(profileData ? profileData.profile : {});
+            setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
+          } else {
+            console.error('Failed to fetch user profile');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching user profile:', error);
+        });
     } else {
       console.error('User not logged in');
     }
-  }, []);
-
-  const fetchUserProfile = (userId) => {
-    axios.post('https://truck.truckmessage.com/get_user_profile', {
-      user_id: userId,
-    })
-      .then(response => {
-        const { data } = response;
-        if (data.success && data.data.length > 0) {
-          const profileData = data.data.find(item => item.profile);
-          const vehicleData = data.data.find(item => item.vehicle_data);
-
-          setProfile(profileData ? profileData.profile : {});
-          setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
-        } else {
-          console.error('Failed to fetch user profile');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching user profile:', error);
-      });
   };
 
   const handleAddVehicle = () => {
@@ -119,7 +136,7 @@ const MyAccount = () => {
             <div className="ltn__product-tab-area">
               <div className="container">
                 <div className="row">
-                  <div className="ltn-author-introducing clearfix mb-3 ps-5">                    
+                  <div className="ltn-author-introducing clearfix mb-3 ps-5">
                     <div className="author-info">
                       <h2>{profile.first_name}</h2>
                       <div className="footer-address">
@@ -128,14 +145,14 @@ const MyAccount = () => {
                             <div className="footer-address-icon">
                             </div>
                             <div  >
-                              <p> <   FaRegCalendarAlt className="me-3"/> {formatDate(profile.date_of_birth)}</p>
+                              <p> <   FaRegCalendarAlt className="me-3" /> {formatDate(profile.date_of_birth)}</p>
                             </div>
                           </li>
                           <li>
                             <div className="footer-address-icon">
                             </div>
                             <div className="footer-address-info">
-                              <p> <IoCallOutline   className='me-3'/> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
+                              <p> <IoCallOutline className='me-3' /> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
                             </div>
                           </li>
                           <li>
@@ -284,7 +301,7 @@ const MyAccount = () => {
                     </div>
                   </div>
 
-                 
+
 
                   {/* viewall modal */}
 

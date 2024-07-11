@@ -43,11 +43,11 @@ class Footer_v1 extends Component {
 		let imgattr = "Footer logo"
 
 		return (
-			<footer className="ltn__footer-area  ">
+			<footer className="ltn__footer-area overflow-hidden">
 				<div className="footer-top-area  section-bg-2 plr--5">
 					<div className="container">
 						<div className="row">
-							<div className="col-8 ">
+							<div className="col-12 col-md-6 col-lg-8 ">
 								<div className="footer-widget footer-about-widget">
 									<div className="footer-logo">
 										<div  >
@@ -88,7 +88,7 @@ class Footer_v1 extends Component {
 									</div>
 								</div>
 							</div>
-							<div className="col-4 ">
+							<div className="col-12 col-md-6 col-lg-4 ">
 								<div className="footer-widget footer-menu-widget clearfix">
 									<h4 className="footer-title">TruckMessage </h4>
 									<div className="footer-menu go-top">

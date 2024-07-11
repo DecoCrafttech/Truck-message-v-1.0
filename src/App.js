@@ -51,10 +51,7 @@ function App() {
 
   return (
     <>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-      />
+      <Toaster/>
 
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Navbar />
@@ -101,7 +98,16 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/add-listing" element={<AddListing />} />
-            <Route path="/wishlist" element={<Wishlist />} />
+
+
+            <Route path="/wishlist" element={<Wishlist />}>
+              <Route path="load"/>
+              <Route path="truck"/>
+              <Route path="driver"/>
+              <Route path="buy_sell"/>
+            </Route>
+
+
             <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/history" element={<History />} />
           </Routes>
