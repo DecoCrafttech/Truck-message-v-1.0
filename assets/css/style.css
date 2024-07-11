@@ -11106,7 +11106,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__social-media ul li {
   list-style: none;
   display: inline-block;
-  margin: 0 15px 0 0;
+  margin: 0 0 0 0;
 }
 
 .ltn__social-media ul li:last-child {
@@ -11121,7 +11121,6 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 .ltn__social-media-2 ul li {
   list-style: none;
   display: inline-block;
-  margin-right: 10px;
 }
 
 .ltn__social-media-2 ul li a {
@@ -19622,4 +19621,10 @@ input.cart-plus-minus-box {
 											
   .a{
     text-decoration: none;
+  }
+
+  .vehicletext{
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    
   }
