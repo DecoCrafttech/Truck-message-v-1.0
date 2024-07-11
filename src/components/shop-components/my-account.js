@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { TbCircleFilled } from "react-icons/tb";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { FaRegEye } from "react-icons/fa6";
+import { MdOutlineDeleteOutline, MdDeleteOutline } from "react-icons/md";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import { IoCallOutline } from "react-icons/io5";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -9,24 +10,21 @@ const MyAccount = () => {
   const [profile, setProfile] = useState({});
   const [vehicleData, setVehicleData] = useState([]);
   const [newVehicleNumber, setNewVehicleNumber] = useState('');
-  const publicUrl = process.env.PUBLIC_URL + '/';
+  const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
 
   useEffect(() => {
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
-      const vehicleNo = localStorage.getItem('vehicle_no') || 'KA12AC3456'; // Default value or fetch from local storage
-
-      fetchUserProfile(userId, vehicleNo);
+      fetchUserProfile(userId);
     } else {
       console.error('User not logged in');
     }
   }, []);
 
-  const fetchUserProfile = (userId, vehicleNo) => {
+  const fetchUserProfile = (userId) => {
     axios.post('https://truck.truckmessage.com/get_user_profile', {
       user_id: userId,
-      vehicle_no: vehicleNo,
     })
       .then(response => {
         const { data } = response;
@@ -56,10 +54,8 @@ const MyAccount = () => {
       })
         .then(response => {
           if (response.data.success) {
-            // Append the new vehicle to the vehicleData state
             setVehicleData(prevVehicleData => [...prevVehicleData, response.data.data[0]]);
-            setNewVehicleNumber(''); // Clear the input field
-            // Close the modal (optional, if you are using Bootstrap)
+            setNewVehicleNumber('');
             document.getElementById('closeModalButton').click();
           } else {
             console.error('Failed to add vehicle');
@@ -69,6 +65,44 @@ const MyAccount = () => {
           console.error('Error adding vehicle:', error);
         });
     }
+  };
+
+  const handleDeleteVehicle = (vehicleNumber) => {
+    const encodedUserId = Cookies.get("usrin");
+    if (encodedUserId) {
+      const userId = window.atob(encodedUserId);
+
+      axios.post('https://truck.truckmessage.com/remove_user_vehicle_details', {
+        user_id: userId,
+        vehicle_no: vehicleNumber,
+      })
+        .then(response => {
+          if (response.data.success) {
+            setVehicleData(prevVehicleData => prevVehicleData.filter(vehicle => vehicle.rc_number !== vehicleNumber));
+          } else {
+            console.error('Failed to delete vehicle');
+          }
+        })
+        .catch(error => {
+          console.error('Error deleting vehicle:', error);
+        });
+    }
+  };
+
+  const handleViewDetails = (vehicleNumber) => {
+    axios.post('https://truck.truckmessage.com/get_vehicle_details', {
+      vehicle_no: vehicleNumber,
+    })
+      .then(response => {
+        if (response.data.success) {
+          setSelectedVehicleDetails(response.data.data[0]);
+        } else {
+          console.error('Failed to fetch vehicle details');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching vehicle details:', error);
+      });
   };
 
   const formatDate = (dateString) => {
@@ -85,28 +119,23 @@ const MyAccount = () => {
             <div className="ltn__product-tab-area">
               <div className="container">
                 <div className="row">
-                  <div className="ltn-author-introducing clearfix mb-3">
-                    <div className="author-img">
-                      <img src={publicUrl + "assets/img/blog/author.jpg"} alt="Author Image" />
-                    </div>
+                  <div className="ltn-author-introducing clearfix mb-3 ps-5">                    
                     <div className="author-info">
                       <h2>{profile.first_name}</h2>
                       <div className="footer-address">
                         <ul>
                           <li>
                             <div className="footer-address-icon">
-                              <i className="icon-placeholder" />
                             </div>
-                            <div className="footer-address-info">
-                              <p>{formatDate(profile.date_of_birth)}</p>
+                            <div  >
+                              <p> <   FaRegCalendarAlt className="me-3"/> {formatDate(profile.date_of_birth)}</p>
                             </div>
                           </li>
                           <li>
                             <div className="footer-address-icon">
-                              <i className="icon-call" />
                             </div>
                             <div className="footer-address-info">
-                              <p><a href={`tel:+${profile.phone_number}`}>{profile.phone_number}</a></p>
+                              <p> <IoCallOutline   className='me-3'/> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
                             </div>
                           </li>
                           <li>
@@ -137,124 +166,159 @@ const MyAccount = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="mb-5 col-lg-12">
-                    <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#vehicleNumber">Add My Truck</button>
+                  <div className="mb-3 col-lg-12">
+                    <button type="button" className="btn btn-danger text-uppercase" data-bs-toggle="modal" data-bs-target="#vehicleNumber">Add My Truck</button>
                   </div>
-                  <div className="overflow-auto position-relative mb-5">
-                    <table className="table table-responsive">
-                      <thead>
-                        <tr>
-                          <th scope="col">S.No</th>
-                          <th scope='col'>Vehicle Number</th>
-                          <th scope="col">Fit Up To</th>
-                          <th scope="col">Insurance Upto</th>
-                          <th scope="col">PUCC Upto</th>
-                          <th scope="col">National Permit Upto</th>
-                          <th scope="col">Tax Upto</th>
-                          <th scope="col">RC Status</th>
-                          <th scope="col" className="action-header">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {vehicleData.map((vehicle, index) => (
-                          <tr key={index}>
-                            <th scope="row">{index + 1}</th>
-                            <td>{vehicle.rc_number}</td>
-                            <td><TbCircleFilled className="me-2 text-success" />{formatDate(vehicle.fit_up_to)}</td>
-                            <td><TbCircleFilled className="me-2 text-danger" />{formatDate(vehicle.insurance_upto)}</td>
-                            <td><TbCircleFilled className="me-2 text-warning" />{formatDate(vehicle.pucc_upto)}</td>
-                            <td><TbCircleFilled className="me-2 text-success" />{formatDate(vehicle.national_permit_upto)}</td>
-                            <td><TbCircleFilled className="me-2 text-danger" />{formatDate(vehicle.tax_paid_upto)}</td>
-                            <td>{vehicle.rc_status}</td>
-                            <td className="action-cell d-flex justify-content-evenly gap-2 ">
-                              <button className="btn btn-primary fixed-button" data-bs-toggle="modal" data-bs-target="#viewall"> <FaRegEye /></button>
-                              <button  type="button" className="btn btn-primary fixed-button"><MdOutlineDeleteOutline /></button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div>
-                    <button type="button" className="btn btn-danger mb-3">Add More Vehicle</button>
-                  </div>
-                  <div className="col-lg-12">
-                    <div className="tab-content">
-                      <div className="tab-pane fade" id="ltn_tab_1_9">
-                        <div className="ltn__myaccount-tab-content-inner">
-                          <div className="account-login-inner">
-                            <form action="#" className="ltn__form-box contact-form-box">
-                              <h5 className="mb-30">Change Password</h5>
-                              <input type="password" name="password" placeholder="Current Password*" />
-                              <input type="password" name="password" placeholder="New Password*" />
-                              <input type="password" name="password" placeholder="Confirm New Password*" />
-                              <div className="btn-wrapper mt-0">
-                                <button className="theme-btn-1 btn btn-block" type="submit">Save Changes</button>
+
+                  {/* vehicles details */}
+                  <div className="container">
+                    <div className="row">
+                      {vehicleData.map((vehicle, index) => (
+                        <div className="col-lg-4 mt-4 mb-4" key={index}>
+                          <div className="widget">
+                            <div className="d-flex justify-content-between align-items-start align-items-center mb-0">
+                              <h4 className="ltn__widget-title ltn__widget-title-border-2">{vehicle.rc_number}</h4>
+                              <span className="align-items-start">
+                                <button className="btn fs-4 p-0" onClick={() => handleDeleteVehicle(vehicle.rc_number)}>
+                                  <MdDeleteOutline />
+                                </button>
+                              </span>
+                            </div>
+                            <div className="ltn__social-media-2">
+                              <ul className="list-group">
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">Fitness UpTo</div>
+                                    <span className="vehicletext">{formatDate(vehicle.fit_up_to)}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-warning fs-4" />
+                                  </div>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">Insurance</div>
+                                    <span className="vehicletext">{formatDate(vehicle.insurance_upto)}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-success fs-4" />
+                                  </div>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">Pollution</div>
+                                    <span className="vehicletext">{formatDate(vehicle.pucc_upto)}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-warning fs-4" />
+                                  </div>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">National Permit</div>
+                                    <span className="vehicletext">{formatDate(vehicle.national_permit_upto)}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-danger fs-4" />
+                                  </div>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">Tax Upto</div>
+                                    <span className="vehicletext">{formatDate(vehicle.tax_upto_paid)}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-warning fs-4" />
+                                  </div>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">RC Status</div>
+                                    <span className="vehicletext">{vehicle.rc_status}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-danger fs-4" />
+                                  </div>
+                                </li>
+
+                              </ul>
+                              <div className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 mb-2 p-2">
+                                <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewall">
+                                  View Details
+                                </button>
                               </div>
-                            </form>
+                            </div>
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Add Vehicle Modal */}
+                  <div className="modal fade" id="vehicleNumber" tabIndex="-1" aria-labelledby="vehicleNumberLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="vehicleNumberLabel">Add My Truck</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          <form>
+                            <div className="mb-3">
+                              <label htmlFor="vehicleNumberInput" className="form-label">Vehicle Number</label>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="vehicleNumberInput"
+                                value={newVehicleNumber}
+                                onChange={(e) => setNewVehicleNumber(e.target.value)}
+                              />
+                            </div>
+                          </form>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" className="btn btn-primary" onClick={handleAddVehicle}>Save</button>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* Table for detailed vehicle information */}
+
+                 
+
+                  {/* viewall modal */}
+
+                  <div className="modal fade" id="viewall" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog  modal-lg modal-dialog-centered  ">
+                      <div className="col-lg-12 mt-5">
+                        {vehicleData.length > 0 && (
+                          <div className="card">
+                            <div className="modal-header">
+                              <h1 className="modal-title fs-5" id="exampleModalLabel">Vehicle Details</h1>
+                              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="card-body">
+                              <table className="table table-bordered">
+                                <tbody>
+                                  {Object.keys(vehicleData[0]).map((key, index) => (
+                                    <tr key={index}>
+                                      <td style={{ fontWeight: 'bold' }}>{key.replace(/_/g, ' ')}</td>
+                                      <td>{typeof vehicleData[0][key] === 'object' ? JSON.stringify(vehicleData[0][key]) : vehicleData[0][key]}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+
 
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="modal fade" id="viewall" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog  modal-lg modal-dialog-centered  ">
-          <div className="col-lg-12 mt-5">
-            {vehicleData.length > 0 && (
-              <div className="card">
-                <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">Vehicle Details</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-                <div className="card-body">
-                  <table className="table table-bordered">
-                    <tbody>
-                      {Object.keys(vehicleData[0]).map((key, index) => (
-                        <tr key={index}>
-                          <td style={{ fontWeight: 'bold' }}>{key.replace(/_/g, ' ')}</td>
-                          <td>{typeof vehicleData[0][key] === 'object' ? JSON.stringify(vehicleData[0][key]) : vehicleData[0][key]}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="modal fade" id="vehicleNumber" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">Vehicle Number</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control mt-5"
-                  id="vehicleNumberInput"
-                  placeholder="TN66 ED 5555"
-                  value={newVehicleNumber}
-                  onChange={(e) => setNewVehicleNumber(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="d-flex justify-content-evenly mb-3 m-3 gap-2">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-primary" onClick={handleAddVehicle}>Save changes</button>
             </div>
           </div>
         </div>
