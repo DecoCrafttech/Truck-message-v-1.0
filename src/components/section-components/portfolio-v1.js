@@ -7,9 +7,11 @@ import { GiCarWheel } from "react-icons/gi";
 import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import Autocomplete from "react-google-autocomplete";
 
-const PortfolioV1 =()=> {
-    const LoginDetails = useSelector((state)=>state.login);
+
+const PortfolioV1 = () => {
+    const LoginDetails = useSelector((state) => state.login);
 
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -25,7 +27,7 @@ const PortfolioV1 =()=> {
 
     useEffect(() => {
         axios.get('https://truck.truckmessage.com/all_load_details')
-            .then(response => { 
+            .then(response => {
                 if (response.data.success && Array.isArray(response.data.data)) {
                     setCards(response.data.data);
                 } else {
@@ -81,17 +83,17 @@ const PortfolioV1 =()=> {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            toast.success('Form submitted successfully!');
-            formRef.current.reset();
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-        })
-        .catch(error => {
-            toast.error('Failed to submit the form.');
-            console.error('There was an error!', error);
-        });
+            .then(response => {
+                toast.success('Form submitted successfully!');
+                formRef.current.reset();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            })
+            .catch(error => {
+                toast.error('Failed to submit the form.');
+                console.error('There was an error!', error);
+            });
     };
 
 
@@ -126,6 +128,44 @@ const PortfolioV1 =()=> {
         setShowLoginPopup(false);
     };
 
+
+    const [showingFromLocation, setShowingFromLocation] = useState("")
+    const [showingToLocation, setShowingToLocation] = useState("")
+    const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
+        city: "",
+        state: "",
+    });
+    const [editCompanyToLocation, setEditCompanyToLocation] = useState({
+        city: "",
+        state : "",
+    });
+    const handleFromLocation = (selectedLocation) => {
+
+        const stateComponent = selectedLocation.find(component => component.types.includes('state'));
+
+        if (stateComponent) {
+            setEditCompanyFromLocation({
+                city: selectedLocation[0].long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingFromLocation(`${selectedLocation[0].long_name} , ${stateComponent.long_name}`)
+        }
+
+    };
+    const handleToLocation = (selectedLocation) => {
+
+        const stateComponent = selectedLocation.find(component => component.types.includes('state'));
+
+        if (stateComponent) {
+            setEditCompanyToLocation({
+                city: selectedLocation[0].long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingToLocation(`${selectedLocation[0].long_name} , ${stateComponent.long_name}`)
+        }
+
+    };
+
     return (
         <div>
             <div className="ltn__product-area ltn__product-gutter mb-50 mt-60">
@@ -134,13 +174,13 @@ const PortfolioV1 =()=> {
                         <div className="col-lg-12">
                             <div className="ltn__shop-options">
                                 <ul>
-                                    
+
                                     <li>
                                         <div className="showing-product-number text-right">
                                             <span>Showing {indexOfFirstCard + 1}-{Math.min(indexOfLastCard, filteredCards.length)} of {filteredCards.length} results</span>
                                         </div>
                                     </li>
-                                    
+
                                     <div className="header-top-btn">
                                         {/* <Link to="/add-listing"> + Add Load availability</Link> */}
                                         <button type="button " className='cardbutton truck-brand-button' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
@@ -161,8 +201,8 @@ const PortfolioV1 =()=> {
             </div>
 
             {/* modal  */}
-              {/* modal */}
-              <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            {/* modal */}
+            <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -180,9 +220,9 @@ const PortfolioV1 =()=> {
                                             </div>
                                         </div> */}
                                         <div>
-                                            <h6>Comapny Name</h6>
+                                            <h6>Company Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="company_name" placeholder="Name of the Owner" required/>
+                                                <input type="text" name="company_name" placeholder="Name of the Owner" required />
                                             </div>
                                         </div>
                                     </div>
@@ -197,14 +237,40 @@ const PortfolioV1 =()=> {
                                     <div className="row">
                                         <div>
                                             <h6>From</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="from_location" placeholder="Location" required />
+                                            <div className="input-item input-item-name ">
+                                                {/* <input type="text" name="from_location" placeholder="Location" required /> */}
+                                                <Autocomplete
+                                                    className="google-location location-input  bg-transparent py-2"
+                                                    apiKey="AIzaSyBsJ0vEri-HoXNq1mbh1Equ-pnFlhl7YY4"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleFromLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingFromLocation}
+                                                    onChange={(e) => setShowingFromLocation(e.target.value)}
+
+                                                />
                                             </div>
                                         </div>
                                         <div>
                                             <h6>To</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="to_location" placeholder="Location" required />
+                                            <div className="input-item input-item-name ">
+                                                {/* <input type="text" name="to_location" placeholder="Location" required /> */}
+                                                <Autocomplete
+                                                    className="google-location location-input  bg-transparent py-2"
+                                                    apiKey="AIzaSyBsJ0vEri-HoXNq1mbh1Equ-pnFlhl7YY4"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleToLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingToLocation}
+                                                    onChange={(e) => setShowingToLocation(e.target.value)}
+
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -220,7 +286,7 @@ const PortfolioV1 =()=> {
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="material" placeholder="What type of material" required />
                                             </div>
-                                        </div> 
+                                        </div>
                                         <div>
                                             <h6>Ton</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
@@ -239,7 +305,7 @@ const PortfolioV1 =()=> {
                                                     <option value="tanker">Tanker</option>
                                                 </select>
                                             </div>
-                                        </div>                                   
+                                        </div>
                                         <div>
                                             <h6>No. of Tyres</h6>
                                             <div className="input-item">
@@ -331,9 +397,9 @@ const PortfolioV1 =()=> {
                                                 <button className="btn cardbutton" type="button">Message</button>
                                             </div>
                                         ) :
-                                        <div className="d-grid gap-2">
-                                            <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">View Details</button>
-                                        </div>
+                                            <div className="d-grid gap-2">
+                                                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">View Details</button>
+                                            </div>
                                         }
                                     </div>
                                 </div>
