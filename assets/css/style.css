@@ -19635,3 +19635,15 @@ input.cart-plus-minus-box {
     font-family: Arial, Helvetica, sans-serif;
     
   }
+  .pac-container{
+    z-index: 10000 !important;
+  }
+  
+  .google-location.location-input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 65px;
+    margin-bottom: 30px;
+  }
