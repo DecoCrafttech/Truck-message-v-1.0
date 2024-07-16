@@ -133,7 +133,7 @@ const PortfolioV1 = () => {
     const [showingToLocation, setShowingToLocation] = useState("")
     const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
         city: "",
-        state: "",
+        country: "",
     });
     const [editCompanyToLocation, setEditCompanyToLocation] = useState({
         city: "",

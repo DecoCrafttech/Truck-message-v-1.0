@@ -13,8 +13,9 @@ const MyAccount = () => {
   const [vehicleData, setVehicleData] = useState([]);
   const [newVehicleNumber, setNewVehicleNumber] = useState('');
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
+  const [editProfile, setEditProfile] = useState({});
 
-  //if user not exist move to home page
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
 
@@ -22,15 +23,11 @@ const MyAccount = () => {
     if(!Cookies.get("usrin")){
       pageRender('/')
     }
-  },[LoginDetails.isLoggedIn])
-  //
-
-
+  },[LoginDetails.isLoggedIn]);
 
   useEffect(() => {
-    fetchUserProfile()
+    fetchUserProfile();
   }, []);
-
 
   const fetchUserProfile = () => {
     const encodedUserId = Cookies.get("usrin");
@@ -48,6 +45,7 @@ const MyAccount = () => {
 
             setProfile(profileData ? profileData.profile : {});
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
+            setEditProfile(profileData ? profileData.profile : {});
           } else {
             console.error('Failed to fetch user profile');
           }
@@ -84,18 +82,22 @@ const MyAccount = () => {
     }
   };
 
-  const handleDeleteVehicle = (vehicleNumber) => {
+  const handleDeleteVehicle = () => {
+    if (!vehicleToDelete) return;
+
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
 
       axios.post('https://truck.truckmessage.com/remove_user_vehicle_details', {
         user_id: userId,
-        vehicle_no: vehicleNumber,
+        vehicle_no: vehicleToDelete,
       })
         .then(response => {
           if (response.data.success) {
-            setVehicleData(prevVehicleData => prevVehicleData.filter(vehicle => vehicle.rc_number !== vehicleNumber));
+            setVehicleData(prevVehicleData => prevVehicleData.filter(vehicle => vehicle.rc_number !== vehicleToDelete));
+            setVehicleToDelete(null);
+            document.getElementById('closeDeleteModalButton').click();
           } else {
             console.error('Failed to delete vehicle');
           }
@@ -122,6 +124,27 @@ const MyAccount = () => {
       });
   };
 
+  const handleEditProfile = () => {
+    const encodedUserId = Cookies.get("usrin");
+    if (encodedUserId) {
+      const userId = window.atob(encodedUserId);
+      const updatedProfile = { ...editProfile, user_id: userId };
+
+      axios.post('https://truck.truckmessage.com/update_profile', updatedProfile)
+        .then(response => {
+          if (response.data.success) {
+            fetchUserProfile();
+            document.getElementById('closeEditProfileModalButton').click();
+          } else {
+            console.error('Failed to update profile');
+          }
+        })
+        .catch(error => {
+          console.error('Error updating profile:', error);
+        });
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -142,52 +165,46 @@ const MyAccount = () => {
                       <div className="footer-address">
                         <ul>
                           <li>
-                            <div className="footer-address-icon">
-                            </div>
-                            <div  >
-                              <p> <   FaRegCalendarAlt className="me-3" /> {formatDate(profile.date_of_birth)}</p>
+                            <div className="footer-address-icon"></div>
+                            <div>
+                              <p><FaRegCalendarAlt className="me-3" /> {formatDate(profile.date_of_birth)}</p>
                             </div>
                           </li>
                           <li>
-                            <div className="footer-address-icon">
-                            </div>
+                            <div className="footer-address-icon"></div>
                             <div className="footer-address-info">
-                              <p> <IoCallOutline className='me-3' /> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
+                              <p><IoCallOutline className='me-3' /> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
                             </div>
                           </li>
                           <li>
-                            <div className="footer-address-icon">
-                              <i className="icon-placeholder" />
-                            </div>
+                            <div className="footer-address-icon"></div>
                             <div className="footer-address-info">
                               <p>{profile.category}</p>
                             </div>
                           </li>
                           <li>
-                            <div className="footer-address-icon">
-                              <i className="icon-placeholder" />
-                            </div>
+                            <div className="footer-address-icon"></div>
                             <div className="footer-address-info">
                               <p>{profile.operating_city}</p>
                             </div>
                           </li>
                           <li>
-                            <div className="footer-address-icon">
-                              <i className="icon-placeholder" />
-                            </div>
+                            <div className="footer-address-icon"></div>
                             <div className="footer-address-info">
                               <p>{profile.state}</p>
                             </div>
                           </li>
                         </ul>
                       </div>
+                      <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        Edit Profile
+                      </button>
                     </div>
                   </div>
                   <div className="mb-3 col-lg-12">
                     <button type="button" className="btn btn-danger text-uppercase" data-bs-toggle="modal" data-bs-target="#vehicleNumber">Add My Truck</button>
                   </div>
 
-                  {/* vehicles details */}
                   <div className="container">
                     <div className="row">
                       {vehicleData.map((vehicle, index) => (
@@ -196,7 +213,7 @@ const MyAccount = () => {
                             <div className="d-flex justify-content-between align-items-start align-items-center mb-0">
                               <h4 className="ltn__widget-title ltn__widget-title-border-2">{vehicle.rc_number}</h4>
                               <span className="align-items-start">
-                                <button className="btn fs-4 p-0" onClick={() => handleDeleteVehicle(vehicle.rc_number)}>
+                                <button className="btn fs-4 p-0" onClick={() => setVehicleToDelete(vehicle.rc_number)} data-bs-toggle="modal" data-bs-target="#deleteVehicleModal">
                                   <MdDeleteOutline />
                                 </button>
                               </span>
@@ -223,48 +240,27 @@ const MyAccount = () => {
                                 </li>
                                 <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
                                   <div className="me-auto ms-2">
-                                    <div className="fw-bold">Pollution</div>
+                                    <div className="fw-bold">PUCC</div>
                                     <span className="vehicletext">{formatDate(vehicle.pucc_upto)}</span>
                                   </div>
                                   <div className="d-flex">
-                                    <TbCircleFilled className="me-2 text-warning fs-4" />
-                                  </div>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
-                                  <div className="me-auto ms-2">
-                                    <div className="fw-bold">National Permit</div>
-                                    <span className="vehicletext">{formatDate(vehicle.national_permit_upto)}</span>
-                                  </div>
-                                  <div className="d-flex">
                                     <TbCircleFilled className="me-2 text-danger fs-4" />
                                   </div>
                                 </li>
                                 <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
                                   <div className="me-auto ms-2">
-                                    <div className="fw-bold">Tax Upto</div>
-                                    <span className="vehicletext">{formatDate(vehicle.tax_upto_paid)}</span>
+                                    <div className="fw-bold">Road Tax</div>
+                                    <span className="vehicletext">{formatDate(vehicle.tax_upto)}</span>
                                   </div>
                                   <div className="d-flex">
-                                    <TbCircleFilled className="me-2 text-warning fs-4" />
+                                    <TbCircleFilled className="me-2 text-success fs-4" />
                                   </div>
                                 </li>
-                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
-                                  <div className="me-auto ms-2">
-                                    <div className="fw-bold">RC Status</div>
-                                    <span className="vehicletext">{vehicle.rc_status}</span>
-                                  </div>
-                                  <div className="d-flex">
-                                    <TbCircleFilled className="me-2 text-danger fs-4" />
-                                  </div>
-                                </li>
-
                               </ul>
-                              <div className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 mb-2 p-2">
-                                <button className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewall">
-                                  View Details
-                                </button>
-                              </div>
                             </div>
+                            <button className="btn btn-primary text-uppercase mt-3 mb-3" onClick={() => handleViewDetails(vehicle.rc_number)} data-bs-toggle="modal" data-bs-target="#vehicleDetails">
+                              View Details
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -276,63 +272,109 @@ const MyAccount = () => {
                     <div className="modal-dialog">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title" id="vehicleNumberLabel">Add My Truck</h5>
+                          <h5 className="modal-title" id="vehicleNumberLabel">Add Vehicle</h5>
                           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                          <form>
-                            <div className="mb-3">
-                              <label htmlFor="vehicleNumberInput" className="form-label">Vehicle Number</label>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="vehicleNumberInput"
-                                value={newVehicleNumber}
-                                onChange={(e) => setNewVehicleNumber(e.target.value)}
-                              />
-                            </div>
-                          </form>
+                          <div className="mb-3">
+                            <label htmlFor="vehicleNumberInput" className="form-label">Vehicle Number</label>
+                            <input type="text" className="form-control" id="vehicleNumberInput" value={newVehicleNumber} onChange={(e) => setNewVehicleNumber(e.target.value)} />
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeModalButton">Close</button>
+                          <button type="button" className="btn btn-primary" onClick={handleAddVehicle}>Add Vehicle</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Delete Vehicle Confirmation Modal */}
+                  <div className="modal fade" id="deleteVehicleModal" tabIndex="-1" aria-labelledby="deleteVehicleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="deleteVehicleModalLabel">Delete Vehicle</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          Are you sure you want to delete the vehicle {vehicleToDelete}?
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeDeleteModalButton">Cancel</button>
+                          <button type="button" className="btn btn-danger" onClick={handleDeleteVehicle}>Delete</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Vehicle Details Modal */}
+                  <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          <h5>RC Number: {selectedVehicleDetails.rc_number}</h5>
+                          <p>Fitness UpTo: {formatDate(selectedVehicleDetails.fit_up_to)}</p>
+                          <p>Insurance UpTo: {formatDate(selectedVehicleDetails.insurance_upto)}</p>
+                          <p>PUCC UpTo: {formatDate(selectedVehicleDetails.pucc_upto)}</p>
+                          <p>Road Tax UpTo: {formatDate(selectedVehicleDetails.tax_upto)}</p>
                         </div>
                         <div className="modal-footer">
                           <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                          <button type="button" className="btn btn-primary" onClick={handleAddVehicle}>Save</button>
                         </div>
                       </div>
                     </div>
                   </div>
 
-
-
-                  {/* viewall modal */}
-
-                  <div className="modal fade" id="viewall" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog  modal-lg modal-dialog-centered  ">
-                      <div className="col-lg-12 mt-5">
-                        {vehicleData.length > 0 && (
-                          <div className="card">
-                            <div className="modal-header">
-                              <h1 className="modal-title fs-5" id="exampleModalLabel">Vehicle Details</h1>
-                              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div className="card-body">
-                              <table className="table table-bordered">
-                                <tbody>
-                                  {Object.keys(vehicleData[0]).map((key, index) => (
-                                    <tr key={index}>
-                                      <td style={{ fontWeight: 'bold' }}>{key.replace(/_/g, ' ')}</td>
-                                      <td>{typeof vehicleData[0][key] === 'object' ? JSON.stringify(vehicleData[0][key]) : vehicleData[0][key]}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
+                  {/* Edit Profile Modal */}
+                  <div className="modal fade" id="editProfileModal" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          <div className="mb-3">
+                            <label htmlFor="editFirstName" className="form-label">First Name</label>
+                            <input type="text" className="form-control" id="editFirstName" value={editProfile.first_name} onChange={(e) => setEditProfile({...editProfile, first_name: e.target.value})} />
                           </div>
-                        )}
+                          <div className="mb-3">
+                            <label htmlFor="editLastName" className="form-label">Last Name</label>
+                            <input type="text" className="form-control" id="editLastName" value={editProfile.last_name} onChange={(e) => setEditProfile({...editProfile, last_name: e.target.value})} />
+                          </div>
+                          <div className="mb-3">
+                            <label htmlFor="editDateOfBirth" className="form-label">Date of Birth</label>
+                            <input type="date" className="form-control" id="editDateOfBirth" value={editProfile.date_of_birth} onChange={(e) => setEditProfile({...editProfile, date_of_birth: e.target.value})} />
+                          </div>
+                          <div className="mb-3">
+                            <label htmlFor="editPhoneNumber" className="form-label">Phone Number</label>
+                            <input type="text" className="form-control" id="editPhoneNumber" value={editProfile.phone_number} onChange={(e) => setEditProfile({...editProfile, phone_number: e.target.value})} />
+                          </div>
+                          <div className="mb-3">
+                            <label htmlFor="editCategory" className="form-label">Category</label>
+                            <input type="text" className="form-control" id="editCategory" value={editProfile.category} onChange={(e) => setEditProfile({...editProfile, category: e.target.value})} />
+                          </div>
+                          <div className="mb-3">
+                            <label htmlFor="editOperatingCity" className="form-label">Operating City</label>
+                            <input type="text" className="form-control" id="editOperatingCity" value={editProfile.operating_city} onChange={(e) => setEditProfile({...editProfile, operating_city: e.target.value})} />
+                          </div>
+                          <div className="mb-3">
+                            <label htmlFor="editState" className="form-label">State</label>
+                            <input type="text" className="form-control" id="editState" value={editProfile.state} onChange={(e) => setEditProfile({...editProfile, state: e.target.value})} />
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeEditProfileModalButton">Close</button>
+                          <button type="button" className="btn btn-primary" onClick={handleEditProfile}>Save Changes</button>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-
 
                 </div>
               </div>
