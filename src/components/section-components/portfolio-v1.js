@@ -22,6 +22,9 @@ const PortfolioV1 = () => {
         search: '',
     });
 
+    const [contactError, setContactError] = useState(''); // State to manage contact number validation error
+
+
     const formRef = useRef(null);
     const modalRef = useRef(null);
 
@@ -60,14 +63,25 @@ const PortfolioV1 = () => {
         });
     };
 
+    const validateContactNumber = (contact) => {
+        const contactNumberPattern = /^\d{10}$/; // Simple pattern for 10-digit numbers
+        return contactNumberPattern.test(contact);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
+        const contactNumber = formData.get('contact_no');
+
+        if (!validateContactNumber(contactNumber)) {
+            setContactError('Please enter a valid 10-digit contact number.');
+            return;
+        }
+
         const userId = window.atob(Cookies.get("usrin"));
         const data = {
-            // vehicle_number: formData.get('vehicle_number'),
             company_name: formData.get('company_name'),
-            contact_no: formData.get('contact_no'),
+            contact_no: contactNumber,
             from: formData.get('from_location'),
             to: formData.get('to_location'),
             material: formData.get('material'),
@@ -78,6 +92,26 @@ const PortfolioV1 = () => {
             user_id: userId
         };
 
+
+
+        // const handleSubmit = (event) => {
+        //     event.preventDefault();
+        //     const formData = new FormData(event.target);
+        //     const userId = window.atob(Cookies.get("usrin"));
+        //     const data = {
+        //         // vehicle_number: formData.get('vehicle_number'),
+        //         company_name: formData.get('company_name'),
+        //         contact_no: formData.get('contact_no'),
+        //         from: formData.get('from_location'),
+        //         to: formData.get('to_location'),
+        //         material: formData.get('material'),
+        //         tone: formData.get('tone'),
+        //         truck_body_type: formData.get('truck_body_type'),
+        //         no_of_tyres: formData.get('tyre_count'),
+        //         description: formData.get('description'),
+        //         user_id: userId
+        //     };
+
         axios.post('https://truck.truckmessage.com/load_details', data, {
             headers: {
                 'Content-Type': 'application/json'
@@ -86,6 +120,7 @@ const PortfolioV1 = () => {
             .then(response => {
                 toast.success('Form submitted successfully!');
                 formRef.current.reset();
+                setContactError('');
                 setTimeout(() => {
                     window.location.reload();
                 }, 2000);
@@ -129,42 +164,43 @@ const PortfolioV1 = () => {
     };
 
 
-    const [showingFromLocation, setShowingFromLocation] = useState("")
-    const [showingToLocation, setShowingToLocation] = useState("")
+    const [showingFromLocation, setShowingFromLocation] = useState("");
+    const [showingToLocation, setShowingToLocation] = useState("");
     const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
         city: "",
-        country: "",
+        state: "",
     });
     const [editCompanyToLocation, setEditCompanyToLocation] = useState({
         city: "",
-        state : "",
+        state: "",
     });
+
     const handleFromLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        const stateComponent = selectedLocation.find(component => component.types.includes('state'));
-
-        if (stateComponent) {
+        if (cityComponent && stateComponent) {
             setEditCompanyFromLocation({
-                city: selectedLocation[0].long_name,
+                city: cityComponent.long_name,
                 state: stateComponent.long_name,
             });
-            setShowingFromLocation(`${selectedLocation[0].long_name} , ${stateComponent.long_name}`)
+            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
         }
-
     };
+
     const handleToLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        const stateComponent = selectedLocation.find(component => component.types.includes('state'));
-
-        if (stateComponent) {
+        if (cityComponent && stateComponent) {
             setEditCompanyToLocation({
-                city: selectedLocation[0].long_name,
+                city: cityComponent.long_name,
                 state: stateComponent.long_name,
             });
-            setShowingToLocation(`${selectedLocation[0].long_name} , ${stateComponent.long_name}`)
+            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
         }
-
     };
+
 
     return (
         <div>
@@ -203,7 +239,7 @@ const PortfolioV1 = () => {
             {/* modal  */}
             {/* modal */}
             <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Truck</h1>
@@ -213,34 +249,26 @@ const PortfolioV1 = () => {
                             <div className="ltn__appointment-inner">
                                 <form ref={formRef} onSubmit={handleSubmit}>
                                     <div className="row">
-                                        {/* <div>
-                                            <h6>Vehicle Number</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="vehicle_number" placeholder="Enter a Vehicle Number" required />
-                                            </div>
-                                        </div> */}
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Company Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="company_name" placeholder="Name of the Owner" required />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Contact Number</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="contact_no" placeholder="Type your contact number" required />
+                                            <div className="input-item input-item-email ltn__custom-icon">
+                                                <input type="tel" name="contact_no" placeholder="Type your contact number" required />
+                                                {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
                                             </div>
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>From</h6>
-                                            <div className="input-item input-item-name ">
-                                                {/* <input type="text" name="from_location" placeholder="Location" required /> */}
+                                            <div className="input-item input-item-name">
                                                 <Autocomplete
-                                                    className="google-location location-input  bg-transparent py-2"
+                                                    className="google-location location-input bg-transparent py-2"
                                                     apiKey="AIzaSyBsJ0vEri-HoXNq1mbh1Equ-pnFlhl7YY4"
                                                     onPlaceSelected={(place) => {
                                                         if (place) {
@@ -250,16 +278,14 @@ const PortfolioV1 = () => {
                                                     required
                                                     value={showingFromLocation}
                                                     onChange={(e) => setShowingFromLocation(e.target.value)}
-
                                                 />
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>To</h6>
-                                            <div className="input-item input-item-name ">
-                                                {/* <input type="text" name="to_location" placeholder="Location" required /> */}
+                                            <div className="input-item input-item-name">
                                                 <Autocomplete
-                                                    className="google-location location-input  bg-transparent py-2"
+                                                    className="google-location location-input bg-transparent py-2"
                                                     apiKey="AIzaSyBsJ0vEri-HoXNq1mbh1Equ-pnFlhl7YY4"
                                                     onPlaceSelected={(place) => {
                                                         if (place) {
@@ -269,25 +295,18 @@ const PortfolioV1 = () => {
                                                     required
                                                     value={showingToLocation}
                                                     onChange={(e) => setShowingToLocation(e.target.value)}
-
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="row">
-                                        {/* <div>
-                                            <h6>Material</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="material_type" placeholder="What type of material" required />
-                                            </div>
-                                        </div> */}
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Material</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="material" placeholder="What type of material" required />
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Ton</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="tone" placeholder="Example: 2 tones" required />
@@ -295,7 +314,7 @@ const PortfolioV1 = () => {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Truck Body Type</h6>
                                             <div className="input-item">
                                                 <select className="nice-select" name="truck_body_type" required>
@@ -306,7 +325,7 @@ const PortfolioV1 = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>No. of Tyres</h6>
                                             <div className="input-item">
                                                 <select className="nice-select" name="tyre_count" required>
@@ -323,7 +342,7 @@ const PortfolioV1 = () => {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12">
                                             <h6>Descriptions (Optional)</h6>
                                             <div className="input-item input-item-textarea ltn__custom-icon">
                                                 <textarea name="description" placeholder="Enter a text here" />
@@ -336,13 +355,10 @@ const PortfolioV1 = () => {
                                 </form>
                             </div>
                         </div>
-                        {/* <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" >Understood</button>
-                        </div> */}
                     </div>
                 </div>
             </div>
+
 
 
             {/* card  */}
@@ -427,3 +443,8 @@ const PortfolioV1 = () => {
 }
 
 export default PortfolioV1;
+
+
+
+
+

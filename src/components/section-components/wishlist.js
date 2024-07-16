@@ -10,7 +10,7 @@ import { NavLink } from 'react-router-dom';
 const WishList = () => {
   const [activeTab, setActiveTab] = useState('Load');
   const [data, setData] = useState([]);
-  const [modalBoxData,setModalBoxData]= useState()
+  const [modalBoxData, setModalBoxData] = useState()
 
   useEffect(() => {
     const getPath = window.location.pathname;
@@ -41,7 +41,7 @@ const WishList = () => {
       axios.get(`https://truck.truckmessage.com/${newPath}`)
         .then(response => {
           if (response.data.success && Array.isArray(response.data.data)) {
-            setData(response.data.data); 
+            setData(response.data.data);
           } else {
             console.error('Unexpected response format:', response.data);
           }
@@ -72,6 +72,9 @@ const WishList = () => {
     };
     // Add your submit logic here, e.g., sending data to the server
   };
+
+
+
 
   const renderCards = () => {
     return data.map(item => (
@@ -126,6 +129,7 @@ const WishList = () => {
               </div> */}
               <div className="d-flex gap-2 justify-content-between mt-3">
                 <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+
                 <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Delete</button>
               </div>
             </div>

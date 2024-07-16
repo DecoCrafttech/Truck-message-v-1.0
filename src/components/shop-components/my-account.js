@@ -4,9 +4,10 @@ import { MdOutlineDeleteOutline, MdDeleteOutline } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { IoCallOutline } from "react-icons/io5";
 import axios from 'axios';
-import Cookies from 'js-cookie'; 
+import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const MyAccount = () => {
   const [profile, setProfile] = useState({});
@@ -19,11 +20,11 @@ const MyAccount = () => {
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
 
-  useEffect(()=>{ 
-    if(!Cookies.get("usrin")){
+  useEffect(() => {
+    if (!Cookies.get("usrin")) {
       pageRender('/')
     }
-  },[LoginDetails.isLoggedIn]);
+  }, [LoginDetails.isLoggedIn]);
 
   useEffect(() => {
     fetchUserProfile();
@@ -47,14 +48,14 @@ const MyAccount = () => {
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
             setEditProfile(profileData ? profileData.profile : {});
           } else {
-            console.error('Failed to fetch user profile');
+            toast.error('Failed to fetch user profile');
           }
         })
         .catch(error => {
-          console.error('Error fetching user profile:', error);
+          toast.error('Error fetching user profile:', error);
         });
     } else {
-      console.error('User not logged in');
+      toast.error('User not logged in');
     }
   };
 
@@ -73,11 +74,11 @@ const MyAccount = () => {
             setNewVehicleNumber('');
             document.getElementById('closeModalButton').click();
           } else {
-            console.error('Failed to add vehicle');
+            toast.error('Failed to add vehicle');
           }
         })
         .catch(error => {
-          console.error('Error adding vehicle:', error);
+          toast.error('Error adding vehicle:', error);
         });
     }
   };
@@ -99,11 +100,11 @@ const MyAccount = () => {
             setVehicleToDelete(null);
             document.getElementById('closeDeleteModalButton').click();
           } else {
-            console.error('Failed to delete vehicle');
+            toast.error('Failed to delete vehicle');
           }
         })
         .catch(error => {
-          console.error('Error deleting vehicle:', error);
+          toast.error('Error deleting vehicle:', error);
         });
     }
   };
@@ -116,11 +117,11 @@ const MyAccount = () => {
         if (response.data.success) {
           setSelectedVehicleDetails(response.data.data[0]);
         } else {
-          console.error('Failed to fetch vehicle details');
+          toast.error('Failed to fetch vehicle details');
         }
       })
       .catch(error => {
-        console.error('Error fetching vehicle details:', error);
+        toast.error('Error fetching vehicle details:', error);
       });
   };
 
@@ -136,14 +137,17 @@ const MyAccount = () => {
             fetchUserProfile();
             document.getElementById('closeEditProfileModalButton').click();
           } else {
-            console.error('Failed to update profile');
+            toast.error('Failed to update profile');
           }
         })
         .catch(error => {
-          console.error('Error updating profile:', error);
+          toast.error('Error updating profile:', error);
         });
     }
   };
+
+
+  
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -256,6 +260,15 @@ const MyAccount = () => {
                                     <TbCircleFilled className="me-2 text-success fs-4" />
                                   </div>
                                 </li>
+                                <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
+                                  <div className="me-auto ms-2">
+                                    <div className="fw-bold">RC Status</div>
+                                    <span className="vehicletext">{vehicle.rc_status}</span>
+                                  </div>
+                                  <div className="d-flex">
+                                    <TbCircleFilled className="me-2 text-success fs-4" />
+                                  </div>
+                                </li>
                               </ul>
                             </div>
                             <button className="btn btn-primary text-uppercase mt-3 mb-3" onClick={() => handleViewDetails(vehicle.rc_number)} data-bs-toggle="modal" data-bs-target="#vehicleDetails">
@@ -332,45 +345,56 @@ const MyAccount = () => {
 
                   {/* Edit Profile Modal */}
                   <div className="modal fade" id="editProfileModal" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-                    <div className="modal-dialog">
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                       <div className="modal-content">
                         <div className="modal-header">
-                          <h5 className="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                          <h5 className="modal-title fs-5" id="editProfileModalLabel">Edit Profile</h5>
                           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                          <div className="mb-3">
-                            <label htmlFor="editFirstName" className="form-label">First Name</label>
-                            <input type="text" className="form-control" id="editFirstName" value={editProfile.first_name} onChange={(e) => setEditProfile({...editProfile, first_name: e.target.value})} />
-                          </div>
-                          <div className="mb-3">
+                          <div className="row">
+                            <div className="col-12 col-md-6">
+                              <label htmlFor="editFirstName" className="form-label">First Name</label>
+                              <input type="text" className="form-control" id="editFirstName" value={editProfile.first_name} onChange={(e) => setEditProfile({ ...editProfile, first_name: e.target.value })} />
+                            </div>
+                            {/* <div className="mb-3">
                             <label htmlFor="editLastName" className="form-label">Last Name</label>
                             <input type="text" className="form-control" id="editLastName" value={editProfile.last_name} onChange={(e) => setEditProfile({...editProfile, last_name: e.target.value})} />
+                            </div> */}
+                            <div className="col-12 col-md-6">
+                              <label htmlFor="editDateOfBirth" className="form-label  border-0 shadow-none">Date of Birth</label>
+                              <input type="date" className="form-control" id="editDateOfBirth" value={editProfile.date_of_birth} onChange={(e) => setEditProfile({ ...editProfile, date_of_birth: e.target.value })} />
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <label htmlFor="editPhoneNumber" className="form-label">Phone Number</label>
+                              <input type="tel" className="form-control" id="editPhoneNumber" value={editProfile.phone_number} onChange={(e) => setEditProfile({ ...editProfile, phone_number: e.target.value })} />
+                            </div>
+                            <div className=" col-12 col-md-6">
+                              <label htmlFor="editCategory" className="form-label">Category</label>
+                              <input type="text" className="form-control" id="editCategory" value={editProfile.category} onChange={(e) => setEditProfile({ ...editProfile, category: e.target.value })} />
+                            </div>
+                            <div className=" col-12 col-md-6">
+                              <label htmlFor="editOperatingCity" className="form-label">Operating City</label>
+                              <input type="text" className="form-control" id="editOperatingCity" value={editProfile.operating_city} onChange={(e) => setEditProfile({ ...editProfile, operating_city: e.target.value })} />
+                            </div>
+                            <div className=" col-12 col-md-6">
+                              <label htmlFor="editState" className="form-label">State</label>
+                              <input type="text" className="form-control" id="editState" value={editProfile.state} onChange={(e) => setEditProfile({ ...editProfile, state: e.target.value })} />
+                            </div>
+
+                            <hr />
+
+                            <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-between">
+                            <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleEditProfile}>
+                                Save Changes
+                              </button>
+                              <button type="button" className="btn btn-secondary  mb-md-0 p-2 col-12 col-md-6" data-bs-dismiss="modal" id="closeEditProfileModalButton">
+                                Close
+                              </button>
+                              
+                            </div>
+
                           </div>
-                          <div className="mb-3">
-                            <label htmlFor="editDateOfBirth" className="form-label">Date of Birth</label>
-                            <input type="date" className="form-control" id="editDateOfBirth" value={editProfile.date_of_birth} onChange={(e) => setEditProfile({...editProfile, date_of_birth: e.target.value})} />
-                          </div>
-                          <div className="mb-3">
-                            <label htmlFor="editPhoneNumber" className="form-label">Phone Number</label>
-                            <input type="text" className="form-control" id="editPhoneNumber" value={editProfile.phone_number} onChange={(e) => setEditProfile({...editProfile, phone_number: e.target.value})} />
-                          </div>
-                          <div className="mb-3">
-                            <label htmlFor="editCategory" className="form-label">Category</label>
-                            <input type="text" className="form-control" id="editCategory" value={editProfile.category} onChange={(e) => setEditProfile({...editProfile, category: e.target.value})} />
-                          </div>
-                          <div className="mb-3">
-                            <label htmlFor="editOperatingCity" className="form-label">Operating City</label>
-                            <input type="text" className="form-control" id="editOperatingCity" value={editProfile.operating_city} onChange={(e) => setEditProfile({...editProfile, operating_city: e.target.value})} />
-                          </div>
-                          <div className="mb-3">
-                            <label htmlFor="editState" className="form-label">State</label>
-                            <input type="text" className="form-control" id="editState" value={editProfile.state} onChange={(e) => setEditProfile({...editProfile, state: e.target.value})} />
-                          </div>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeEditProfileModalButton">Close</button>
-                          <button type="button" className="btn btn-primary" onClick={handleEditProfile}>Save Changes</button>
                         </div>
                       </div>
                     </div>
