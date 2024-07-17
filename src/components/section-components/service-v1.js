@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { GiMineTruck } from "react-icons/gi";
+import { FaTruckLoading } from "react-icons/fa";
+import { PiFireTruckFill } from "react-icons/pi";
+import { MdPersonalInjury } from "react-icons/md";
+import { FaHandHoldingDollar } from "react-icons/fa6";
+import { BsFuelPumpDiesel } from "react-icons/bs";
+import { FaToriiGate } from "react-icons/fa6";
+import { PiSpeedometerFill } from "react-icons/pi";
+import { BsShieldShaded } from "react-icons/bs";
+import { GiSpeedometer } from "react-icons/gi";
+
 import parse from 'html-react-parser';
 
 class ServiceV5 extends Component {
@@ -13,8 +24,8 @@ class ServiceV5 extends Component {
 				<div className="row">
 					<div className="col-lg-12">
 						<div className="section-title-area ltn__section-title-2--- text-center">
-							<h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">Our Services</h6>
-							<h1 className="section-title">Our Core Services</h1>
+							<h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">Our Comprehensive Services</h6>
+							<h1 className="section-title">Tailored Solutions for All Your Trucking Needs</h1>
 						</div>
 					</div>
 				</div>
@@ -22,110 +33,110 @@ class ServiceV5 extends Component {
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-house" /></span>
+								<span><GiSpeedometer /></span>
 							</div>
 							<div className="ltn__feature-info ">
 								<h3><Link to="/service-details" className='apara'>Fast Tag</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Convenient and Hassle-Free Toll Payments</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-mortgage" /></span>
+								<span><BsShieldShaded /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/service-details" className='apara'>Insurance</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Protect Your Assets with Our Coverage Plans</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-operator" /></span>
+								<span><FaToriiGate /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/service-details" className='apara'>Toll Calculator</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Plan Your Routes with Confidence and Precision</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-house-1" /></span>
+								<span><PiSpeedometerFill /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/team-details" className='apara'>Mileage Calculator</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Track Optimize & Calculate Your Fuel Efficiency</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-house-3" /></span>
+								<span><BsFuelPumpDiesel /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/service-details" className='apara'>Fuel Price</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Track and Optimize Your Fuel Costs Daily without missing</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-official-documents" /></span>
+								<span><FaHandHoldingDollar /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/service-details" className='apara'>Expense Calculator</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Manage & Calculate Your Realtime Trucking Costs</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-official-documents" /></span>
+								<span><GiMineTruck /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/blog-left-sidebar" className='apara'>Buy & sell</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Quality Pre-Owned Trucks at Competitive Prices</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-official-documents" /></span>
+								<span><FaTruckLoading /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/load-availability" className='apara'>Load Availability</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Maximize Your Truck's Productivity with every days loads</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-official-documents" /></span>
+								<span><PiFireTruckFill /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/blog-details" className='apara'>Truck Availability</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Reliable Trucks for All Your Hauling Needs on time</p>
 							</div>
 						</div>
 					</div>
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
-								<span><i className="flaticon-official-documents" /></span>
+								<span><MdPersonalInjury /></span>
 							</div>
 							<div className="ltn__feature-info">
 								<h3><Link to="/blog-grid" className='apara'>Driver Needs</Link></h3>
-								<p>over 1 million+ homes for sale available on the website, we can match you with a house you will want to call home.</p>
+								<p>Effortlessly Connecting You with Skilled Truck Drivers</p>
 							</div>
 						</div>
 					</div>

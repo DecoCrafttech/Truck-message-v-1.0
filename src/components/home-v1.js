@@ -13,30 +13,31 @@ import ServiceV5 from './section-components/service-v1';
 import Category from './section-components/category-v1';
 import Testimonial from './section-components/testimonial-v1';
 import BlogSlider from './blog-components/blog-slider-v1';
+import WhyChooseUs from './section-components/why-choose-us';
 import CallToActionV1 from './section-components/call-to-action-v1';
 import Footer from './global-components/footer';
 import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 
-const Home_V1 = () => {  
+const Home_V1 = () => {
 
     return <>
         <Banner />
-            {/* <SearchForm /> */}
+        {/* <SearchForm /> */}
         <Aboutv1 />
         <ServiceV5 />
-            {/* <Category /> */}
+        {/* <Category /> */}
         <Counter />
-            {/* <AboutV2 /> */}
-            {/* <Featuresv1 customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---"/> */}
-            {/* <ProSlider />
+        {/* <AboutV2 /> */}
+        {/* <Featuresv1 customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---"/> */}
+        {/* <ProSlider />
             <Apartment /> */}
-            {/* <VideoV1 /> */}
-        
+        {/* <VideoV1 /> */}
+        <WhyChooseUs />
         <Testimonial />
-        <BlogSlider customClass="section-subtitle-2"/>
-            {/* <CallToActionV1 /> */}
-        
+        <BlogSlider customClass="section-subtitle-2" />
+        {/* <CallToActionV1 /> */}
+
     </>
 }
 

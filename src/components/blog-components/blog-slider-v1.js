@@ -13,8 +13,8 @@ class BlogSlider extends Component {
 		    <div className="row">
 		      <div className="col-lg-12">
 		        <div className="section-title-area ltn__section-title-2--- text-center">
-		          <h6 className={"section-subtitle ltn__secondary-color "+customClass}>News &amp; Blogs</h6>
-		          <h1 className="section-title">Leatest News Feeds</h1>
+		          <h6 className={"section-subtitle ltn__secondary-color "+customClass}>Trucking Insights & Updates</h6>
+		          <h1 className="section-title">Stay Informed with Our Latest Posts</h1>
 		        </div>
 		      </div>
 		    </div>

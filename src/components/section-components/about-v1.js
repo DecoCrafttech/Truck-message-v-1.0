@@ -21,26 +21,26 @@ class AboutV1 extends Component {
 					<div className="col-lg-6 align-self-center">
 						<div className="about-us-info-wrap">
 							<div className="section-title-area ltn__section-title-2--- mb-20">
-								<h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">About Us</h6>
+								<h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">About Truck Message</h6>
 								<h1 className="section-title">Revolutionize Your Lorry Logistics Experience with<span>TRUCK Message</span></h1>
-								<p className='para'>Your Simplified Lorry Logistics Solution! <br /> Buy, Sell, or Hire Hassle-Free!"</p>
+								<p className='para'>Who We Are and What We Stand For</p>
 							</div>
 							<ul className="ltn__list-item-half clearfix">
 								<li>
 									<i className="flaticon-home-2" />
-									Smart Home Design
+									Ensuring efficiency and profitability for clients
 								</li>
 								<li>
 									<i className="flaticon-mountain" />
-									Beautiful Scene Around
+									Bridging gapsbetween truck owners, drivers, and service providers.
 								</li>
 								<li>
 									<i className="flaticon-heart" />
-									Exceptional Lifestyle
+									Integrity, transparency, customer-centricity.
 								</li>
 								<li>
 									<i className="flaticon-secure" />
-									Complete 24/7 Security
+									Experienced trucking and logistics professionals.
 								</li>
 							</ul>
 							{/* <div className="ltn__callout bg-overlay-theme-05  mt-30">

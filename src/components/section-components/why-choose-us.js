@@ -13,8 +13,8 @@ class WhyChooseUs extends Component {
 				<div className="row">
 					<div className="col-lg-12">
 					<div className="section-title-area ltn__section-title-2--- text-center">
-						<h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">Features</h6>
-						<h1 className="section-title">Why Choose Us</h1>
+						<h6 className="section-subtitle section-subtitle-2 ltn__secondary-color">Why Choose Truck Message</h6>
+						<h1 className="section-title">The Benefits of Partnering with Us</h1>
 					</div>
 					</div>
 				</div>
@@ -25,10 +25,10 @@ class WhyChooseUs extends Component {
 						<div className="ltn__feature-icon">
 							<span><i className="flaticon-house-4" /></span>
 						</div>
-						<h3><a href="service-details.html">The Perfect Residency</a></h3>
+						<h3>Comprehensive Services</h3>
 						</div>
 						<div className="ltn__feature-info">
-						<p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or incididunt ut labore.</p>
+						<p>From truck reselling to toll and mileage calculators, we cover all aspects of the trucking business.</p>
 						</div>
 					</div>
 					</div>
@@ -38,10 +38,10 @@ class WhyChooseUs extends Component {
 						<div className="ltn__feature-icon">
 							<span><i className="icon-mechanic" /></span>
 						</div>
-						<h3><a href="service-details.html">Global Architect Experts</a></h3>
+						<h3>Expert Support</h3>
 						</div>
 						<div className="ltn__feature-info">
-						<p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or incididunt ut labore.</p>
+						<p>Our team offers expert guidance and support to help you make informed decisions.</p>
 						</div>
 					</div>
 					</div>
@@ -51,10 +51,23 @@ class WhyChooseUs extends Component {
 						<div className="ltn__feature-icon">
 							<span><i className="icon-repair-1" /></span>
 						</div>
-						<h3><a href="service-details.html">Built-in Storage Cupboards</a></h3>
+						<h3>User-Friendly Platform</h3>
 						</div>
 						<div className="ltn__feature-info">
-						<p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or incididunt ut labore.</p>
+						<p>Our platform is designed for ease of use, ensuring a seamless experience.</p>
+						</div>
+					</div>
+					</div>
+					<div className="col-xl-4 col-sm-6 col-12">
+					<div className="ltn__feature-item ltn__feature-item-7 ltn__feature-item-7-color-white">
+						<div className="ltn__feature-icon-title">
+						<div className="ltn__feature-icon">
+							<span><i className="flaticon-house-2" /></span>
+						</div>
+						<h3>Trusted by Many</h3>
+						</div>
+						<div className="ltn__feature-info">
+						<p>A track record of satisfied customers who trust us for their trucking needs.</p>
 						</div>
 					</div>
 					</div>
