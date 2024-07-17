@@ -1042,6 +1042,9 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="submit"],
+input[type="form"],
+input[type="date"],
+input[type="tel"],
 textarea {
   background-color: var(--white);
   border: 2px solid;
