@@ -76,6 +76,9 @@ const MyAccount = () => {
           } else {
             toast.error('Failed to add vehicle');
           }
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
         })
         .catch(error => {
           toast.error('Error adding vehicle:', error);
@@ -102,6 +105,9 @@ const MyAccount = () => {
           } else {
             toast.error('Failed to delete vehicle');
           }
+          setTimeout(() => {
+            window.location.reload();
+          }, 100);
         })
         .catch(error => {
           toast.error('Error deleting vehicle:', error);
@@ -136,9 +142,13 @@ const MyAccount = () => {
           if (response.data.success) {
             fetchUserProfile();
             document.getElementById('closeEditProfileModalButton').click();
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 100);
           } else {
             toast.error('Failed to update profile');
           }
+
         })
         .catch(error => {
           toast.error('Error updating profile:', error);
@@ -147,58 +157,86 @@ const MyAccount = () => {
   };
 
 
-  
+
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB');
   };
+  const downloadCSV = () => {
+    const csvContent = Object.keys(selectedVehicleDetails).map(key => {
+      const value = selectedVehicleDetails[key] !== null ?
+        (typeof selectedVehicleDetails[key] === 'object' && selectedVehicleDetails[key] !== null ?
+          JSON.stringify(selectedVehicleDetails[key]) : selectedVehicleDetails[key])
+        : 'N/A';
+      return `${key},${value}`;
+    }).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'vehicle_details.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+
+
+
+
 
   return (
     <div className="liton__wishlist-area mt-5 pb-70">
       <div className="container">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-12 ">
             <div className="ltn__product-tab-area">
               <div className="container">
                 <div className="row">
-                  <div className="ltn-author-introducing clearfix mb-3 ps-5">
-                    <div className="author-info">
-                      <h2>{profile.first_name}</h2>
-                      <div className="footer-address">
-                        <ul>
-                          <li>
-                            <div className="footer-address-icon"></div>
-                            <div>
-                              <p><FaRegCalendarAlt className="me-3" /> {formatDate(profile.date_of_birth)}</p>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="footer-address-icon"></div>
-                            <div className="footer-address-info">
-                              <p><IoCallOutline className='me-3' /> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="footer-address-icon"></div>
-                            <div className="footer-address-info">
-                              <p>{profile.category}</p>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="footer-address-icon"></div>
-                            <div className="footer-address-info">
-                              <p>{profile.operating_city}</p>
-                            </div>
-                          </li>
-                          <li>
-                            <div className="footer-address-icon"></div>
-                            <div className="footer-address-info">
-                              <p>{profile.state}</p>
-                            </div>
-                          </li>
-                        </ul>
+                  <div className='col-lg-6 col-md-4'>
+
+
+
+                    <div className="ltn-author-introducing clearfix mb-3 ps-5">
+                      <div className="author-info">
+                        <h2>{profile.first_name}</h2>
+                        <div className="footer-address">
+                          <ul>
+                            <li>
+                              <div className="footer-address-icon"></div>
+                              <div>
+                                <p><FaRegCalendarAlt className="me-3" /> {formatDate(profile.date_of_birth)}</p>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="footer-address-icon"></div>
+                              <div className="footer-address-info">
+                                <p><IoCallOutline className='me-3' /> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="footer-address-icon"></div>
+                              <div className="footer-address-info">
+                                <p>{profile.category}</p>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="footer-address-icon"></div>
+                              <div className="footer-address-info">
+                                <p>{profile.operating_city}</p>
+                              </div>
+                            </li>
+                            <li>
+                              <div className="footer-address-icon"></div>
+                              <div className="footer-address-info">
+                                <p>{profile.state}</p>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                       <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         Edit Profile
@@ -322,7 +360,97 @@ const MyAccount = () => {
                   </div>
 
                   {/* Vehicle Details Modal */}
+
                   <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-scrollable modal-lg">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table">
+                            <tbody>
+                              {Object.keys(selectedVehicleDetails).map(key => (
+                                <tr key={key}>
+                                  <td style={{ fontWeight: 'bold', width: '30%' }}>{key.replace(/_/g, ' ')}</td>
+                                  <td>{selectedVehicleDetails[key] !== null ?
+                                    (typeof selectedVehicleDetails[key] === 'object' && selectedVehicleDetails[key] !== null ?
+                                      JSON.stringify(selectedVehicleDetails[key]) : selectedVehicleDetails[key])
+                                    : 'N/A'}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" className="btn btn-primary" onClick={downloadCSV}>Download CSV</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-scrollable modal-lg">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table">
+                            <tbody>
+                              {Object.keys(selectedVehicleDetails).map(key => (
+                                <tr key={key}>
+                                  <td style={{ fontWeight: 'bold', width: '30%' }}>{key.replace(/_/g, ' ')}</td>
+                                  <td>{selectedVehicleDetails[key] !== null ?
+                                    (typeof selectedVehicleDetails[key] === 'object' && selectedVehicleDetails[key] !== null ?
+                                      JSON.stringify(selectedVehicleDetails[key]) : selectedVehicleDetails[key])
+                                    : 'N/A'}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
+
+
+                  {/* <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-scrollable modal-lg">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                          <table className="table">
+                            <tbody>
+                              {Object.keys(selectedVehicleDetails).map(key => (
+                                <tr key={key}>
+                                  <td style={{ fontWeight: 'bold' }}>{key.replace(/_/g, ' ')}</td>
+                                  <td>{typeof selectedVehicleDetails[key] === 'object' && selectedVehicleDetails[key] !== null ?
+                                    JSON.stringify(selectedVehicleDetails[key]) : selectedVehicleDetails[key]}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
+
+                  {/* <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
                     <div className="modal-dialog">
                       <div className="modal-content">
                         <div className="modal-header">
@@ -341,7 +469,7 @@ const MyAccount = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Edit Profile Modal */}
                   <div className="modal fade" id="editProfileModal" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
@@ -385,13 +513,13 @@ const MyAccount = () => {
                             <hr />
 
                             <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-between">
-                            <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleEditProfile}>
+                              <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleEditProfile}>
                                 Save Changes
                               </button>
                               <button type="button" className="btn btn-secondary  mb-md-0 p-2 col-12 col-md-6" data-bs-dismiss="modal" id="closeEditProfileModalButton">
                                 Close
                               </button>
-                              
+
                             </div>
 
                           </div>

@@ -7,6 +7,8 @@ import { GiCarWheel } from "react-icons/gi";
 import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import Autocomplete from "react-google-autocomplete";
+
 
 const TruckAvailability = () => {
     const LoginDetails = useSelector((state) => state.login);
@@ -19,6 +21,9 @@ const TruckAvailability = () => {
     const [filters, setFilters] = useState({
         search: '',
     });
+
+    const [contactError, setContactError] = useState(''); // State to manage contact number validation error
+
 
     const formRef = useRef(null);
     const modalRef = useRef(null);
@@ -58,9 +63,21 @@ const TruckAvailability = () => {
         });
     };
 
+    const validateContactNumber = (contact) => {
+        const contactNumberPattern = /^\d{10}$/; // Simple pattern for 10-digit numbers
+        return contactNumberPattern.test(contact);
+    };
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
+        const contactNumber = formData.get('contact_no');
+
+        if (!validateContactNumber(contactNumber)) {
+            setContactError('Please enter a valid 10-digit contact number.');
+            return;
+        }
         const userId = window.atob(Cookies.get("usrin"));
         const data = {
             vehicle_number: formData.get('vehicle_number'),
@@ -81,17 +98,18 @@ const TruckAvailability = () => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            toast.success('Form submitted successfully!');
-            formRef.current.reset();
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-        })
-        .catch(error => {
-            toast.error('Failed to submit the form.');
-            console.error('There was an error!', error);
-        });
+            .then(response => {
+                toast.success('Form submitted successfully!');
+                formRef.current.reset();
+                setContactError('');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            })
+            .catch(error => {
+                toast.error('Failed to submit the form.');
+                console.error('There was an error!', error);
+            });
     };
 
     const filteredCards = filterCards(cards);
@@ -114,6 +132,72 @@ const TruckAvailability = () => {
         setIsSignedIn(true);
         setShowLoginPopup(false);
     };
+
+    const [showingFromLocation, setShowingFromLocation] = useState("");
+    const [showingToLocation, setShowingToLocation] = useState("");
+    const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
+        city: "",
+        state: "",
+    });
+    const [editCompanyToLocation, setEditCompanyToLocation] = useState({
+        city: "",
+        state: "",
+    });
+
+    const handleFromLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+        if (cityComponent && stateComponent) {
+            setEditCompanyFromLocation({
+                city: cityComponent.long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+        }
+    };
+
+    const handleToLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+        if (cityComponent && stateComponent) {
+            setEditCompanyToLocation({
+                city: cityComponent.long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+        }
+    };
+
+
+    const [distance, setDistance] = useState('');
+
+    useEffect(() => {
+        const fetchDistance = async () => {
+            try {
+                const response = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+                    params: {
+                        origins: cards.from_location,
+                        destinations: cards.to_location,
+                        key: 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw',
+                    }
+                });
+
+                const data = response.data;
+                if (data.rows[0].elements[0].status === 'OK') {
+                    setDistance(data.rows[0].elements[0].distance.text);
+                } else {
+                    setDistance('Distance not available');
+                }
+            } catch (error) {
+                console.error('Error fetching distance:', error);
+                setDistance('Error fetching distance');
+            }
+        };
+
+        fetchDistance();
+    }, [cards.from_location, cards.to_location]);
 
     return (
         <div>
@@ -150,7 +234,7 @@ const TruckAvailability = () => {
 
             {/* modal */}
             <div className="modal fade" id="addtruckavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Truck</h1>
@@ -160,39 +244,77 @@ const TruckAvailability = () => {
                             <div className="ltn__appointment-inner">
                                 <form ref={formRef} onSubmit={handleSubmit}>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Vehicle Number</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="vehicle_number" placeholder="Enter a Vehicle Number" required />
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Owner Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="company_name" placeholder="Name of the Owner" required/>
+                                                <input type="text" name="company_name" placeholder="Name of the Owner" required />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Contact Number</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="contact_no" placeholder="Type your contact number" required />
+                                                {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
                                             </div>
                                         </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Truck Name</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="truck_name" placeholder="What type of material" required />
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>From</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="from_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleFromLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingFromLocation}
+                                                    onChange={(e) => setShowingFromLocation(e.target.value)}
+                                                />
+                                            </div>
+                                            {/*                                             
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="from_location" placeholder="Location" required />
-                                            </div>
+                                            </div> */}
                                         </div>
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>To</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="to_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleToLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingToLocation}
+                                                    onChange={(e) => setShowingToLocation(e.target.value)}
+                                                />
+                                            </div>
+                                            {/*                                             
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="to_location" placeholder="Location" required />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                     <div className="row">
@@ -202,12 +324,7 @@ const TruckAvailability = () => {
                                                 <input type="text" name="material_type" placeholder="What type of material" required />
                                             </div>
                                         </div> */}
-                                        <div>
-                                            <h6>Truck Name</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="truck_name" placeholder="What type of material" required />
-                                            </div>
-                                        </div> 
+
                                         <div>
                                             <h6>Ton</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
@@ -216,7 +333,7 @@ const TruckAvailability = () => {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Truck Body Type</h6>
                                             <div className="input-item">
                                                 <select className="nice-select" name="truck_body_type" required>
@@ -226,8 +343,8 @@ const TruckAvailability = () => {
                                                     <option value="tanker">Tanker</option>
                                                 </select>
                                             </div>
-                                        </div>                                   
-                                        <div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
                                             <h6>No. of Tyres</h6>
                                             <div className="input-item">
                                                 <select className="nice-select" name="tyre_count" required>
@@ -251,7 +368,7 @@ const TruckAvailability = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="modal-footer btn-wrapper text-center mt-4">
+                                    <div className="modal-footer btn-wrapper text-center mt-3">
                                         <button className="btn theme-btn-1 text-uppercase" type="submit">Submit</button>
                                     </div>
                                 </form>
@@ -283,6 +400,9 @@ const TruckAvailability = () => {
                                         </div>
                                         <div className="col-lg-12 cardicon">
                                             <div><label><FaLocationDot className='me-2 text-success' />{card.to_location}</label></div>
+                                        </div>
+                                        <div className="col-lg-12 cardicon">
+                                            <div><label>Distance: {distance}</label></div>
                                         </div>
                                     </div>
                                     <hr className="hr m-2" />

@@ -123,13 +123,14 @@ const PortfolioV1 = () => {
                 setContactError('');
                 setTimeout(() => {
                     window.location.reload();
-                }, 2000);
+                }, 100);
             })
             .catch(error => {
                 toast.error('Failed to submit the form.');
                 console.error('There was an error!', error);
             });
     };
+    
 
 
     const filteredCards = filterCards(cards);
@@ -242,7 +243,7 @@ const PortfolioV1 = () => {
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Truck</h1>
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Load</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
@@ -267,9 +268,9 @@ const PortfolioV1 = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>From</h6>
                                             <div className="input-item input-item-name">
-                                                <Autocomplete
+                                                <Autocomplete name="from_location"
                                                     className="google-location location-input bg-transparent py-2"
-                                                    apiKey="AIzaSyBsJ0vEri-HoXNq1mbh1Equ-pnFlhl7YY4"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
                                                     onPlaceSelected={(place) => {
                                                         if (place) {
                                                             handleFromLocation(place.address_components);
@@ -284,9 +285,9 @@ const PortfolioV1 = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>To</h6>
                                             <div className="input-item input-item-name">
-                                                <Autocomplete
+                                                <Autocomplete name="to_location"
                                                     className="google-location location-input bg-transparent py-2"
-                                                    apiKey="AIzaSyBsJ0vEri-HoXNq1mbh1Equ-pnFlhl7YY4"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
                                                     onPlaceSelected={(place) => {
                                                         if (place) {
                                                             handleToLocation(place.address_components);

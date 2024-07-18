@@ -4,9 +4,12 @@ import toast, { Toaster } from 'react-hot-toast';
 import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
+import { IoCall } from "react-icons/io5";
 import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
+import Autocomplete from "react-google-autocomplete";
+
 
 const BlogGrid = () => {
     const LoginDetails = useSelector((state) => state.login);
@@ -18,7 +21,13 @@ const BlogGrid = () => {
         search: '',
     });
 
+
+    const [contactError, setContactError] = useState(''); // State to manage contact number validation error
+
+
     const formRef = useRef(null);
+    const modalRef = useRef(null);
+
 
     useEffect(() => {
         axios.get('https://truck.truckmessage.com/all_driver_details')
@@ -55,15 +64,27 @@ const BlogGrid = () => {
         });
     };
 
+    const validateContactNumber = (contact) => {
+        const contactNumberPattern = /^\d{10}$/; // Simple pattern for 10-digit numbers
+        return contactNumberPattern.test(contact);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
+        const contactNumber = formData.get('contact_no');
+
+        if (!validateContactNumber(contactNumber)) {
+            setContactError('Please enter a valid 10-digit contact number.');
+            return;
+        }
+
         const userId = window.atob(Cookies.get("usrin"));
         const data = {
             vehicle_number: formData.get('vehicle_number'),
             company_name: formData.get('company_name'),
             driver_name: formData.get('driver_name'),
-            contact_no: formData.get('contact_no'),
+            contact_no: contactNumber,
             from: formData.get('from_location'),
             to: formData.get('to_location'),
             truck_name: formData.get('truck_name'),
@@ -79,10 +100,12 @@ const BlogGrid = () => {
             }
         })
             .then(response => {
+                toast.success('Form submitted successfully!');
                 formRef.current.reset();
+                setContactError('');
                 setTimeout(() => {
                     window.location.reload();
-                }, 2000);
+                }, 100);
             })
             .catch(error => {
                 console.error('There was an error submitting the form:', error);
@@ -103,9 +126,47 @@ const BlogGrid = () => {
     const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
 
     // Handle page change
-    const paginate = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+
+
+    const [showingFromLocation, setShowingFromLocation] = useState("");
+    const [showingToLocation, setShowingToLocation] = useState("");
+    const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
+        city: "",
+        state: "",
+    });
+    const [editCompanyToLocation, setEditCompanyToLocation] = useState({
+        city: "",
+        state: "",
+    });
+
+    const handleFromLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+        if (cityComponent && stateComponent) {
+            setEditCompanyFromLocation({
+                city: cityComponent.long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+        }
     };
+
+    const handleToLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+        if (cityComponent && stateComponent) {
+            setEditCompanyToLocation({
+                city: cityComponent.long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+        }
+    };
+    
 
     return (
         <div>
@@ -141,25 +202,24 @@ const BlogGrid = () => {
 
             {/* modal */}
             <div className="modal fade" id="addDriveravailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Truck</h1>
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Driver</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             <div className="ltn__appointment-inner">
                                 <form ref={formRef} onSubmit={handleSubmit}>
                                     <div className="row">
-                                        <div>
+                                        <div  className="col-12 col-md-6" >
                                             <h6>Vehicle Number</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="vehicle_number" placeholder="Enter a Vehicle Number" required />
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="row">
-                                        <div>
+                                 
+                                        <div className="col-12 col-md-6">
                                             <h6>Company Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="company_name" placeholder="Name of the Owner" required />
@@ -167,40 +227,66 @@ const BlogGrid = () => {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Driver Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="driver_name" placeholder="Name of the Owner" required />
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div className="row">
-                                        <div>
+                                    
+                                        <div className="col-12 col-md-6">
                                             <h6>Contact Number</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="contact_no" placeholder="Type your contact number" required />
+                                                {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
                                             </div>
                                         </div>
-                                    </div>
+                                    </div >
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>From</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="from_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleFromLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingFromLocation}
+                                                    onChange={(e) => setShowingFromLocation(e.target.value)}
+                                                />
+                                            </div>
+                                            {/* <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="from_location" placeholder="Location" required />
-                                            </div>
+                                            </div> */}
                                         </div>
-                                    </div>
-                                    <div className="row">
-                                        <div>
+                                    
+                                        <div className="col-12 col-md-6">
                                             <h6>To</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="to_location" placeholder="Location" required />
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="to_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleToLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingToLocation}
+                                                    onChange={(e) => setShowingToLocation(e.target.value)}
+                                                />
                                             </div>
+                                            {/* <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="to_location" placeholder="Location" required />
+                                            </div> */}
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-12">
                                             <h6>Truck Name</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="truck_name" placeholder="Enter a Vehicle Number" required />
@@ -209,7 +295,7 @@ const BlogGrid = () => {
                                     </div>
                                     <div className="row">
 
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>Truck Body Type</h6>
                                             <div className="input-item">
                                                 <select className="nice-select" name="truck_body_type" required>
@@ -220,7 +306,7 @@ const BlogGrid = () => {
                                                 </select>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="col-12 col-md-6">
                                             <h6>No. of Tyres</h6>
                                             <div className="input-item">
                                                 <select className="nice-select" name="tyre_count" required>
@@ -233,7 +319,7 @@ const BlogGrid = () => {
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div>
+                                        <div className="col-12 col-md-12">
                                             <h6>Descriptions (Optional)</h6>
                                             <div className="input-item input-item-textarea ltn__custom-icon">
                                                 <textarea name="description" placeholder="Enter a text here" />
@@ -296,7 +382,7 @@ const BlogGrid = () => {
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
                                             <div className="d-flex gap-2 justify-content-between mt-3">
-                                                <a href={`tel:${card.contact_no}`} className="btn cardbutton" type="button">Call</a>
+                                                <a href={`tel:${card.contact_no}`} className="btn cardbutton"   type="button"> <IoCall/>Call</a>
                                                 <button className="btn cardbutton" type="button">Message</button>
                                             </div>
                                         ) :
