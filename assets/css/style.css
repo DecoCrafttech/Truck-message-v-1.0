@@ -19650,3 +19650,39 @@ input.cart-plus-minus-box {
     height: 65px;
     margin-bottom: 30px;
   }
+
+
+  
+  .dropdown-container-fuel-price {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-container-fuel-price embed {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #dc3545; /* Red border for dropdown */
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+}
+
+.dropdown-container-fuel-price embed:focus {
+    border-color: #c82333; /* Darker red for focus */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    outline: none;
+}
+
+.condrop{
+    border:  #ccc; border-radius: 5px; padding: 5px; width: 100%;
+
+}
+
+.tollCalculatorMap{
+  height: 30rem;
+  width: 100%;
+  margin-bottom: 5rem;
+}
