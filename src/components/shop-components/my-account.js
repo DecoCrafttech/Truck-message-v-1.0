@@ -43,7 +43,6 @@ const MyAccount = () => {
           if (data.success && data.data.length > 0) {
             const profileData = data.data.find(item => item.profile);
             const vehicleData = data.data.find(item => item.vehicle_data);
-
             setProfile(profileData ? profileData.profile : {});
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
             setEditProfile(profileData ? profileData.profile : {});
@@ -61,28 +60,29 @@ const MyAccount = () => {
 
   const handleAddVehicle = () => {
     const encodedUserId = Cookies.get("usrin");
-    if (encodedUserId) {
-      const userId = window.atob(encodedUserId);
+    if (vehicleData.length <= 10) {
+      if (encodedUserId) {
+        const userId = window.atob(encodedUserId);
 
-      axios.post('https://truck.truckmessage.com/add_user_vehicle_details', {
-        user_id: userId,
-        vehicle_no: newVehicleNumber,
-      })
-        .then(response => {
-          if (response.data.success) {
-            setVehicleData(prevVehicleData => [...prevVehicleData, response.data.data[0]]);
-            setNewVehicleNumber('');
-            document.getElementById('closeModalButton').click();
-          } else {
-            toast.error('Failed to add vehicle');
-          }
-          setTimeout(() => {
-            window.location.reload();
-          }, 100);
+        axios.post('https://truck.truckmessage.com/add_user_vehicle_details', {
+          user_id: userId,
+          vehicle_no: newVehicleNumber,
         })
-        .catch(error => {
-          toast.error('Error adding vehicle:', error);
-        });
+          .then(response => {
+            if (response.data.success) {
+              setNewVehicleNumber('');
+              fetchUserProfile();
+              document.getElementById('closeModalButton').click();
+            } else {
+              toast.error('Failed to add vehicle');
+            }
+          })
+          .catch(error => {
+            toast.error('Error adding vehicle:', error);
+          });
+      }
+    }else{
+      toast.error("You can able to add more than 10 vehicle")
     }
   };
 
@@ -99,15 +99,12 @@ const MyAccount = () => {
       })
         .then(response => {
           if (response.data.success) {
-            setVehicleData(prevVehicleData => prevVehicleData.filter(vehicle => vehicle.rc_number !== vehicleToDelete));
             setVehicleToDelete(null);
+            fetchUserProfile();
             document.getElementById('closeDeleteModalButton').click();
           } else {
             toast.error('Failed to delete vehicle');
           }
-          setTimeout(() => {
-            window.location.reload();
-          }, 100);
         })
         .catch(error => {
           toast.error('Error deleting vehicle:', error);
@@ -142,9 +139,6 @@ const MyAccount = () => {
           if (response.data.success) {
             fetchUserProfile();
             document.getElementById('closeEditProfileModalButton').click();
-            // setTimeout(() => {
-            //   window.location.reload();
-            // }, 100);
           } else {
             toast.error('Failed to update profile');
           }

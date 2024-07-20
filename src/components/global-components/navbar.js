@@ -49,11 +49,10 @@ const Navbar = () => {
                     password: password
                 }
                 const res = await axiosInstance.post('/login', loginData)
-                if (res.data.error_code === 0) {
+                if (res.data.error_code === 0) { 
                     const userId = window.btoa(res.data.data.user_id);
                     var date = new Date();
                     date.setDate(date.getDate() + 1);
-                    console.log(date)
                     //updating username in cookies
                     Cookie.set("usrin", userId, {
                         expires: date, // 1 day
@@ -62,7 +61,7 @@ const Navbar = () => {
                         path: '/'
                     })
 
-                    dispatch(updateUserDetails(loginData));
+                    // dispatch(updateUserDetails(loginData));
                     dispatch(updateIsLoggedIn(true));
                     document.getElementById("closeSignInModel").click();
                 } else {
@@ -253,7 +252,7 @@ const Navbar = () => {
                                                         </div>
                                                         <ul class="dropdown-menu dropdown-menu-lg-end">
                                                             <li className='m-0' onClick={() => pageRender("my_profile")}><button class="dropdown-item" type="button">My account</button></li>
-                                                            <li className='m-0' onClick={() => pageRender("wishlist")}><button class="dropdown-item" type="button">My post</button></li>
+                                                            <li className='m-0' onClick={() => pageRender("wishlist/load")}><button class="dropdown-item" type="button">My post</button></li>
                                                             <li className='m-0'><button class="dropdown-item" type="button">Enquiry</button></li>
                                                             <li className='m-0' onClick={handleLogOut}><button class="dropdown-item" type="button">Log out</button></li>
                                                         </ul>

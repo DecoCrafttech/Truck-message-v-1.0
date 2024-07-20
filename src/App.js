@@ -46,6 +46,7 @@ import Footer from './components/global-components/footer';
 import Profile from "./components/Profile";
 import {ExpenseCalculator} from "./components/ExpenseCalculator";
 import ExpenseDetails from "./components/ExpenseDetails";
+import TollCalculator from "./components/TollCalculator";
 
 function App() {
 
@@ -98,6 +99,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/add-listing" element={<AddListing />} />
+            <Route path="/toll-calculator" element={<TollCalculator/>}/>
 
 
             <Route path="/wishlist" element={<Wishlist />}>
