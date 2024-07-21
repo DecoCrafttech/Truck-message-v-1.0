@@ -284,8 +284,9 @@ const Navbar = () => {
                                             <ul class="dropdown-menu end-0 dropdown-menu-lg-end">
                                                 <li className='mt-0'><Link to="/" class="dropdown-item">Home</Link></li>
                                                 <li className='mt-0'><Link to="/service" class="dropdown-item">Services</Link></li>
-                                                <li className='mt-0'><Link to="/about" class="dropdown-item">About</Link></li>
-                                                <li className='mt-0'><Link to="/blog" class="dropdown-item">Blog</Link></li>
+                                                <li className='mt-0'><Link to="/" class="dropdown-item">About</Link></li>
+                                                <li className='mt-0'><Link to="/" class="dropdown-item">Blog</Link></li>
+                                                {/* <li className='mt-0'><Link to="/blog" class="dropdown-item">Blog</Link></li> */}
                                                 <li className='mt-0'><Link to="/contact" class="dropdown-item">Contact</Link></li>
                                             </ul>
                                         </div>

@@ -8,14 +8,15 @@ import Testimonial from './section-components/testimonial-v1';
 import BlogSlider from './blog-components/blog-slider-v1';
 import CallToActionV1 from './section-components/call-to-action-v1';
 import Footer from './global-components/footer';
+import ServiceV1 from './section-components/service-v1';
 
 
 const About_v1 = () => {
     return <div>
         <PageHeader headertitle="About Us" />
         <AboutV4 />
-        <Features  customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---"/>
-        <Team />
+        {/* <Features  customClass="ltn__feature-area section-bg-1 pt-120 pb-90 mb-120---"/> */}
+        {/* <Team /> */}
         <Testimonial />
         <BlogSlider />
         <CallToActionV1 />

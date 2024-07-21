@@ -27,15 +27,15 @@ class AboutV1 extends Component {
 							</div>
 							<ul className="ltn__list-item-half clearfix">
 								<li>
-									<i className="flaticon-home-2" />
+									<i className="flaticon-deal-1" />
 									Ensuring efficiency and profitability for clients
 								</li>
 								<li>
-									<i className="flaticon-mountain" />
+									<i className="flaticon-expand" />
 									Bridging gapsbetween truck owners, drivers, and service providers.
 								</li>
 								<li>
-									<i className="flaticon-heart" />
+									<i className="flaticon-key-1" />
 									Integrity, transparency, customer-centricity.
 								</li>
 								<li>
