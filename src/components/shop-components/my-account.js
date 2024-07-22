@@ -16,6 +16,8 @@ const MyAccount = () => {
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
   const [editProfile, setEditProfile] = useState({});
+  const [image, setImage] = useState('default-image-path.jpg'); // Set default image path
+
 
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
@@ -46,6 +48,8 @@ const MyAccount = () => {
             setProfile(profileData ? profileData.profile : {});
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
             setEditProfile(profileData ? profileData.profile : {});
+            setImage(profileData && profileData.profile && profileData.profile.image ? profileData.profile.image : 'default-image-path.jpg');
+
           } else {
             toast.error('Failed to fetch user profile');
           }
@@ -81,7 +85,7 @@ const MyAccount = () => {
             toast.error('Error adding vehicle:', error);
           });
       }
-    }else{
+    } else {
       toast.error("You can able to add more than 10 vehicle")
     }
   };
@@ -150,6 +154,16 @@ const MyAccount = () => {
     }
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImage(e.target.result);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  };
+
 
 
 
@@ -190,10 +204,23 @@ const MyAccount = () => {
             <div className="ltn__product-tab-area">
               <div className="container">
                 <div className="row">
-                  <div className='col-lg-6 col-md-4'>
-
-
-
+                  <div className='col-lg-4 col-md-4'>
+                    <div className="ltn-author-introducing clearfix mb-3 ps-5">
+                    <div className="author-info">
+                        <div className="image-upload">
+                          <img
+                            src={image}
+                            alt="Profile"
+                            style={{ width: '52px', height: '52px', borderRadius: '50%', marginBottom: '10px' }}
+                          />
+                          <input type="file" accept="image/*" onChange={handleImageChange} />
+                        </div>
+                             </div>
+                      <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        Edit Profile
+                      </button>
+                    </div>
+                  </div> <div className='col-lg-8 col-md-4'>
                     <div className="ltn-author-introducing clearfix mb-3 ps-5">
                       <div className="author-info">
                         <h2>{profile.first_name}</h2>
@@ -386,84 +413,7 @@ const MyAccount = () => {
                     </div>
                   </div>
 
-                  {/* <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-scrollable modal-lg">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                          <table className="table">
-                            <tbody>
-                              {Object.keys(selectedVehicleDetails).map(key => (
-                                <tr key={key}>
-                                  <td style={{ fontWeight: 'bold', width: '30%' }}>{key.replace(/_/g, ' ')}</td>
-                                  <td>{selectedVehicleDetails[key] !== null ?
-                                    (typeof selectedVehicleDetails[key] === 'object' && selectedVehicleDetails[key] !== null ?
-                                      JSON.stringify(selectedVehicleDetails[key]) : selectedVehicleDetails[key])
-                                    : 'N/A'}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
-
-                  {/* <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-scrollable modal-lg">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                          <table className="table">
-                            <tbody>
-                              {Object.keys(selectedVehicleDetails).map(key => (
-                                <tr key={key}>
-                                  <td style={{ fontWeight: 'bold' }}>{key.replace(/_/g, ' ')}</td>
-                                  <td>{typeof selectedVehicleDetails[key] === 'object' && selectedVehicleDetails[key] !== null ?
-                                    JSON.stringify(selectedVehicleDetails[key]) : selectedVehicleDetails[key]}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
-                  {/* <div className="modal fade" id="vehicleDetails" tabIndex="-1" aria-labelledby="vehicleDetailsLabel" aria-hidden="true">
-                    <div className="modal-dialog">
-                      <div className="modal-content">
-                        <div className="modal-header">
-                          <h5 className="modal-title" id="vehicleDetailsLabel">Vehicle Details</h5>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                          <h5>RC Number: {selectedVehicleDetails.rc_number}</h5>
-                          <p>Fitness UpTo: {formatDate(selectedVehicleDetails.fit_up_to)}</p>
-                          <p>Insurance UpTo: {formatDate(selectedVehicleDetails.insurance_upto)}</p>
-                          <p>PUCC UpTo: {formatDate(selectedVehicleDetails.pucc_upto)}</p>
-                          <p>Road Tax UpTo: {formatDate(selectedVehicleDetails.tax_upto)}</p>
-                        </div>
-                        <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
+                
 
                   {/* Edit Profile Modal */}
                   <div className="modal fade" id="editProfileModal" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
@@ -475,9 +425,13 @@ const MyAccount = () => {
                         </div>
                         <div className="modal-body">
                           <div className="row">
-                            <div className="col-12 col-md-6">
+                          <div className="col-12 col-md-6">
                               <label htmlFor="editFirstName" className="form-label">First Name</label>
                               <input type="text" className="form-control" id="editFirstName" value={editProfile.first_name} onChange={(e) => setEditProfile({ ...editProfile, first_name: e.target.value })} />
+                            </div>
+                            <div className="col-12 col-md-6">
+                              <label htmlFor="editFirstName" className="form-label">First Name</label>
+                              <input type="text" className="form-control" id="editFirstName" value={editProfile.profile_image} onChange={(e) => setEditProfile({ ...editProfile, first_name: e.target.value })} />
                             </div>
                             {/* <div className="mb-3">
                             <label htmlFor="editLastName" className="form-label">Last Name</label>

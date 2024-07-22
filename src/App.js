@@ -63,8 +63,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/service" element={<Service />} />
             <Route path="/service-details" element={<ServiceDetails />} />
-            <Route path="/expense-calculator" element={<ExpenseCalculator/>}/>
-            <Route path="/expense-details" element={<ExpenseDetails/>}/>
+           
             <Route path="/load-availability" element={<Loadavailablity />} />
             <Route path="/portfolio-v2" element={<PortfolioV2 />} />
             {/* ? */}
@@ -108,6 +107,10 @@ function App() {
               <Route path="driver"/>
               <Route path="buy_sell"/>
             </Route>
+            
+
+            <Route path="/expense-calculator" element={<ExpenseCalculator/>}/>
+            <Route path="/expense-details/:id" element={<ExpenseDetails/>}/>
 
 
             <Route path="/order-tracking" element={<OrderTracking />} />
