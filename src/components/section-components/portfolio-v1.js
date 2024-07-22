@@ -253,9 +253,11 @@ const PortfolioV1 = () => {
                                     <div className="row">
                                         <div className="col-12 col-md-6">
                                             <h6>Company Name</h6>
+
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="company_name" placeholder="Name of the Owner" required />
                                             </div>
+                                            
                                         </div>
                                         <div className="col-12 col-md-6">
                                             <h6>Contact Number</h6>
@@ -369,8 +371,8 @@ const PortfolioV1 = () => {
                     {currentCards.map(card => (
                         <div className="col" key={card.id}>
                             <div className="card h-100 shadow truckcard">
-                                <div className='card-header mt-2 border-0 mb-2'>
-                                    <h5 className="card-title cardmodify">{card.company_name}</h5>
+                                <div className='card-header mt-2 border-0 mb-0 '>
+                                    <h5 className="card-title cardmodify">{card.company_name}</h5><p className='mb-0'>review</p>
                                 </div>
                                 <div className="card-body p-3 mt-2 mb-2">
                                     <div className='row'>

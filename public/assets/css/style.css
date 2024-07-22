@@ -1022,8 +1022,10 @@ input[type="tel"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 input[type="button"]:focus,
+input[type="number"]:focus,
 input[type="reset"]:focus,
 input[type="submit"]:focus,
+
 select:focus {
   outline: none;
   -webkit-box-shadow: none;

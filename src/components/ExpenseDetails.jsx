@@ -7,54 +7,79 @@ const ExpenseDetails = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [form, setForm] = useState({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '' });
+    const [modalTitle, setModalTitle] = useState('Credit Entry');
+
+    const fetchCashFlowDetails = async () => {
+        try {
+            const response = await axios.post('https://truck.truckmessage.com/get_load_trip_cash_flow', {
+                user_id: '1',
+                load_trip_id: '5'
+            });
+
+            const fetchedData = response.data.data.map(item => ({
+                date: new Date(item.updt).toLocaleDateString(),
+                total: item.amount,
+                spend: item.cash_flow_type === 'OUT' ? item.amount : 0,
+                balance: item.closing_balance,
+                transactions: [
+                    {
+                        reason: item.cash_flow_name,
+                        description: item.category,
+                        debitorcredit: item.cash_flow_type === 'IN' ? 'credit' : 'debit',
+                        rupees: item.amount,
+                        time: new Date(item.updt).toLocaleString()
+                    }
+                ]
+            }));
+
+            // Group transactions by date
+            const groupedData = fetchedData.reduce((acc, current) => {
+                if (!acc[current.date]) {
+                    acc[current.date] = {
+                        date: current.date,
+                        total: current.total,
+                        spend: current.spend,
+                        balance: current.balance,
+                        transactions: []
+                    };
+                }
+                acc[current.date].transactions.push(...current.transactions);
+                return acc;
+            }, {});
+
+            setData(Object.values(groupedData));
+        } catch (error) {
+            console.error('Error fetching cash flow details:', error);
+            setError('Failed to fetch data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleFormChange = (e) => {
+        setForm({ ...form, [e.target.name]: e.target.value });
+    };
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post('https://truck.truckmessage.com/load_trip_cash_flow_entry', {
+                load_trip_id: '5',
+                ...form
+            });
+            fetchCashFlowDetails(); // Refresh the data after submission
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
+
+    const handleModalOpen = (type) => {
+        setModalTitle(type === 'IN' ? 'Credit Entry' : 'Debit Entry');
+        setForm({ ...form, cash_flow_type: type });
+    };
 
     useEffect(() => {
-        const fetchCashFlowDetails = async () => {
-            try {
-                const response = await axios.post('https://truck.truckmessage.com/get_load_trip_cash_flow', {
-                    load_trip_id: '5'
-                });
-                
-                const fetchedData = response.data.data.map(item => ({
-                    date: new Date(item.updt).toLocaleDateString(),
-                    total: item.amount,
-                    spend: item.cash_flow_type === 'OUT' ? item.amount : 0,
-                    balance: item.closing_balance,
-                    transactions: [
-                        {
-                            reason: item.cash_flow_name,
-                            description: item.category,
-                            debitorcredit: item.cash_flow_type === 'IN' ? 'credit' : 'debit',
-                            rupees: item.amount,
-                            time: new Date(item.updt).toLocaleString()
-                        }
-                    ]
-                }));
-
-                // Group transactions by date
-                const groupedData = fetchedData.reduce((acc, current) => {
-                    if (!acc[current.date]) {
-                        acc[current.date] = {
-                            date: current.date,
-                            total: current.total,
-                            spend: current.spend,
-                            balance: current.balance,
-                            transactions: []
-                        };
-                    }
-                    acc[current.date].transactions.push(...current.transactions);
-                    return acc;
-                }, {});
-
-                setData(Object.values(groupedData));
-            } catch (error) {
-                console.error('Error fetching cash flow details:', error);
-                setError('Failed to fetch data');
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchCashFlowDetails();
     }, []);
 
@@ -68,33 +93,29 @@ const ExpenseDetails = () => {
                     <div className="row shadow">
                         <div className="card w-100 shadow">
                             <div className="card-body">
+                                <div>
+                                    <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
+                                    <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('OUT')}>Debit</button>
+                                </div>
                                 <div className="col-12 d-inline-flex align-items-center p-0">
-                                    <div className="col-5 col-lg-3 px-0">
-                                        <img src={publicUrl + "assets/img/slider/21.jpg"} alt="truck" className='rounded' />
-                                    </div>
                                     <div className="col-7 col-lg-9 px-0">
                                         <h5 className="card-title">Load one</h5>
-
                                         <p className="card-text mb-1 d-inline-flex p-0 w-100">
                                             <b className='px-0'>From :</b>
                                             <span className='px-0 ps-2 text-break'>Tenkasi, India</span>
                                         </p>
-
                                         <p className="card-text mb-1 d-inline-flex p-0 w-100">
                                             <b className='px-0'>To :</b>
                                             <span className='px-0 ps-2 text-break'>Coimbatore, India</span>
                                         </p>
-
                                         <p className="card-text mb-1">
                                             <b>Load price :</b>
                                             <span className='ps-2'>20000</span>
                                         </p>
-
                                         <p className="card-text mb-1">
                                             <b>Spend :</b>
                                             <span className='ps-2'>2000</span>
                                         </p>
-
                                         <p className="card-text mb-1">
                                             <b>Balance :</b>
                                             <span className='ps-2'>18000</span>
@@ -113,12 +134,10 @@ const ExpenseDetails = () => {
                                                             <b>Total amount :</b>
                                                             <span className='ps-2'>{entry.total}</span>
                                                         </p>
-
                                                         <p className="card-text mb-1">
                                                             <b>Today spend :</b>
                                                             <span className='ps-2'>{entry.spend}</span>
                                                         </p>
-
                                                         <p className="card-text mb-1">
                                                             <b>Current balance :</b>
                                                             <span className='ps-2'>{entry.balance}</span>
@@ -160,8 +179,89 @@ const ExpenseDetails = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Modal Form */}
+            <div className="modal fade" id="modalForm" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="exampleModalLabel">{modalTitle}</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form onSubmit={handleFormSubmit}>
+                            <div className="modal-body">
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <h5>Name</h5>
+                                        <div className="input-item input-item-name">
+                                            <input
+                                                type="text"
+                                                name="cash_flow_name"
+                                                value={form.cash_flow_name}
+                                                onChange={handleFormChange}
+                                                placeholder="Enter your trip name"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <h5>Reason</h5>
+                                        <div className="input-item input-item-name">
+                                            <select
+                                                className="nice-select ltn__custom-icon"
+                                                name="category"
+                                                value={form.category}
+                                                onChange={handleFormChange}
+                                                required
+                                            >
+                                                <option value="Petrol">Petrol</option>
+                                                <option value="Diesel">Diesel</option>
+                                                <option value="Food">Food</option>
+                                                <option value="Tea">Tea</option>
+                                                <option value="Others">Others</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <h5>Description</h5>
+                                        <div className="input-item input-item-name">
+                                            <input
+                                                type="text"
+                                                name="description"
+                                                value={form.description}
+                                                onChange={handleFormChange}
+                                                placeholder="Enter your Details"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <h5>Amount</h5>
+                                        <div className="input-item input-item-name">
+                                            <input
+                                                type="text"
+                                                name="amount"
+                                                value={form.amount}
+                                                onChange={handleFormChange}
+                                                placeholder="Enter your Amount"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" className="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </section>
     );
-}
+};
 
 export default ExpenseDetails;

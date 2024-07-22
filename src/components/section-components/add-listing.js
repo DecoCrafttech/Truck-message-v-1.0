@@ -110,7 +110,7 @@ const AddListing = () =>{
                                         </div>                                   
                                         <div className="col-md-6">
                                             <h5>No. of Tyres</h5>
-                                            <div className="input-item">
+                                            <div className="input-item input-item-name">
                                                 <select className="nice-select" name="tyre_count" required>
                                                     <option value="6">6</option>
                                                     <option value="10">10</option>
