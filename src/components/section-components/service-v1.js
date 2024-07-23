@@ -84,8 +84,8 @@ class ServiceV5 extends Component {
 								<span><BsFuelPumpDiesel /></span>
 							</div>
 							<div className="ltn__feature-info">
-								{/* <h3><Link to="/service-details" className='apara'>Fuel Price</Link></h3>
-								<p>Track and Optimize Your Fuel Costs Daily without missing</p> */}
+								<h3><Link to="/service-details" className='apara'>Fuel Price</Link></h3>
+								<p>Track and Optimize Your Fuel Costs Daily without missing</p>
 							</div>
 						</div>
 					</div>

@@ -219,7 +219,7 @@ const Navbar = () => {
                                 <div className="col">
                                     <div className="site-logo-wrap mb-0">
                                         <div className="site-logo go-top">
-                                            <Link to="/"><img src={publicUrl + "assets/img/logo.png"} alt="Logo" /></Link>
+                                            <Link to="/"><img src={publicUrl + "assets/img/truckmessage.png"} alt="truck message Logo - All in one truck solutions" /></Link>
                                         </div>
                                     </div>
                                 </div>

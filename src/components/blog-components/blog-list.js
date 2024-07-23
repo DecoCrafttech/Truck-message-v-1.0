@@ -1,340 +1,40 @@
-// import React, { Component } from 'react';
-// import { Link } from 'react-router-dom';
-// import Sidebar from './sidebar';
-// class BlogList extends Component {
-//   render() {
-//     let publicUrl = process.env.PUBLIC_URL+'/'
-//     return (
-// 		<div className="ltn__blog-area mb-120">
-// 			<div className="container">
-// 			<div className="row">
-// 				<div className="col-lg-8 order-lg-2">
-// 				<div className="ltn__blog-list-wrap">
-// 					{/* Blog Item */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 go-top">
-// 					<div className="ltn__blog-img">
-// 						<Link to="/blog-details"><img src={publicUrl+"assets/img/blog/31.jpg"} alt="Image" /></Link>
-// 					</div>
-// 					<div className="ltn__blog-brief">
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li className="ltn__blog-category">
-// 							<Link to="/blog-grid">Business</Link>
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<h3 className="ltn__blog-title"><Link to="/blog-details">Lorem ipsum dolor sit amet, consecte
-// 							cing elit, sed do eiusmod tempor.</Link></h3>
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint</p>
-// 						<div className="ltn__blog-meta-btn">
-// 						<div className="ltn__blog-meta">
-// 							<ul>
-// 							<li className="ltn__blog-author">
-// 								<Link to="/blog-grid"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" />By: Ethan</Link>
-// 							</li>
-// 							</ul>
-// 						</div>
-// 						<div className="ltn__blog-btn">
-// 							<Link to="/blog-details"><i className="fas fa-arrow-right" />Read more</Link>
-// 						</div>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/* Blog Item (Video) */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 ltn__blog-item-video">
-// 					<div className="ltn__video-img">
-// 						<img src={publicUrl+"assets/img/blog/32.jpg"} alt="video popup bg image" />
-// 						<a className="ltn__video-icon-2 ltn__secondary-bg ltn__video-icon-2-border---" href="https://www.youtube.com/embed/X7R-q9rsrtU?autoplay=1&showinfo=0" data-rel="lightcase:myCollection">
-// 						<i className="fa fa-play" />
-// 						</a>
-// 					</div>
-// 					<div className="ltn__blog-brief go-top" >
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li className="ltn__blog-category">
-// 							<Link to="/blog-grid">Business</Link>
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<h3 className="ltn__blog-title"><Link to="/blog-details">Adipisicing elit, sed do eiusmod tempor
-// 							incididunt ut labore et dolore.</Link></h3>
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint</p>
-// 						<div className="ltn__blog-meta-btn">
-// 						<div className="ltn__blog-meta">
-// 							<ul>
-// 							<li className="ltn__blog-author">
-// 								<Link to="/blog-grid"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" />By: Ethan</Link>
-// 							</li>
-// 							</ul>
-// 						</div>
-// 						<div className="ltn__blog-btn">
-// 							<Link to="/blog-details"><i className="fas fa-arrow-right" />Read more</Link>
-// 						</div>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/* Blog Item (Gallery) */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 ltn__blog-item-gallery">
-// 					<div className="ltn__blog-gallery-active slick-arrow-1 slick-arrow-1-inner">
-// 						<div className="ltn__blog-gallery-item">
-// 						<Link to="/blog-details"><img src={publicUrl+"assets/img/blog/33.jpg"} alt="Image" /></Link>
-// 						</div>
-// 						<div className="ltn__blog-gallery-item">
-// 						<Link to="/blog-details"><img src={publicUrl+"assets/img/blog/34.jpg"} alt="Image" /></Link>
-// 						</div>
-// 						<div className="ltn__blog-gallery-item">
-// 						<Link to="/blog-details"><img src={publicUrl+"assets/img/blog/31.jpg"} alt="Image" /></Link>
-// 						</div>
-// 					</div>
-// 					<div className="ltn__blog-brief">
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li className="ltn__blog-category">
-// 							<Link to="/blog-grid">Business</Link>
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<h3 className="ltn__blog-title"><Link to="/blog-details">Magna aliqua. Ut enim ad minim venia
-// 							m, quis nostrud exercitation ullamco</Link></h3>
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint</p>
-// 						<div className="ltn__blog-meta-btn">
-// 						<div className="ltn__blog-meta">
-// 							<ul>
-// 							<li className="ltn__blog-author">
-// 								<Link to="/blog-grid"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" />By: Ethan</Link>
-// 							</li>
-// 							</ul>
-// 						</div>
-// 						<div className="ltn__blog-btn">
-// 							<Link to="/blog-details"><i className="fas fa-arrow-right" />Read more</Link>
-// 						</div>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/* Blog Item (Audio) */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 ltn__blog-item-audio go-top">
-// 					<div className="post-audio embed-responsive embed-responsive-16by9">
-// 						<iframe src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/837045328&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true" />
-// 					</div>
-// 					<div className="ltn__blog-brief">
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li className="ltn__blog-category">
-// 							<Link to="/blog-grid">Business</Link>
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<h3 className="ltn__blog-title"><Link to="/blog-details">Laboris nisi ut aliquip ex ea commodo
-// 							consequat. Duis aute irure dolor.</Link></h3>
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint</p>
-// 						<div className="ltn__blog-meta-btn">
-// 						<div className="ltn__blog-meta">
-// 							<ul>
-// 							<li className="ltn__blog-author">
-// 								<Link to="/blog-grid"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" />By: Ethan</Link>
-// 							</li>
-// 							</ul>
-// 						</div>
-// 						<div className="ltn__blog-btn">
-// 							<Link to="/blog-details"><i className="fas fa-arrow-right" />Read more</Link>
-// 						</div>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/* Blog Item (No Image) */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 ltn__blog-item-no-image go-top">
-// 					<div className="ltn__blog-brief">
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li className="ltn__blog-category">
-// 							<Link to="/blog-grid">Business</Link>
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<h3 className="ltn__blog-title"><Link to="/blog-details">In reprehenderit in voluptate velit esse
-// 							cillum dolore eu fugiat nulla pariatur.</Link></h3>
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint</p>
-// 						<div className="ltn__blog-meta-btn">
-// 						<div className="ltn__blog-meta">
-// 							<ul>
-// 							<li className="ltn__blog-author">
-// 								<Link to="/blog-grid"><img src={publicUrl+"assets/img/blog/author.jpg"} alt="#" />By: Ethan</Link>
-// 							</li>
-// 							</ul>
-// 						</div>
-// 						<div className="ltn__blog-btn">
-// 							<Link to="/blog-details"><i className="fas fa-arrow-right" />Read more</Link>
-// 						</div>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/* Blog Item (Quote) */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 ltn__blog-item-quote bg-image bg-overlay-theme-90 go-top" data-bs-bg="img/blog/3.jpg">
-// 					<div className="ltn__blog-brief go-top">
-// 						<blockquote>
-// 						<Link to="/blog-details">Excepteur sint occaecat cupida
-// 							tat non proident, sunt in.</Link>
-// 						</blockquote>
-// 						<div className="ltn__blog-meta mb-0">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/* Blog Item (Background Image) */}
-// 					<div className="ltn__blog-item ltn__blog-item-5 ltn__blog-item-bg-image bg-image bg-overlay-white-90" data-bs-bg="img/blog/2.jpg">
-// 					<div className="ltn__blog-brief go-top">
-// 						<div className="ltn__blog-meta">
-// 						<ul>
-// 							<li className="ltn__blog-category">
-// 							<Link to="/blog-grid">Business</Link>
-// 							</li>
-// 						</ul>
-// 						</div>
-// 						<h3 className="ltn__blog-title"><Link to="/blog-details">Culpa qui officia deserunt mollit anim
-// 							id est laborum. Sed ut perspiciatis</Link></h3>
-// 						<div className="ltn__blog-meta mb-0">
-// 						<ul>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-eye" />232 Views</Link>
-// 							</li>
-// 							<li>
-// 							<Link to="/blog-details"><i className="far fa-comments" />35 Comments</Link>
-// 							</li>
-// 							<li className="ltn__blog-date">
-// 							<i className="far fa-calendar-alt" />June 22, 2020
-// 							</li>
-// 						</ul>
-// 						</div>
-// 					</div>
-// 					</div>
-// 					{/*  */}
-// 				</div>
-// 				<div className="row">
-// 					<div className="col-lg-12">
-// 					<div className="ltn__pagination-area text-center">
-// 						<div className="ltn__pagination">
-// 						<ul>
-// 							<li><Link to="#"><i className="fas fa-angle-double-left" /></Link></li>
-// 							<li><Link to="#">1</Link></li>
-// 							<li className="active"><Link to="#">2</Link></li>
-// 							<li><Link to="#">3</Link></li>
-// 							<li><Link to="#">...</Link></li>
-// 							<li><Link to="#">10</Link></li>
-// 							<li><Link to="#"><i className="fas fa-angle-double-right" /></Link></li>
-// 						</ul>
-// 						</div>
-// 					</div>
-// 					</div>
-// 				</div>
-// 				</div>
-// 				<Sidebar/>
-// 			</div>
-// 			</div>
-// 		</div>
-//     )
-//   }
-// }
-
-// export default BlogList;
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
-import { SiMaterialformkdocs } from "react-icons/si";
-import { GiCarWheel } from "react-icons/gi";
-import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
+import toast, { Toaster } from 'react-hot-toast';
+import { FaUserAlt } from "react-icons/fa";
+import { FaTruckFast } from "react-icons/fa6";
+import { BsFillCalendar2DateFill } from "react-icons/bs";
+import { RiPinDistanceFill } from "react-icons/ri";
+import { FaLocationDot } from "react-icons/fa6";
+import { Link } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
+import Autocomplete from "react-google-autocomplete";
 
-const BlogList =()=> {
-    const LoginDetails = useSelector((state)=>state.login);
+
+const BlogList = () => {
+    const LoginDetails = useSelector((state) => state.login);
 
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [cardsPerPage] = useState(9); // Adjust the number of cards per page as needed
-    const [isSignedIn, setIsSignedIn] = useState(false); // State for user sign-in status
-    const [showLoginPopup, setShowLoginPopup] = useState(false); // State to manage login popup visibility
+    const [cardsPerPage] = useState(21);
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [showLoginPopup, setShowLoginPopup] = useState(false);
     const [filters, setFilters] = useState({
         search: '',
     });
 
+
+    const [contactError, setContactError] = useState(''); // State to manage contact number validation error
+
+    const formRef = useRef(null);
+    const modalRef = useRef(null);
+
+    const publicUrl = process.env.PUBLIC_URL + '/';
+
     useEffect(() => {
-        axios.get('https://truck.truckmessage.com/all_load_details')
-            .then(response => { 
+        axios.get('https://truck.truckmessage.com/all_buy_sell_details')
+            .then(response => {
                 if (response.data.success && Array.isArray(response.data.data)) {
                     setCards(response.data.data);
                 } else {
@@ -356,45 +56,124 @@ const BlogList =()=> {
         return cards.filter(card => {
             const search = filters.search.toLowerCase();
             return (
-                card.from_location.toLowerCase().includes(search) ||
-                card.to_location.toLowerCase().includes(search) ||
-                card.tone.toString().includes(search) ||
-                card.material.toLowerCase().includes(search) ||
-                card.no_of_tyres.toString().includes(search) ||
-                card.truck_body_type.toLowerCase().includes(search)
+                card.location.toLowerCase().includes(search) ||
+                card.model.toString().includes(search) ||
+                card.owner_name.toLowerCase().includes(search) ||
+                card.vehicle_number.toLowerCase().includes(search) ||
+                card.kms_driven.toString().includes(search)
             );
         });
     };
 
-    const filteredCards = filterCards(cards);
 
-    // Calculate the index of the last card on the current page
-    const indexOfLastCard = currentPage * cardsPerPage;
-    // Calculate the index of the first card on the current page
-    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-    // Get the cards to be displayed on the current page
-    const currentCards = filteredCards.slice(indexOfFirstCard, indexOfLastCard);
-
-    // Calculate the total number of pages
-    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
-
-    // Handle page change
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // Handle "View Details" button click
-    const handleViewDetails = () => {
-        setIsSignedIn(true);
-        // if (isSignedIn) {
-        //     // Logic to show call and message buttons
-        // } else {
-        //     setShowLoginPopup(false); // Show login popup if not signed in
-        // }
+    const validateContactNumber = (contact) => {
+        const contactNumberPattern = /^\d{10}$/; // Simple pattern for 10-digit numbers
+        return contactNumberPattern.test(contact);
     };
 
-    // Handle login (dummy implementation for demonstration)
+
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const contactNumber = formData.get('contact_no');
+
+        if (!validateContactNumber(contactNumber)) {
+            setContactError('Please enter a valid 10-digit contact number.');
+            return;
+        }
+
+        const userId = window.atob(Cookies.get("usrin"));
+        const data = {
+            company_name: formData.get('company_name'),
+            contact_no: contactNumber,
+            from: formData.get('from_location'),
+            to: formData.get('to_location'),
+            material: formData.get('material'),
+            tone: formData.get('tone'),
+            truck_body_type: formData.get('truck_body_type'),
+            no_of_tyres: formData.get('tyre_count'),
+            description: formData.get('description'),
+            user_id: userId
+        };
+        axios.post('https://truck.truckmessage.com/load_details', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+
+        })
+            .then(response => {
+                toast.success('Form submitted successfully!');
+                formRef.current.reset();
+                setContactError('');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100);
+            })
+            .catch(error => {
+                toast.error('Failed to submit the form.');
+                console.error('There was an error!', error);
+            });
+    };
+
+
+
+
+    const filteredCards = filterCards(cards);
+
+    const indexOfLastCard = currentPage * cardsPerPage;
+    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+    const currentCards = filteredCards.slice(indexOfFirstCard, indexOfLastCard);
+    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const handleViewDetails = () => {
+        setIsSignedIn(true);
+    };
+
     const handleLogin = () => {
         setIsSignedIn(true);
         setShowLoginPopup(false);
+    };
+
+
+
+    const [showingFromLocation, setShowingFromLocation] = useState("");
+    const [showingToLocation, setShowingToLocation] = useState("");
+    const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
+        city: "",
+        state: "",
+    });
+    const [editCompanyToLocation, setEditCompanyToLocation] = useState({
+        city: "",
+        state: "",
+    });
+
+    const handleFromLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+        if (cityComponent && stateComponent) {
+            setEditCompanyFromLocation({
+                city: cityComponent.long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+        }
+    };
+
+    const handleToLocation = (selectedLocation) => {
+        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+        if (cityComponent && stateComponent) {
+            setEditCompanyToLocation({
+                city: cityComponent.long_name,
+                state: stateComponent.long_name,
+            });
+            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+        }
     };
 
     return (
@@ -405,21 +184,18 @@ const BlogList =()=> {
                         <div className="col-lg-12">
                             <div className="ltn__shop-options">
                                 <ul>
-                                    
                                     <li>
                                         <div className="showing-product-number text-right">
                                             <span>Showing {indexOfFirstCard + 1}-{Math.min(indexOfLastCard, filteredCards.length)} of {filteredCards.length} results</span>
                                         </div>
                                     </li>
                                     <div className="header-top-btn">
-                                        {/* <Link to="/add-listing"> + Add Load availability</Link> */}
-                                        <button type="button" className='truck-brand-button'>+ Add Load availability</button>
+                                        <button type="button " className='cardbutton truck-brand-button' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
                                     </div>
                                 </ul>
                             </div>
                         </div>
                         <div className="col-lg-12">
-                            {/* Search Widget */}
                             <div className="ltn__search-widget mb-0">
                                 <form action="">
                                     <input type="text" name="search" placeholder="Search by" onChange={handleFilterChange} />
@@ -429,59 +205,187 @@ const BlogList =()=> {
                     </div>
                 </div>
             </div>
+            {/* modal */}
+            <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Load</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="ltn__appointment-inner">
+                                <form ref={formRef} onSubmit={handleSubmit}>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>Company Name</h6>
+
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="company_name" placeholder="Name of the Owner" required />
+                                            </div>
+
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Contact Number</h6>
+                                            <div className="input-item input-item-email ltn__custom-icon">
+                                                <input type="tel" name="contact_no" placeholder="Type your contact number" required />
+                                                {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>From</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="from_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleFromLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingFromLocation}
+                                                    onChange={(e) => setShowingFromLocation(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>To</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="to_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleToLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingToLocation}
+                                                    onChange={(e) => setShowingToLocation(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>Material</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="material" placeholder="What type of material" required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Ton</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="tone" placeholder="Example: 2 tones" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>Truck Body Type</h6>
+                                            <div className="input-item">
+                                                <select className="nice-select" name="truck_body_type" required>
+                                                    <option value="open_body">Open Body</option>
+                                                    <option value="container">Container</option>
+                                                    <option value="trailer">Trailer</option>
+                                                    <option value="tanker">Tanker</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>No. of Tyres</h6>
+                                            <div className="input-item">
+                                                <select className="nice-select" name="tyre_count" required>
+                                                    <option value="6">6</option>
+                                                    <option value="10">10</option>
+                                                    <option value="12">12</option>
+                                                    <option value="14">14</option>
+                                                    <option value="16">16</option>
+                                                    <option value="18">18</option>
+                                                    <option value="20">20</option>
+                                                    <option value="22">22</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+                                        <input class="form-control" type="file" id="formFileMultiple" multiple />
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12">
+                                            <h6>Descriptions (Optional)</h6>
+                                            <div className="input-item input-item-textarea ltn__custom-icon">
+                                                <textarea name="description" placeholder="Enter a text here" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="modal-footer btn-wrapper text-center mt-4">
+                                        <button className="btn theme-btn-1 text-uppercase" type="submit">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div className='container'>
-                <div className="row row-cols-1 row-cols-md-3 g-4 mb-60 ">
+                <div className="row row-cols-1 row-cols-md-3 g-4">
                     {currentCards.map(card => (
-                        <div className="col" key={card.id}>
-                            <div className="card h-100 shadow truckcard">
-                                <div className='card-header mt-2 border-0 mb-2'>
-                                    <h5 className="card-title cardmodify">{card.company_name}</h5>
-                                </div>
-                                <div className="card-body p-3 mt-2 mb-2">
-                                    <div className='row'>
-                                        <div className="col-lg-12 cardicon">
-                                            <div>
-                                                <label><FaLocationDot className="me-2 text-danger" />{card.from_location}</label>
+                        <div className="col" key={card.buy_sell_id}>
+                            <div className="card card h-100 shadow truckcard">
+                                <span className='object-fit-fill rounded justify-content-center d-flex'>
+                                    <img
+                                        className="m-3 rounded-3 justify-content-center d-flex"
+                                        src={`${publicUrl}assets/img/slider/21.jpg`}
+                                        alt="truck message Logo - All in one truck solutions"
+                                        style={{ width: '390px', height: '290px', objectFit: 'cover' }}
+                                    />
+                                </span>
+                                <div className="card-body">
+                                    <div className='col-12 col-md-12 mb-2 text-wrap'>
+                                        <div className='row'>
+                                            <div className='col-8 col-md-8 text-start ps-0'>
+                                                <h5 className="card-title text-wrap">{card.brand} {card.model}</h5>
+                                            </div>
+                                            <div className='col-4 col-md-4 text-end .fs-6 pe-0'>
+                                                <p className='.fs-6 reviewtext'>(12)
+                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                                </p>
                                             </div>
                                         </div>
-                                        <div className="col-lg-12 cardicon">
-                                            <div><label><FaLocationDot className='me-2 text-success' />{card.to_location}</label></div>
-                                        </div>
                                     </div>
-                                    <hr className="hr m-2" />
-                                    <div className='row mt-3'>
-                                        <div className="col-lg-6 cardicon">
-                                            <div>
-                                                <label><FaWeightHanging className='me-2' />{card.tone} ton</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-lg-6 cardicon">
-                                            <div><label><SiMaterialformkdocs className='me-2' />{card.material}</label></div>
-                                        </div>
-                                        <div className="col-lg-6 cardicon">
-                                            <label><GiCarWheel className='me-2' />{card.no_of_tyres} wheels</label>
-                                        </div>
-                                        <div className="col-lg-6 cardicon">
-                                            <label><FaTruck className='me-2' />{card.truck_body_type}</label>
-                                        </div>
-                                    </div>
-                                    <div className='m-2'>
-                                        <h5 className="card-title mt-3">Description</h5>
-                                        <p className="card-text paragraph">{card.description}</p>
-                                    </div>
-                                </div>
-                                <div className="card-footer mb-3">
                                     <div>
-                                        {LoginDetails.isLoggedIn ? (
-                                            <div className="d-flex gap-2 justify-content-between mt-3">
-                                                <button className="btn cardbutton" type="button">Call</button>
-                                                <button className="btn cardbutton" type="button">Message</button>
+                                        <label><FaLocationDot className="me-2 text-danger" />{card.location}</label>
+                                    </div>
+                                    <div>
+                                        <div className="row">
+                                            <div className="col-6 col-md-6"><FaUserAlt className="me-2" />
+                                                {card.owner_name}
                                             </div>
-                                        ) :
-                                        <div className="d-grid gap-2">
-                                            <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#loginModal">View Details</button>
+                                            <div className="col-6 col-md-6"><FaTruckFast className="me-2" />
+                                                {card.vehicle_number}
+                                            </div>
+                                            <div className="col-6 col-md-6"><BsFillCalendar2DateFill className="me-2" />
+                                                {card.model}
+                                            </div>
+                                            <div className="col-6 col-md-6"><RiPinDistanceFill className="me-2" />
+                                                {card.kms_driven} kms
+                                            </div>
                                         </div>
-                                        }
+                                    </div>
+                                    <hr />
+                                    <div className='d-flex gap-2'>
+                                        <Link to="/product-details" className='apara'>view details </Link>                                        <link></link>
                                     </div>
                                 </div>
                             </div>
@@ -508,7 +412,3 @@ const BlogList =()=> {
 }
 
 export default BlogList;
-
-
-
-

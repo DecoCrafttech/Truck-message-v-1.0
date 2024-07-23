@@ -51,7 +51,7 @@ class Footer_v1 extends Component {
 								<div className="footer-widget footer-about-widget">
 									<div className="footer-logo">
 										<div  >
-											<img className="site-logofooter " src={publicUrl + "assets/img/logo.png"} alt="Logo" />
+											<img className="site-logofooter " src={publicUrl + "assets/img/trucklogoblack.png"} alt="truck message Logo - All in one truck solutions" />
 										</div>
 									</div>
 									{/* <p className='footercls'>Truck Message</p>	 */}
