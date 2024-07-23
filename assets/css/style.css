@@ -506,7 +506,7 @@ a i {
 }
 
 img {
-  max-width: 70%;
+  max-width: 90%;
 }
 
 ul li,
@@ -5393,7 +5393,7 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 .site-logo {
   min-width: 185px;
-  height: 70%;
+  height: 100% !important;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -19687,4 +19687,21 @@ input.cart-plus-minus-box {
   height: 30rem;
   width: 100%;
   margin-bottom: 5rem;
+}
+
+
+
+
+
+.reviewtext{
+  font-size: 12px !important;
+}
+
+
+
+
+
+.fuelprice{
+  padding: auto;
+  border: none;
 }
