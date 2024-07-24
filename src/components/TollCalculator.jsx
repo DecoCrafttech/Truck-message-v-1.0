@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import toast from 'react-hot-toast';
 
 const TollCalculator = () => {
     let map;
@@ -7,9 +8,9 @@ const TollCalculator = () => {
     let autocompleteStart;
     let autocompleteEnd;
 
-    useEffect(()=>{
+    useEffect(() => {
         initMap()
-    },[])
+    }, [])
 
 
     function initMap() {
@@ -81,7 +82,7 @@ const TollCalculator = () => {
                     resultsDiv.innerHTML += `<p>Distance: ${route.legs[0].distance.text}</p>`;
                     resultsDiv.innerHTML += `<p>Duration: ${route.legs[0].duration.text}</p>`;
                     resultsDiv.innerHTML += `<p>Number of Tolls: ${tollData.count}</p>`;
-                    resultsDiv.innerHTML += `<p>Total Toll Cost: ${tollData.totalCost} INR</p>`;
+                    resultsDiv.innerHTML += `<p>Total Toll Cost: <strong> ${tollData.totalCost}<storng/> INR (Approximate value)</p>`;
 
                     // Display tolls if available
                     if (route.legs[0].steps) {
@@ -97,7 +98,8 @@ const TollCalculator = () => {
             }
 
         } catch (error) {
-            console.error('Error fetching directions:', error);
+            toast.error('Error fetching directions', error);
+            toast.error('Please try again', error);
             document.getElementById('results').innerHTML = '<p>Error fetching directions. Please try again later.</p>';
         }
     };
@@ -127,29 +129,44 @@ const TollCalculator = () => {
 
     return (
         <div class="container">
-            <h1>Toll Price Calculator</h1>
-            <form >
-                <label for="startPoint">Starting Point:</label>
-                <input type="text" id="startPoint" required />
+            <div className=' col-12 col-lg-12 col-md-12' >
+                <div className='text-center mt-5 mb-5'>
+                    <h3 >Toll Price Calculator</h3>
+                </div>
+                <div className='row' >
+                    <div className='col-6 col-md-6'>
 
-                <label for="endPoint">Ending Point:</label>
-                <input type="text" id="endPoint" required />
 
-                <label for="vehicleType">Vehicle Type:</label>
-                <select id="vehicleType">
-                    <option value="Truck">Truck</option>
-                    <option value="Bus">Bus</option>
-                    <option value="6-Axle Vehicle">6-Axle Vehicle</option>
-                    <option value="8-Axle Vehicle">8-Axle Vehicle</option>
-                    <option value="10-Axle Vehicle">10-Axle Vehicle</option>
-                    <option value="12-Axle Vehicle">12-Axle Vehicle</option>
-                </select>
+                        <form >
+                            <label for="startPoint">Starting Point:</label>
+                            <input type="text" id="startPoint" required />
 
-                <button type="button" className='btn btn-primary' onClick={tollForm}>Calculate</button>
-            </form>
+                            <label for="endPoint">Ending Point:</label>
+                            <input type="text" id="endPoint" required />
 
-            <div id="map" className='tollCalculatorMap'></div>
+                            <label for="vehicleType">Vehicle Type:</label>
+                            <select id="vehicleType">
+                                <option value="Truck">Truck</option>
+                                <option value="Bus">Bus</option>
+                                <option value="6-Axle Vehicle">6-Axle Vehicle</option>
+                                <option value="8-Axle Vehicle">8-Axle Vehicle</option>
+                                <option value="10-Axle Vehicle">10-Axle Vehicle</option>
+                                <option value="12-Axle Vehicle">12-Axle Vehicle</option>
+                            </select>
+
+                            <button type="button" className='btn btn-primary mt-3' onClick={tollForm}>Calculate</button>
+                        </form>
+
+                    </div>
+                    <div className='col-6 col-md-6'>
+                        <div id="map" className='tollCalculatorMap'></div>
+                    </div>
+                </div>
+
+            </div>
+
             <div id="results"></div>
+
         </div>
     )
 }

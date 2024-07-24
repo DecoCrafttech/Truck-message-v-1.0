@@ -15,6 +15,7 @@ import ComingSoon from './components/coming-soon';
 import Error from './components/404';
 import Location from './components/location';
 import Loadavailablity from './components/loadavailability';
+import FuelPrice from "./components/FuelPrice";
 
 
 import Shop from './components/shop';
@@ -111,6 +112,7 @@ function App() {
 
             <Route path="/expense-calculator" element={<ExpenseCalculator/>}/>
             <Route path="/expense-details/:id" element={<ExpenseDetails/>}/>
+            <Route path="/fuelprice" element={<FuelPrice/>}/>
 
 
             <Route path="/order-tracking" element={<OrderTracking />} />

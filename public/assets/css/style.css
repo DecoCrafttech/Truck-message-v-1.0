@@ -8340,7 +8340,6 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 
 .ltn__slide-item-3 .slide-item-img img {
   text-align: right;
-  margin-left: 5.5rem;
   border: 0.1px;
   border-radius: 20px;
   -o-object-fit: contain;
@@ -19699,9 +19698,48 @@ input.cart-plus-minus-box {
 
 
 
-
-
-.fuelprice{
-  padding: auto;
-  border: none;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
+
+label {
+  font-weight: bold;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #b30057;
+}
+
+#map {
+  width: 100%;
+  height: 470px;
+
+  border-radius: 15px;
+}
+
+#results {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 10px;
+}
+
+
+

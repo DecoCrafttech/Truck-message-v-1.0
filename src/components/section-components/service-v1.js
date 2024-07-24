@@ -23,7 +23,7 @@ class ServiceV5 extends Component {
 		return <div className="ltn__service-area section-bg-1 pt-115 pb-70 go-top">
 			<div className="container">
 			
-			<FuelPrice/>
+			
 
 				<div className="row">
 					<div className="col-lg-12">
@@ -84,7 +84,7 @@ class ServiceV5 extends Component {
 								<span><BsFuelPumpDiesel /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/service-details" className='apara'>Fuel Price</Link></h3>
+								<h3><Link to="/fuelprice" className='apara'>Fuel Price</Link></h3>
 								<p>Track and Optimize Your Fuel Costs Daily without missing</p>
 							</div>
 						</div>
