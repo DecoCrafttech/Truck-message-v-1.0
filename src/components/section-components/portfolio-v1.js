@@ -92,31 +92,11 @@ const PortfolioV1 = () => {
             user_id: userId
         };
 
-
-
-        // const handleSubmit = (event) => {
-        //     event.preventDefault();
-        //     const formData = new FormData(event.target);
-        //     const userId = window.atob(Cookies.get("usrin"));
-        //     const data = {
-        //         // vehicle_number: formData.get('vehicle_number'),
-        //         company_name: formData.get('company_name'),
-        //         contact_no: formData.get('contact_no'),
-        //         from: formData.get('from_location'),
-        //         to: formData.get('to_location'),
-        //         material: formData.get('material'),
-        //         tone: formData.get('tone'),
-        //         truck_body_type: formData.get('truck_body_type'),
-        //         no_of_tyres: formData.get('tyre_count'),
-        //         description: formData.get('description'),
-        //         user_id: userId
-        //     };
-
         axios.post('https://truck.truckmessage.com/load_details', data, {
             headers: {
                 'Content-Type': 'application/json'
             }
-            
+
         })
             .then(response => {
                 toast.success('Form submitted successfully!');
@@ -131,7 +111,7 @@ const PortfolioV1 = () => {
                 console.error('There was an error!', error);
             });
     };
-    
+
 
 
     const filteredCards = filterCards(cards);
@@ -210,30 +190,41 @@ const PortfolioV1 = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-12">
-                            <div className="ltn__shop-options">
-                                <ul>
-
-                                    <li>
-                                        <div className="showing-product-number text-right">
-                                            <span>Showing {indexOfFirstCard + 1}-{Math.min(indexOfLastCard, filteredCards.length)} of {filteredCards.length} results</span>
-                                        </div>
-                                    </li>
-
-                                    <div className="header-top-btn">
-                                        {/* <Link to="/add-listing"> + Add Load availability</Link> */}
-                                        <button type="button " className='cardbutton truck-brand-button' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
+                            <div className='row'>
+                                <div className=" col-lg-6 ltn__shop-options">
+                                    <div className="showing-product-number text-right">
+                                        <span>Showing {indexOfFirstCard + 1}-{Math.min(indexOfLastCard, filteredCards.length)} of {filteredCards.length} results</span>
                                     </div>
-                                </ul>
+                                </div>
+                                <div className='col-lg-6 ' >
+                                    <div className="header-top-btn  float-end">
+                                        {/* <Link to="/add-listing"> + Add Load availability</Link> */}
+                                        <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
-                        <div className="col-lg-12">
-                            {/* Search Widget */}
-                            <div className="ltn__search-widget mb-0">
-                                <form action="">
-                                    <input type="text" name="search" placeholder="Search by ..." onChange={handleFilterChange} />
-                                </form>
+                        <div className='col-12'>
+                            <div className='row'>
+                                <div className="col-lg-8">
+                                    {/* Search Widget */}
+                                    <div className="ltn__search-widget mb-0">
+                                        <form action="">
+                                            <input type="text" name="search" placeholder="Search by ..." onChange={handleFilterChange} />
+                                        </form>
+                                    </div>
+                                </div>
+                                <div className="col-lg-4 ">
+                                    {/* Filter */}
+                                    <button type="button" class=" filterbtn" data-bs-toggle="modal" data-bs-target="#loadfilter" >Filter</button>
+
+                                </div>
+
                             </div>
+
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -257,7 +248,7 @@ const PortfolioV1 = () => {
                                             <div className="input-item input-item-name ltn__custom-icon">
                                                 <input type="text" name="company_name" placeholder="Name of the Owner" required />
                                             </div>
-                                            
+
                                         </div>
                                         <div className="col-12 col-md-6">
                                             <h6>Contact Number</h6>
@@ -358,6 +349,105 @@ const PortfolioV1 = () => {
                                     </div>
                                 </form>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* filter modal */}
+            <div class="modal fade" id="loadfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body ps-4 pe-4 p-">
+                            <div className="ltn__appointment-inner ">
+                                <form ref={formRef} onSubmit={handleSubmit}>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>From</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="from_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleFromLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingFromLocation}
+                                                    onChange={(e) => setShowingFromLocation(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>To</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="to_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleToLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingToLocation}
+                                                    onChange={(e) => setShowingToLocation(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>Truck Body Type</h6>
+                                            <div className="input-item">
+                                                <select className="nice-select" name="truck_body_type" required>
+                                                    <option value="open_body">Open Body</option>
+                                                    <option value="container">Container</option>
+                                                    <option value="trailer">Trailer</option>
+                                                    <option value="tanker">Tanker</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>No. of Tyres</h6>
+                                            <div className="input-item">
+                                                <select className="nice-select" name="tyre_count" required>
+                                                    <option value="6">6</option>
+                                                    <option value="10">10</option>
+                                                    <option value="12">12</option>
+                                                    <option value="14">14</option>
+                                                    <option value="16">16</option>
+                                                    <option value="18">18</option>
+                                                    <option value="20">20</option>
+                                                    <option value="22">22</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="row mb-0" >
+                                        <div className="col-12 col-md-6">
+                                            <h6>Material</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="material" placeholder="What type of material" required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Ton</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="tone" placeholder="Example: 2 tones" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">Apply Filter</button>
                         </div>
                     </div>
                 </div>

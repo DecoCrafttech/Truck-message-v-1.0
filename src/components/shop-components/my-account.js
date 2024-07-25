@@ -16,8 +16,9 @@ const MyAccount = () => {
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
   const [editProfile, setEditProfile] = useState({});
-  const [image, setImage] = useState('default-image-path.jpg'); // Set default image path
-
+  const [image, setImage] = useState('https://pngimg.com/d/apple_logo_PNG19666.png'); // Set default image path
+  const [updateImage, setUpdateImage] = useState("")
+  const [pageRefresh, setPageRefresh] = useState(false)
 
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
@@ -30,7 +31,7 @@ const MyAccount = () => {
 
   useEffect(() => {
     fetchUserProfile();
-  }, []);
+  }, [pageRefresh]);
 
   const fetchUserProfile = () => {
     const encodedUserId = Cookies.get("usrin");
@@ -41,6 +42,7 @@ const MyAccount = () => {
         user_id: userId,
       })
         .then(response => {
+          console.log(response)
           const { data } = response;
           if (data.success && data.data.length > 0) {
             const profileData = data.data.find(item => item.profile);
@@ -48,7 +50,7 @@ const MyAccount = () => {
             setProfile(profileData ? profileData.profile : {});
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
             setEditProfile(profileData ? profileData.profile : {});
-            setImage(profileData && profileData.profile && profileData.profile.image ? profileData.profile.image : 'default-image-path.jpg');
+            setImage(profileData && profileData.profile && profileData.profile.image ? profileData.profile.image : 'https://pngimg.com/d/apple_logo_PNG19666.png');
 
           } else {
             toast.error('Failed to fetch user profile');
@@ -63,6 +65,7 @@ const MyAccount = () => {
   };
 
   const handleAddVehicle = () => {
+
     const encodedUserId = Cookies.get("usrin");
     if (vehicleData.length <= 10) {
       if (encodedUserId) {
@@ -132,7 +135,38 @@ const MyAccount = () => {
       });
   };
 
-  const handleEditProfile = () => {
+  const handleUpdatePhoto = (e) => {
+    console.log(e.target.files[0])
+    const file = e.target.files[0];
+    if (
+      file.name.includes(".png") ||
+      file.name.includes(".jpeg") ||
+      file.name.includes(".jpg") ||
+      file.name.includes(".PNG") ||
+      file.name.includes(".JPEG") ||
+      file.name.includes(".JPG") ||
+      file.name.includes(".HEIC")
+    ) {
+      setUpdateImage(file)
+    //      if (updateImage) {
+    //   setImage(URL.createObjectURL(updateImage));
+    //   URL.revokeObjectURL(updateImage); 
+    // }
+    // setUpdateImage("");
+    } else {
+      console.log(
+        "Unsupported file format. Please upload .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC files only."
+      );
+    }
+  }
+
+  const handleEditModalClick = () => {
+    // setUpdateImage(image)
+  }
+
+  console.log(image)
+
+  const handleEditProfile = (e) => {
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
@@ -153,6 +187,64 @@ const MyAccount = () => {
         });
     }
   };
+
+  const handleSaveChanges = async () => {
+    console.log('save')
+    try {
+
+      const encodedUserId = Cookies.get("usrin");
+      if (encodedUserId) {
+        const userId = window.atob(encodedUserId);
+
+        //   if (!profileImage) return;
+        // let localUri = updatedProfileImage;
+        // let filename = localUri.split('/').pop();
+
+        // let match = /\.(\w+)$/.exec(filename);
+        // let type = match ? `image/${match[1]}` : `image`;
+        // formData.append('profile_image', { uri: localUri, name: filename, type });
+        // formData.append('profile_image', filename);
+
+        let formData = new FormData();
+        formData.append("profile_image", updateImage)
+        formData.append("user_id", userId)
+        formData.append("first_name", editProfile.first_name)
+        formData.append("date_of_birth", editProfile.date_of_birth)
+        formData.append("category", editProfile.category)
+        formData.append("state", editProfile.state)
+        formData.append("phone_number", editProfile.phone_number)
+        formData.append("operating_city", editProfile.operating_city)
+
+        console.log("profile_image", updateImage)
+        console.log("user_id", userId)
+        console.log("first_name", editProfile.first_name)
+        console.log("date_of_birth", editProfile.date_of_birth)
+        console.log("category", editProfile.category)
+        console.log("state", editProfile.state)
+        console.log("phone_number", editProfile.phone_number)
+        console.log("operating_city", editProfile.operating_city)
+
+        const res = await axios.post("https://truck.truckmessage.com/update_profile", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        if (res.data.error_code === 0) {
+          document.getElementById('editProfileCloseIcon').click()
+          console.log(res.data)
+          setUpdateImage("")
+          // setEditing(false);
+          setPageRefresh(!pageRefresh)
+        } else {
+          console.log(res.data.message)
+        }
+      }
+
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -204,9 +296,9 @@ const MyAccount = () => {
             <div className="ltn__product-tab-area">
               <div className="container">
                 <div className="row">
-                  <div className='col-lg-4 col-md-4'>
-                    <div className="ltn-author-introducing clearfix mb-3 ps-5">
-                    <div className="author-info">
+                  <div className='col-lg-4 col-md-4 '>
+                    <div className="ltn-author-introducing clearfix mb-3  ">
+                      {/* <div className="author-info">
                         <div className="image-upload">
                           <img
                             src={image}
@@ -215,14 +307,199 @@ const MyAccount = () => {
                           />
                           <input type="file" accept="image/*" onChange={handleImageChange} />
                         </div>
-                             </div>
+                      </div>
                       <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         Edit Profile
-                      </button>
+                      </button> */}
+
+                      <div className='h-100 mx-auto'>
+                        <img
+                          id="profilePic"
+                          src={image}
+                          width={150}
+                          height={150}
+                          className="d-block mx-auto my-auto"
+                        />
+                      </div>
+
+
+                      <div className="mb-0  ">
+                        {/* <div className="placeholder rounded-2 mx-auto bg-danger">
+                          <img
+                            id="profilePic"
+                            src="https://pngimg.com/d/apple_logo_PNG19666.png"
+                            width={150}
+                            height={150}
+                            className=""
+                          />
+                        </div> */}
+                        {/* <label
+                          htmlFor="newProfilePhoto"
+                          className="upload-file-block "
+                          data-bs-toggle="modal"
+                          data-bs-target="#profilePhotoModal"
+                        >
+                          <div className="text-center">
+                            <div className="">
+                              Upload <br /> Organization Logo
+                            </div>
+                          </div>
+                        </label> */}
+
+
+                      </div>
+
+                      {/* Profile Photo upload Modal */}
+
+                      <div
+                        className="modal fade"
+                        id="profilePhotoModal"
+                        aria-hidden="true"
+                        aria-labelledby="exampleModalToggleLabel"
+                        tabIndex="-1"
+                      >
+                        <div className="modal-dialog modal-dialog-centered">
+                          <div className="modal-content">
+                            <div className="modal-header">
+                              <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
+                                Organization Logo Upload
+                              </h1>
+                              <button
+                                id="employerCloseUploadProfilePhotoButton"
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              ></button>
+                            </div>
+                            <div className="modal-body">
+                              <div className="card border-0 h-100 rounded-4">
+                                <div className="card-body d-flex align-items-center justify-content-center">
+
+
+                                  <div className="w-100">
+
+
+                                    <div className="w-100 ">
+                                      <div className="row justify-content-center p-0">
+                                        <div className="pic-holder mb-0  w-75">
+
+                                          <div className="company-logo-container rounded-0">
+                                            <img
+                                              id="profilePic"
+                                              name="profile_pic"
+                                              src=""
+
+
+                                            />
+                                          </div>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="mt-3">
+                                      <p className="text-center  image-format-text">(Only  .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC formats are supported)</p>
+                                    </div>
+                                    <div className="text-center pt-4">
+                                      <button
+                                        id="employerUploadProfilePhotoButton"
+                                        type="button"
+                                        htmlFor="fileInput"
+                                        className="btn btn-brand-color mx-3 upload-btn"
+                                        data-bs-dismiss="modal"
+                                        onClick={() =>
+                                          document.getElementById("company-photo").click()
+                                        }
+                                      >
+
+                                        <input
+                                          type="file"
+                                          name="profile_pic"
+                                          id="company-photo"
+                                          hidden
+                                          className="form-control"
+                                        // onChange={handleCompanyPictureUpload}
+                                        />
+
+                                        <span>Upload Logo</span>
+                                      </button>
+                                      {
+
+                                        <button
+                                          id="employerDeleteUploadProfilePhotoButton"
+                                          type="button"
+                                          className={`btn btn-outline-secondary profile-picture-delete-button`}
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#deletePhotoModal"
+                                        >
+                                          <span>Delete Logo</span>
+                                        </button>
+                                      }
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className="modal fade"
+                        id="deletePhotoModal"
+                        aria-hidden="true"
+                        aria-labelledby="deletePhotoModal"
+                        tabIndex="-1"
+                      >
+                        <div className="modal-dialog modal-dialog-centered">
+                          <div className="modal-content">
+                            <div className="modal-header">
+                              <h1 className="modal-title fs-5" id="deletePhotoModal">
+                                Delete Organization Logo
+                              </h1>
+                              <button
+                                type="button"
+                                className="btn-close"
+                                id="deleteProfilePhotoModalConfirmationModal"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                              ></button>
+                            </div>
+                            <div className="modal-body text-center pb-4">
+                              Are you sure you want to delete this logo?
+                              <div className="text-center pt-4">
+                                <button
+                                  id="cancelDeletePhotoButton"
+                                  type="button"
+                                  className="btn btn-outline-secondary"
+                                  data-bs-dismiss="modal"
+                                >
+
+                                  <span>Cancel</span>
+                                </button>
+                                <button
+                                  id="deleteProfilePhotoDeleteButton"
+                                  type="button"
+                                  className="btn btn-brand-color mx-3 upload-btn"
+                                >
+                                  <label
+                                    className="custom-file-label upload-btn"
+                                    onClick=""
+                                  >
+                                    Delete
+                                  </label>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
                     </div>
-                  </div> <div className='col-lg-8 col-md-4'>
-                    <div className="ltn-author-introducing clearfix mb-3 ps-5">
-                      <div className="author-info">
+                  </div>
+                  <div className='col-lg-8 col-md-4'>
+                    <div className="ltn-author-introducing clearfix mb-3 ps-5 ">
+                      <div className="author-info ">
                         <h2>{profile.first_name}</h2>
                         <div className="footer-address">
                           <ul>
@@ -259,7 +536,7 @@ const MyAccount = () => {
                           </ul>
                         </div>
                       </div>
-                      <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                      <button type="button" className="btn btn-primary mt-3" onClick={() => handleEditModalClick()} data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         Edit Profile
                       </button>
                     </div>
@@ -338,7 +615,7 @@ const MyAccount = () => {
                       ))}
                     </div>
                   </div>
-                  
+
 
                   {/* Add Vehicle Modal */}
                   <div className="modal fade" id="vehicleNumber" tabIndex="-1" aria-labelledby="vehicleNumberLabel" aria-hidden="true">
@@ -414,26 +691,35 @@ const MyAccount = () => {
                     </div>
                   </div>
 
-                
+
 
                   {/* Edit Profile Modal */}
                   <div className="modal fade" id="editProfileModal" tabIndex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                      <div className="modal-content">
+                      <div className="modal-content ">
                         <div className="modal-header">
                           <h5 className="modal-title fs-5" id="editProfileModalLabel">Edit Profile</h5>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <button type="button" id='editProfileCloseIcon' className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div className="modal-body">
-                          <div className="row">
-                          <div className="col-12 col-md-6">
+                        <div className="modal-body ">
+                          <div className="row   px-4">
+                            <div className='h-100 mx-auto '>
+                                <img
+                                  id="profilePic"
+                                  src={updateImage === "" ? image : URL.createObjectURL(updateImage) }
+                                  width={120}
+                                  height={120}
+                                  className="mb-4 border border-1 p-2 rounded-3"
+                                />
+                           
+                              <span className='ms-5'><a href="">Upload Image</a></span>
+                              <input type='file' id='updateImage' onChange={(e) => handleUpdatePhoto(e)} />
+                            </div>
+                            <div className="col-12 col-md-6 ">
                               <label htmlFor="editFirstName" className="form-label">First Name</label>
                               <input type="text" className="form-control" id="editFirstName" value={editProfile.first_name} onChange={(e) => setEditProfile({ ...editProfile, first_name: e.target.value })} />
                             </div>
-                            <div className="col-12 col-md-6">
-                              <label htmlFor="editFirstName" className="form-label">First Name</label>
-                              <input type="text" className="form-control" id="editFirstName" value={editProfile.profile_image} onChange={(e) => setEditProfile({ ...editProfile, first_name: e.target.value })} />
-                            </div>
+
                             {/* <div className="mb-3">
                             <label htmlFor="editLastName" className="form-label">Last Name</label>
                             <input type="text" className="form-control" id="editLastName" value={editProfile.last_name} onChange={(e) => setEditProfile({...editProfile, last_name: e.target.value})} />
@@ -462,7 +748,7 @@ const MyAccount = () => {
                             <hr />
 
                             <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-between">
-                              <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleEditProfile}>
+                              <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleSaveChanges}>
                                 Save Changes
                               </button>
                               <button type="button" className="btn btn-secondary  mb-md-0 p-2 col-12 col-md-6" data-bs-dismiss="modal" id="closeEditProfileModalButton">

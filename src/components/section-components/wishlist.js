@@ -37,16 +37,16 @@ const WishList = () => {
       const path = splitPath[3]
       switch (path) {
         case "load":
-          initialRender("all_load_details")
+          initialRender("user_load_details")
           break;
         case "truck":
-          initialRender("all_truck_details")
+          initialRender("user_truck_details")
           break;
         case "driver":
-          initialRender("all_driver_details")
+          initialRender("user_driver_details")
           break;
         case "buy_sell":
-          initialRender("all_buy_sell_details")
+          initialRender("user_buy_sell_details")
           break;
         default:
           break;
@@ -81,7 +81,12 @@ const WishList = () => {
     if (getUser) {
       const decreptUserId = window.atob(getUser)
       try {
-        axios.get(`https://truck.truckmessage.com/${newPath}`)
+        axios.post(`https://truck.truckmessage.com/${newPath}`, data, {
+          headers: {
+              'Content-Type': 'application/json'
+          }
+
+      })
           .then(response => {
             if (response.data.success && Array.isArray(response.data.data)) {
               setData(response.data.data);
