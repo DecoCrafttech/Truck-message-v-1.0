@@ -78,7 +78,7 @@ class ServiceV5 extends Component {
 							</div>
 						</div>
 					</div>
-					<div className="col-lg-4 col-sm-6 col-12">
+					{/* <div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">
 								<span><BsFuelPumpDiesel /></span>
@@ -88,7 +88,7 @@ class ServiceV5 extends Component {
 								<p>Track and Optimize Your Fuel Costs Daily without missing</p>
 							</div>
 						</div>
-					</div>
+					</div> */}
 					<div className="col-lg-4 col-sm-6 col-12">
 						<div className="ltn__feature-item ltn__feature-item-6 text-center bg-white  box-shadow-1">
 							<div className="ltn__feature-icon">

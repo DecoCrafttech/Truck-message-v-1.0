@@ -15,7 +15,7 @@ const FuelPrice = () => {
   }, []);
 
   return (
-    <div id='mypp_embd' className=' container text-center ' data-url='https://www.mypetrolprice.com/Embed/EmbedResponse.aspx'></div>
+    <div id='mypp_embd' className=' container  align-self-center  ' data-url='https://www.mypetrolprice.com/Embed/EmbedResponse.aspx'></div>
   );
 };
 

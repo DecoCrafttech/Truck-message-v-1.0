@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
+
 const MyAccount = () => {
   const [profile, setProfile] = useState({});
   const [vehicleData, setVehicleData] = useState([]);
@@ -16,7 +17,7 @@ const MyAccount = () => {
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
   const [editProfile, setEditProfile] = useState({});
-  const [image, setImage] = useState('https://pngimg.com/d/apple_logo_PNG19666.png'); // Set default image path
+  const [image, setImage] = useState(""); // Set default image path
   const [updateImage, setUpdateImage] = useState("")
   const [pageRefresh, setPageRefresh] = useState(false)
 
@@ -50,7 +51,7 @@ const MyAccount = () => {
             setProfile(profileData ? profileData.profile : {});
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
             setEditProfile(profileData ? profileData.profile : {});
-            setImage(profileData && profileData.profile && profileData.profile.image ? profileData.profile.image : 'https://pngimg.com/d/apple_logo_PNG19666.png');
+            setImage(profileData && profileData.profile && profileData.profile.image ? profileData.profile.image : '');
 
           } else {
             toast.error('Failed to fetch user profile');
@@ -148,11 +149,11 @@ const MyAccount = () => {
       file.name.includes(".HEIC")
     ) {
       setUpdateImage(file)
-    //      if (updateImage) {
-    //   setImage(URL.createObjectURL(updateImage));
-    //   URL.revokeObjectURL(updateImage); 
-    // }
-    // setUpdateImage("");
+      //      if (updateImage) {
+      //   setImage(URL.createObjectURL(updateImage));
+      //   URL.revokeObjectURL(updateImage); 
+      // }
+      // setUpdateImage("");
     } else {
       console.log(
         "Unsupported file format. Please upload .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC files only."
@@ -196,17 +197,8 @@ const MyAccount = () => {
       if (encodedUserId) {
         const userId = window.atob(encodedUserId);
 
-        //   if (!profileImage) return;
-        // let localUri = updatedProfileImage;
-        // let filename = localUri.split('/').pop();
-
-        // let match = /\.(\w+)$/.exec(filename);
-        // let type = match ? `image/${match[1]}` : `image`;
-        // formData.append('profile_image', { uri: localUri, name: filename, type });
-        // formData.append('profile_image', filename);
 
         let formData = new FormData();
-        formData.append("profile_image", updateImage)
         formData.append("user_id", userId)
         formData.append("first_name", editProfile.first_name)
         formData.append("date_of_birth", editProfile.date_of_birth)
@@ -214,6 +206,9 @@ const MyAccount = () => {
         formData.append("state", editProfile.state)
         formData.append("phone_number", editProfile.phone_number)
         formData.append("operating_city", editProfile.operating_city)
+        if (updateImage) {
+          formData.append('profile_image', updateImage);
+        }
 
         console.log("profile_image", updateImage)
         console.log("user_id", userId)
@@ -283,11 +278,6 @@ const MyAccount = () => {
     document.body.removeChild(a);
   };
 
-
-
-
-
-
   return (
     <div className="liton__wishlist-area mt-5 pb-70">
       <div className="container">
@@ -298,27 +288,10 @@ const MyAccount = () => {
                 <div className="row">
                   <div className='col-lg-4 col-md-4 '>
                     <div className="ltn-author-introducing clearfix mb-3  ">
-                      {/* <div className="author-info">
-                        <div className="image-upload">
-                          <img
-                            src={image}
-                            alt="Profile"
-                            style={{ width: '52px', height: '52px', borderRadius: '50%', marginBottom: '10px' }}
-                          />
-                          <input type="file" accept="image/*" onChange={handleImageChange} />
-                        </div>
-                      </div>
-                      <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                        Edit Profile
-                      </button> */}
+                     
 
                       <div className='h-100 mx-auto'>
-                        <img
-                          id="profilePic"
-                          src={image}
-                          width={150}
-                          height={150}
-                          className="d-block mx-auto my-auto"
+                        <img id="profilePic" src={image} width={150} height={150} className="d-block mx-auto my-auto"
                         />
                       </div>
 
@@ -364,13 +337,7 @@ const MyAccount = () => {
                               <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
                                 Organization Logo Upload
                               </h1>
-                              <button
-                                id="employerCloseUploadProfilePhotoButton"
-                                type="button"
-                                className="btn-close"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
+                              <button id="employerCloseUploadProfilePhotoButton" type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
                             </div>
                             <div className="modal-body">
                               <div className="card border-0 h-100 rounded-4">
@@ -385,12 +352,7 @@ const MyAccount = () => {
                                         <div className="pic-holder mb-0  w-75">
 
                                           <div className="company-logo-container rounded-0">
-                                            <img
-                                              id="profilePic"
-                                              name="profile_pic"
-                                              src=""
-
-
+                                            <img                                              id="profilePic"                                              name="profile_pic"                                              src=""
                                             />
                                           </div>
 
@@ -401,23 +363,12 @@ const MyAccount = () => {
                                       <p className="text-center  image-format-text">(Only  .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC formats are supported)</p>
                                     </div>
                                     <div className="text-center pt-4">
-                                      <button
-                                        id="employerUploadProfilePhotoButton"
-                                        type="button"
-                                        htmlFor="fileInput"
-                                        className="btn btn-brand-color mx-3 upload-btn"
-                                        data-bs-dismiss="modal"
-                                        onClick={() =>
+                                      <button                                        id="employerUploadProfilePhotoButton"                                        type="button"                                        htmlFor="fileInput"                                        className="btn btn-brand-color mx-3 upload-btn"                                        data-bs-dismiss="modal"                                        onClick={() =>
                                           document.getElementById("company-photo").click()
                                         }
                                       >
 
-                                        <input
-                                          type="file"
-                                          name="profile_pic"
-                                          id="company-photo"
-                                          hidden
-                                          className="form-control"
+                                        <input type="file" name="profile_pic" id="company-photo" hidden className="form-control"
                                         // onChange={handleCompanyPictureUpload}
                                         />
 
@@ -425,15 +376,8 @@ const MyAccount = () => {
                                       </button>
                                       {
 
-                                        <button
-                                          id="employerDeleteUploadProfilePhotoButton"
-                                          type="button"
-                                          className={`btn btn-outline-secondary profile-picture-delete-button`}
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#deletePhotoModal"
-                                        >
-                                          <span>Delete Logo</span>
-                                        </button>
+                                        <button id="employerDeleteUploadProfilePhotoButton" type="button" className={`btn btn-outline-secondary profile-picture-delete-button`} data-bs-toggle="modal" data-bs-target="#deletePhotoModal" >                                       
+                                           <span>Delete Logo</span>                                        </button>
                                       }
                                     </div>
                                   </div>
@@ -443,48 +387,24 @@ const MyAccount = () => {
                           </div>
                         </div>
                       </div>
-                      <div
-                        className="modal fade"
-                        id="deletePhotoModal"
-                        aria-hidden="true"
-                        aria-labelledby="deletePhotoModal"
-                        tabIndex="-1"
-                      >
+                      <div className="modal fade" id="deletePhotoModal" aria-hidden="true" aria-labelledby="deletePhotoModal" tabIndex="-1" >
                         <div className="modal-dialog modal-dialog-centered">
                           <div className="modal-content">
                             <div className="modal-header">
                               <h1 className="modal-title fs-5" id="deletePhotoModal">
                                 Delete Organization Logo
                               </h1>
-                              <button
-                                type="button"
-                                className="btn-close"
-                                id="deleteProfilePhotoModalConfirmationModal"
-                                data-bs-dismiss="modal"
-                                aria-label="Close"
-                              ></button>
+                              <button                                type="button"                                className="btn-close"                                id="deleteProfilePhotoModalConfirmationModal"                                data-bs-dismiss="modal"                                aria-label="Close"                              ></button>
                             </div>
                             <div className="modal-body text-center pb-4">
                               Are you sure you want to delete this logo?
                               <div className="text-center pt-4">
-                                <button
-                                  id="cancelDeletePhotoButton"
-                                  type="button"
-                                  className="btn btn-outline-secondary"
-                                  data-bs-dismiss="modal"
-                                >
+                                <button                                  id="cancelDeletePhotoButton"                                  type="button"                                  className="btn btn-outline-secondary"                                  data-bs-dismiss="modal"                                >
 
                                   <span>Cancel</span>
                                 </button>
-                                <button
-                                  id="deleteProfilePhotoDeleteButton"
-                                  type="button"
-                                  className="btn btn-brand-color mx-3 upload-btn"
-                                >
-                                  <label
-                                    className="custom-file-label upload-btn"
-                                    onClick=""
-                                  >
+                                <button                                  id="deleteProfilePhotoDeleteButton"                                  type="button"                                  className="btn btn-brand-color mx-3 upload-btn"                                >
+                                  <label                                    className="custom-file-label upload-btn"                                    onClick=""                                  >
                                     Delete
                                   </label>
                                 </button>
@@ -704,14 +624,14 @@ const MyAccount = () => {
                         <div className="modal-body ">
                           <div className="row   px-4">
                             <div className='h-100 mx-auto '>
-                                <img
-                                  id="profilePic"
-                                  src={updateImage === "" ? image : URL.createObjectURL(updateImage) }
-                                  width={120}
-                                  height={120}
-                                  className="mb-4 border border-1 p-2 rounded-3"
-                                />
-                           
+                              <img
+                                id="profilePic"
+                                src={updateImage === "" ? image : URL.createObjectURL(updateImage)}
+                                width={120}
+                                height={120}
+                                className="mb-4 border border-1 p-2 rounded-3"
+                              />
+
                               <span className='ms-5'><a href="">Upload Image</a></span>
                               <input type='file' id='updateImage' onChange={(e) => handleUpdatePhoto(e)} />
                             </div>
