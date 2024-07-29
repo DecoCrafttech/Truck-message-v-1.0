@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../Services/axiosInstance';
 import { updateIsLoggedIn, updateUserDetails } from '../../Storage/Slices/LoginSlice';
 import Cookie from 'js-cookie';
+import axios from 'axios';
 
 const Navbar = () => {
     const Login = useSelector((state) => state.login);
@@ -23,8 +24,8 @@ const Navbar = () => {
 
     const [step, setStep] = useState(1);
     const [firstName, setFirstName] = useState('');
-    const [dob, setDob] = useState(''); 
-    const [operatingCity, setOperatingCity] = useState(''); 
+    const [dob, setDob] = useState('');
+    const [operatingCity, setOperatingCity] = useState('');
     const [state, setState] = useState('');
 
     useEffect(() => {
@@ -49,7 +50,7 @@ const Navbar = () => {
                     password: password
                 }
                 const res = await axiosInstance.post('/login', loginData)
-                if (res.data.error_code === 0) { 
+                if (res.data.error_code === 0) {
                     const userId = window.btoa(res.data.data.user_id);
                     var date = new Date();
                     date.setDate(date.getDate() + 1);
@@ -67,14 +68,14 @@ const Navbar = () => {
                 } else {
                     toast.error("Login failed")
                 }
-            } catch (err) { 
+            } catch (err) {
                 toast.error(err.code)
             }
         }
     };
 
 
-    const register = async() => {
+    const register = async () => {
         try {
             if (firstName === '' || dob === '' || phoneNumber === '' || password === '' || confirmPassword === '' || operatingCity === '') {
                 toast.error('Please fill in all fields.');
@@ -97,26 +98,32 @@ const Navbar = () => {
                 operating_city: operatingCity
             };
 
-            const res = await axiosInstance.post('/registration', registrationData)
-            if(res.data.error_code === 0){
-                sendOTP(phoneNumber); // Send OTP after successful registration
-                setStep(2); // Move to step 2 after registration
+            const res = await axios.post('https://truck.truckmessage.com/registration', registrationData)
+            if (res.data.error_code === 0) {
+                if (res.data.success) {
+                    toast.success(res.data.message)
+                    sendOTP(phoneNumber); // Send OTP after successful registration
+                    setStep(2); // Move to step 2 after registration
+                }else{
+                    document.getElementById("registrationModalClose").click()
+                    toast.error(res.data.message)
+                }
             }
-        }catch(err){
+        } catch (err) {
             toast.error(err.code)
-        }   
-    };
-
-    const sendOTP = async(phone) => {
-        try{
-            await axiosInstance.post('/send_signup_otp', { phone_number: phone })
-        }catch(err){
-             toast.error(err.code)
         }
     };
 
-    const validateOTP = async() => {
-        try{
+    const sendOTP = async (phone) => {
+        try {
+            await axiosInstance.post('/send_signup_otp', { phone_number: phone })
+        } catch (err) {
+            toast.error(err.code)
+        }
+    };
+
+    const validateOTP = async () => {
+        try {
             if (otpInput === '') {
                 toast.error('Please enter OTP.');
                 return;
@@ -128,7 +135,7 @@ const Navbar = () => {
             };
 
             const res = await axiosInstance.post('/validate_otp', otpData);
-            if(res.data.error_code === 0){
+            if (res.data.error_code === 0) {
                 // const userId = window.btoa(res.data.data.user_id);
                 // var date = new Date();
                 // date.setDate(date.getDate() + 1);
@@ -147,7 +154,7 @@ const Navbar = () => {
                 document.getElementById("registrationModalClose").click();
             }
 
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     };
@@ -157,9 +164,9 @@ const Navbar = () => {
         setPhoneNumber(e.target.value);
     };
 
-    const handleLogOut = () =>{
-         Cookie.remove("usrin");
-         dispatch(updateIsLoggedIn(false));
+    const handleLogOut = () => {
+        Cookie.remove("usrin");
+        dispatch(updateIsLoggedIn(false));
     }
 
     return (
@@ -174,7 +181,7 @@ const Navbar = () => {
                                         <ul>
                                             <li>
                                                 <a className=' mailtext' href="mailto:info@webmail.com?Subject=Flower%20greetings%20to%20you">
-                                                    <i className="icon-mail    " /> info@truckmessage.com
+                                                    <i className="icon-mail" /> info@truckmessage.com
                                                 </a>
                                             </li>
                                         </ul>
@@ -248,7 +255,7 @@ const Navbar = () => {
                                                 <>
                                                     <div class="dropdown dropdown m-0 h-100">
                                                         <div className="dropdown col-12 text-center" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <img className='user-icon-width btn ltn__utilize-toggle p-0 shadow'  src='https://static.vecteezy.com/system/resources/previews/005/005/788/original/user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg' alt="profile logo" />
+                                                            <img className='user-icon-width btn ltn__utilize-toggle p-0 shadow' src='https://static.vecteezy.com/system/resources/previews/005/005/788/original/user-icon-in-trendy-flat-style-isolated-on-grey-background-user-symbol-for-your-web-site-design-logo-app-ui-illustration-eps10-free-vector.jpg' alt="profile logo" />
                                                         </div>
                                                         <ul class="dropdown-menu dropdown-menu-lg-end">
                                                             <li className='m-0' onClick={() => pageRender("my_profile")}><button class="dropdown-item" type="button">My account</button></li>
@@ -268,7 +275,7 @@ const Navbar = () => {
                                                             </Link>
                                                         </li>
                                                         <li>
-                                                            <Link data-bs-toggle="modal" data-bs-target="#registerModal" title="Sign Up" onClick={()=>setStep(1)}>
+                                                            <Link data-bs-toggle="modal" data-bs-target="#registerModal" title="Sign Up" onClick={() => setStep(1)}>
                                                                 <i className="fas fa-user-plus" />
                                                                 <span className="tooltip">Sign Up</span>
                                                             </Link>
@@ -363,7 +370,7 @@ const Navbar = () => {
                                                 </div>
                                                 <button type="button" className="btn btn-primary btn-block" onClick={signIn}>Sign In</button>
                                                 <div>
-                                                    
+
                                                 </div>
                                             </div>
                                         </div>
@@ -394,7 +401,7 @@ const Navbar = () => {
                                                     <label className='mb-1'>Name</label>
                                                     <input type="text" className="form-control" placeholder="Enter Your Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                                                 </div>
-                                                
+
                                                 <div className="form-group ">
                                                     <label>Date of Birth</label>
                                                     <input type="date" className="form-control py-3" placeholder="Date of Birth" value={dob} onChange={(e) => setDob(e.target.value)} />

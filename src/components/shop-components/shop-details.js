@@ -1,110 +1,154 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import parse from 'html-react-parser';
+import React, { Component, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
-class ShopDetails extends Component {
+const ShopDetails = () => {
+	let publicUrl = process.env.PUBLIC_URL + '/'
 
-	render() {
+	const pageRender = useNavigate();
 
-		let publicUrl = process.env.PUBLIC_URL + '/'
+	const [data, setData] = useState({
+		brand : "",
+		buy_sell_id:"",
+		contact_no : "",
+		description : "",
+		images : [],
+		kms_driven :"",
+		location : "",
+		model : "",
+		owner_name :"",
+		truck_image2 : "",
+		truck_image3 : "",
+		upload_image_name : "",
+		vehicle_number :""
+	});
 
-		return <div className="ltn__shop-details-area pb-10">
-			<div className="container">
-				<div className="row">
-					<div className="col-lg-12 col-md-12">
-						<div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
-							<h4 className="title-2">Images</h4>
-							<div className="ltn__property-details-gallery mb-30">
-								<div className="row">
-									<div className="col-md-6">
-										<a href={publicUrl + "assets/img/others/14.jpg"} data-rel="lightcase:myCollection">
-											<img className="mb-30" src={publicUrl + "assets/img/others/14.jpg"} alt="Image" />
-										</a>
-										<a href={publicUrl + "assets/img/others/15.jpg"} data-rel="lightcase:myCollection">
-											<img className="mb-30" src={publicUrl + "assets/img/others/15.jpg"} alt="Image" />
-										</a>
-									</div>
-									<div className="col-md-6">
-										<a href={publicUrl + "assets/img/others/16.jpg"} data-rel="lightcase:myCollection">
-											<img className="mb-30" src={publicUrl + "assets/img/others/16.jpg"} alt="Image" />
-										</a>
-									</div>
+
+	useEffect(async () => {
+		const getViewDetailsId = Cookies.get("buyAndSellViewDetailsId")
+
+		if (getViewDetailsId) {
+			try {
+				const data = {
+					buy_sell_id: window.atob(getViewDetailsId)
+				}
+				const res = await axios.post('https://truck.truckmessage.com/buy_sell_id_details', data, {
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+
+				if (res.data.error_code === 0) {
+					if(res.data.data.length > 0){
+						setData(...res.data.data)
+					}
+				} else {
+					toast.error(res.data.message)
+				}
+			} catch (err) {
+				console.log(err)
+			}
+		} else {
+			toast.error("Something went wrong")
+		}
+	}, [])
+
+	return <div className="ltn__shop-details-area pb-10">
+		<div className="container">
+			<div className="row">
+				<div className='my-4'>
+					<button type='button' className='btn' onClick={()=>pageRender('/blog-left-sidebar')}>Back</button>
+				</div>
+				<div className="col-lg-12 col-md-12">
+					<div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
+						<h4 className="title-2">Images</h4>
+						<div className="ltn__property-details-gallery mb-30">
+							<div className="row">
+								<div className="col-md-6">
+									<a href={publicUrl + "assets/img/others/14.jpg"} data-rel="lightcase:myCollection">
+										<img className="mb-30" src={publicUrl + "assets/img/others/14.jpg"} alt="Image" />
+									</a>
+									<a href={publicUrl + "assets/img/others/15.jpg"} data-rel="lightcase:myCollection">
+										<img className="mb-30" src={publicUrl + "assets/img/others/15.jpg"} alt="Image" />
+									</a>
+								</div>
+								<div className="col-md-6">
+									<a href={publicUrl + "assets/img/others/16.jpg"} data-rel="lightcase:myCollection">
+										<img className="mb-30" src={publicUrl + "assets/img/others/16.jpg"} alt="Image" />
+									</a>
 								</div>
 							</div>
-							<div className='col-12'>
-								<div className='row'>
-									<div className='col-12 col-md-8'>
-										<h1 className='mt-0 ms-0'>Diamond Manor Apartment</h1>
-										<div className="product-ratting">
-											<ul className="list-inline">
-												<li className="list-inline-item"><a href="#"><i className="fas fa-star" aria-label="star" /></a></li>
-												<li className="list-inline-item"><a href="#"><i className="fas fa-star" aria-label="star" /></a></li>
-												<li className="list-inline-item"><a href="#"><i className="fas fa-star" aria-label="star" /></a></li>
-												<li className="list-inline-item"><a href="#"><i className="fas fa-star-half-alt" aria-label="half-star" /></a></li>
-												<li className="list-inline-item"><a href="#"><i className="far fa-star" aria-label="star-outline" /></a></li>
-												<li className="list-inline-item review-total"> <a href="#"> (1 Reviews)</a></li>
-											</ul>
-										</div>
-										<div className="ltn__blog-meta">
-											<ul className="list-inline">
-												<li className="list-inline-item ltn__blog-date mt-3">
-													<i className="far fa-calendar-alt" /> May 19, 2021
-												</li>
-												<li className="list-inline-item">
-													<Link to="#"><i className="far fa-comments" /> 35 Comments</Link>
-												</li>
-											</ul>
-											<label className='mt-3 d-block'>
-												<span className="ltn__secondary-color"><i className="flaticon-pin" /></span> Belmont Gardens, Chicago
-											</label>
-										</div>
+						</div>
+						<div className='col-12'>
+							<div className='row'>
+								<div className='col-12 col-md-8'>
+									<h1 className='mt-0 ms-0'>{data.brand}</h1>
+									<div className="product-ratting">
+										<ul className="list-inline">
+											<li className="list-inline-item"><a href="#"><i className="fas fa-star" aria-label="star" /></a></li>
+											<li className="list-inline-item"><a href="#"><i className="fas fa-star" aria-label="star" /></a></li>
+											<li className="list-inline-item"><a href="#"><i className="fas fa-star" aria-label="star" /></a></li>
+											<li className="list-inline-item"><a href="#"><i className="fas fa-star-half-alt" aria-label="half-star" /></a></li>
+											<li className="list-inline-item"><a href="#"><i className="far fa-star" aria-label="star-outline" /></a></li>
+											<li className="list-inline-item review-total"> <a href="#"> (1 Reviews)</a></li>
+										</ul>
 									</div>
-									<div className='col-4 col-md-4 w-100 '>
+									<div className="ltn__blog-meta">
+										<ul className="list-inline">
+											<li className="list-inline-item ltn__blog-date mt-3">
+												<i className="far fa-calendar-alt" /> {data.updt}
+											</li>
+											<li className="list-inline-item">
+												<Link to="#"><i className="far fa-comments" /> 35 Comments</Link>
+											</li>
+										</ul>
+										<label className='mt-3 d-block'>
+											<span className="ltn__secondary-color"><i className="flaticon-pin" /></span> Belmont Gardens, Chicago
+										</label>
+									</div>
+								</div>
+								<div className='col-4 col-md-4 w-100 '>
 									<div className='d-flex justify-content-center align-items-center gap-2  '>
 										<button type="button" className="btn btn-primary p-2">call</button>
 										<button type="button" className="btn btn-primary p-2 ">Message</button>
 									</div>
-									</div>
 								</div>
 							</div>
-
 						</div>
-					</div>
-
-
-
-					<div className="property-detail-info-list section-bg-1 clearfix mb-60">
-						<ul>
-							<li><label>brand:</label> <span>2</span></li>
-							<li><label>owner_name:</label> <span>HZ29</span></li>
-							<li><label>model: </label> <span>120 sqft</span></li>
-							<li><label>vehicle_number:</label> <span>7</span></li>
-							<li><label>kms_driven:</label> <span>1992</span></li>
-						</ul>
 
 					</div>
-					<h4 className="title-2">Description</h4>(description)
-					<p>Massa tempor nec feugiat nisl pretium. Egestas fringilla phasellus faucibus scelerisque eleifend donec
-						Porta nibh venenatis cras sed felis eget velit aliquet. Neque volutpat ac tincidunt vitae semper
-						quis lectus. Turpis in eu mi bibendum neque egestas congue quisque. Sed elementum tempus egestas
-						sed sed risus pretium quam. Dignissim sodales ut eu sem. Nibh mauris cursus mattis molestee
-						iaculis at erat pellentesque. Id interdum velit laoreet id donec ultrices tincidunt.</p>
-					<p>To the left is the modern kitchen with central island, leading through to the unique breakfast family room which feature glass walls and doors out onto the garden and access to the separate utility room.</p>
+				</div>
 
-					<h4 className="title-2">Location</h4>
-					<div className="property-details-google-map mb-60">
-						<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9334.271551495209!2d-73.97198251485975!3d40.668170674982946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b0456b5a2e7%3A0x68bdf865dda0b669!2sBrooklyn%20Botanic%20Garden%20Shop!5e0!3m2!1sen!2sbd!4v1590597267201!5m2!1sen!2sbd" width="100%" height="100%" frameBorder={0} allowFullScreen aria-hidden="false" tabIndex={0} />
-					</div>
-					{/* comment-reply */}
+
+
+				<div className="property-detail-info-list section-bg-1 clearfix mb-60">
+					<ul>
+						<li><label>brand:</label> <span>{data.brand}</span></li>
+						<li><label>owner_name:</label> <span>{data.owner_name}</span></li>
+						<li><label>model: </label> <span>{data.model}</span></li>
+						<li><label>vehicle_number:</label> <span>{data.vehicle_number}</span></li>
+						<li><label>kms_driven:</label> <span>{data.kms_driven}</span></li>
+					</ul>
 
 				</div>
+				<h4 className="title-2">Description</h4>(description)
+				<p>{data.description}</p>
+
+				<h4 className="title-2">Location</h4>
+				<div className="property-details-google-map mb-60">
+					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9334.271551495209!2d-73.97198251485975!3d40.668170674982946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b0456b5a2e7%3A0x68bdf865dda0b669!2sBrooklyn%20Botanic%20Garden%20Shop!5e0!3m2!1sen!2sbd!4v1590597267201!5m2!1sen!2sbd" width="100%" height="100%" frameBorder={0} allowFullScreen aria-hidden="false" tabIndex={0} />
+				</div>
+				{/* comment-reply */}
+
 			</div>
 		</div>
+	</div>
 
 
 
 
-	}
 }
 
 export default ShopDetails

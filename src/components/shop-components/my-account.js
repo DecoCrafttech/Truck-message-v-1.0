@@ -51,7 +51,7 @@ const MyAccount = () => {
             setProfile(profileData ? profileData.profile : {});
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
             setEditProfile(profileData ? profileData.profile : {});
-            setImage(profileData && profileData.profile && profileData.profile.image ? profileData.profile.image : '');
+            setImage(profileData.profile.profile_image_name ? profileData.profile.profile_image_name : '');
 
           } else {
             toast.error('Failed to fetch user profile');
@@ -291,7 +291,7 @@ const MyAccount = () => {
                      
 
                       <div className='h-100 mx-auto'>
-                        <img id="profilePic" src={image} width={150} height={150} className="d-block mx-auto my-auto"
+                        <img id="profilePic" src={`${image}`} width={150} height={150} className="d-block mx-auto my-auto"
                         />
                       </div>
 

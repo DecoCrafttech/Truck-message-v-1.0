@@ -6,7 +6,7 @@ import { FaTruckFast } from "react-icons/fa6";
 import { BsFillCalendar2DateFill } from "react-icons/bs";
 import { RiPinDistanceFill } from "react-icons/ri";
 import { FaLocationDot } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import Autocomplete from "react-google-autocomplete";
@@ -14,6 +14,7 @@ import Autocomplete from "react-google-autocomplete";
 
 const BlogList = () => {
     const LoginDetails = useSelector((state) => state.login);
+    const pageRender = useNavigate();
 
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,33 +25,21 @@ const BlogList = () => {
         search: '',
     });
 
+    const [showingFromLocation, setShowingFromLocation] = useState("");
+    const [showingToLocation, setShowingToLocation] = useState("");
+    const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
+        city: "",
+        state: "",
+    });
+    const [editCompanyToLocation, setEditCompanyToLocation] = useState({
+        city: "",
+        state: "",
+    });
 
     const [contactError, setContactError] = useState(''); // State to manage contact number validation error
 
     const formRef = useRef(null);
     const modalRef = useRef(null);
-
-    const publicUrl = process.env.PUBLIC_URL + '/';
-
-    useEffect(() => {
-        axios.get('https://truck.truckmessage.com/all_buy_sell_details')
-            .then(response => {
-                if (response.data.success && Array.isArray(response.data.data)) {
-                    setCards(response.data.data);
-                } else {
-                    console.error('Unexpected response format:', response.data);
-                }
-            })
-            .catch(error => {
-                console.error('There was an error fetching the data!', error);
-            });
-    }, []);
-
-    const handleFilterChange = (e) => {
-        setFilters({
-            search: e.target.value,
-        });
-    };
 
     const filterCards = (cards) => {
         return cards.filter(card => {
@@ -65,12 +54,50 @@ const BlogList = () => {
         });
     };
 
+    const filteredCards = filterCards(cards);
+
+    const indexOfLastCard = currentPage * cardsPerPage;
+    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
+    const currentCards = filteredCards.slice(indexOfFirstCard, indexOfLastCard);
+    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const publicUrl = process.env.PUBLIC_URL + '/';
+
+    useEffect(() => {
+        initialRender()
+    }, []);
+
+    const initialRender = async () => {
+        try {
+            const res = await axios.get('https://truck.truckmessage.com/all_buy_sell_details')
+                .then(response => {
+                    if (response.data.success && Array.isArray(response.data.data)) {
+                        setCards(response.data.data);
+                    } else {
+                        console.error('Unexpected response format:', response.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the data!', error);
+                });
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
+    const handleFilterChange = (e) => {
+        setFilters({
+            search: e.target.value,
+        });
+    };
 
     const validateContactNumber = (contact) => {
         const contactNumberPattern = /^\d{10}$/; // Simple pattern for 10-digit numbers
         return contactNumberPattern.test(contact);
     };
-
 
 
     const handleSubmit = (event) => {
@@ -96,7 +123,7 @@ const BlogList = () => {
             description: formData.get('description'),
             user_id: userId
         };
-        axios.post('https://truck.truckmessage.com/load_details', data, {
+        axios.post('https://truck.truckmessage.com/truck_buy_sell', data, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -116,18 +143,6 @@ const BlogList = () => {
             });
     };
 
-
-
-
-    const filteredCards = filterCards(cards);
-
-    const indexOfLastCard = currentPage * cardsPerPage;
-    const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-    const currentCards = filteredCards.slice(indexOfFirstCard, indexOfLastCard);
-    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
-
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
     const handleViewDetails = () => {
         setIsSignedIn(true);
     };
@@ -137,18 +152,6 @@ const BlogList = () => {
         setShowLoginPopup(false);
     };
 
-
-
-    const [showingFromLocation, setShowingFromLocation] = useState("");
-    const [showingToLocation, setShowingToLocation] = useState("");
-    const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
-        city: "",
-        state: "",
-    });
-    const [editCompanyToLocation, setEditCompanyToLocation] = useState({
-        city: "",
-        state: "",
-    });
 
     const handleFromLocation = (selectedLocation) => {
         const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
@@ -175,6 +178,14 @@ const BlogList = () => {
             setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
         }
     };
+
+    const handleSaveBusAndSellId = (buyAndSellDetails) => {
+        Cookies.set("buyAndSellViewDetailsId", window.btoa(buyAndSellDetails.buy_sell_id), {
+            secure: true,
+            sameSite: 'strict',
+            path: '/'
+        })
+    }
 
     return (
         <div>
@@ -385,7 +396,7 @@ const BlogList = () => {
                                     </div>
                                     <hr />
                                     <div className='d-flex gap-2'>
-                                        <Link to="/product-details" className='apara'>view details </Link>                                        <link></link>
+                                        <Link to="/product-details" className='apara' onClick={() => handleSaveBusAndSellId(card)}>view details </Link>                                        <link></link>
                                     </div>
                                 </div>
                             </div>
