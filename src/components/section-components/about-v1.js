@@ -48,7 +48,7 @@ class AboutV1 extends Component {
 									llamco laboris. Lorem ipsum dolor sit amet" </p>
 							</div> */}
 							<div className="btn-wrapper animated go-top">
-								<Link to="/service" className="theme-btn-1 btn btn-effect-1">OUR SERVICES</Link>
+								<Link to="/service" className="btn btn-danger ps-4 pt-2 pb-2 pe-4	 go-top">OUR SERVICES</Link>
 							</div>
 						</div>
 					</div>
