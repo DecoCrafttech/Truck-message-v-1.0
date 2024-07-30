@@ -1,65 +1,69 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const ShopDetails = () => {
-	let publicUrl = process.env.PUBLIC_URL + '/'
+    let publicUrl = process.env.PUBLIC_URL + '/';
 
-	const pageRender = useNavigate();
+    const pageRender = useNavigate();
 
-	const [data, setData] = useState({
-		brand : "",
-		buy_sell_id:"",
-		contact_no : "",
-		description : "",
-		images : [],
-		kms_driven :"",
-		location : "",
-		model : "",
-		owner_name :"",
-		truck_image2 : "",
-		truck_image3 : "",
-		upload_image_name : "",
-		vehicle_number :""
-	});
+    const [data, setData] = useState({
+        brand: "",
+        buy_sell_id: "",
+        contact_no: "",
+        description: "",
+        images: [],
+        kms_driven: "",
+        location: "",
+        model: "",
+        owner_name: "",
+        truck_image2: "",
+        truck_image3: "",
+        upload_image_name: "",
+        vehicle_number: ""
+    });
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            const getViewDetailsId = Cookies.get("buyAndSellViewDetailsId");
+
+            if (getViewDetailsId) {
+                try {
+                    const data = {
+                        buy_sell_id: window.atob(getViewDetailsId)
+                    };
+                    const res = await axios.post('https://truck.truckmessage.com/buy_sell_id_details', data, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (res.data.error_code === 0) {
+                        if (res.data.data.length > 0) {
+                            setData(...res.data.data);
+                        }
+                    } else {
+                        toast.error(res.data.message);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            } else {
+                toast.error("Something went wrong");
+            }
+        };
+
+       
+    }, []);
 
 
-	useEffect(async () => {
-		const getViewDetailsId = Cookies.get("buyAndSellViewDetailsId")
-
-		if (getViewDetailsId) {
-			try {
-				const data = {
-					buy_sell_id: window.atob(getViewDetailsId)
-				}
-				const res = await axios.post('https://truck.truckmessage.com/buy_sell_id_details', data, {
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				})
-
-				if (res.data.error_code === 0) {
-					if(res.data.data.length > 0){
-						setData(...res.data.data)
-					}
-				} else {
-					toast.error(res.data.message)
-				}
-			} catch (err) {
-				console.log(err)
-			}
-		} else {
-			toast.error("Something went wrong")
-		}
-	}, [])
-
-	return <div className="ltn__shop-details-area pb-10">
+	return  <div className="ltn__shop-details-area pb-10">
 		<div className="container">
 			<div className="row">
 				<div className='my-4'>
-					<button type='button' className='btn' onClick={()=>pageRender('/blog-left-sidebar')}>Back</button>
+				<button type='button' className='btn' onClick={() => pageRender('/blog-left-sidebar')}>Back</button>
 				</div>
 				<div className="col-lg-12 col-md-12">
 					<div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
@@ -145,10 +149,6 @@ const ShopDetails = () => {
 			</div>
 		</div>
 	</div>
-
-
-
-
 }
 
 export default ShopDetails

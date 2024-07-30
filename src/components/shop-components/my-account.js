@@ -43,17 +43,29 @@ const MyAccount = () => {
         user_id: userId,
       })
         .then(response => {
-          console.log(response)
+          console.log(response);
           const { data } = response;
           if (data.success && data.data.length > 0) {
-            const profileData = data.data.find(item => item.profile);
+            const profileData = data.data.find(item => item.name);
             const vehicleData = data.data.find(item => item.vehicle_data);
-            setProfile(profileData ? profileData.profile : {});
+
+            setProfile(profileData ? {
+              first_name: profileData.name,
+              date_of_birth: profileData.date_of_birth,
+              phone_number: profileData.phone_number,
+              category: profileData.category,
+              operating_city: profileData.operating_city,
+              state: profileData.state,
+              profile_image_name: profileData.profile_image_name
+            } : {});
+
             setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
-            setEditProfile(profileData ? profileData.profile : {});
-            setImage(profileData.profile.profile_image_name ? profileData.profile.profile_image_name : '');
+            setEditProfile(profileData ? profileData : {});
+            setImage(profileData && profileData.profile.profile_image_name ? profileData.profile.profile_image_name : '');
+            console.log('Profile Image URL:', profileData && profileData.profile.profile_image_name ? profileData.profile.profile_image_name : '');
 
           } else {
+            console.log(data);
             toast.error('Failed to fetch user profile');
           }
         })
@@ -64,6 +76,7 @@ const MyAccount = () => {
       toast.error('User not logged in');
     }
   };
+
 
   const handleAddVehicle = () => {
 
@@ -288,41 +301,19 @@ const MyAccount = () => {
                 <div className="row">
                   <div className='col-lg-4 col-md-4 '>
                     <div className="ltn-author-introducing clearfix mb-3  ">
-                     
+
 
                       <div className='h-100 mx-auto'>
-                        <img id="profilePic" src={`${image}`} width={150} height={150} className="d-block mx-auto my-auto"
-                        />
+                        <img id="profilePic" src={image} alt="Profile" width={150} height={150} className="d-block mx-auto my-auto" />
+                        {/* <img id="profilePic" src={`${image}`} width={150} height={150} className="d-block mx-auto my-auto" /> */}
                       </div>
 
 
                       <div className="mb-0  ">
-                        {/* <div className="placeholder rounded-2 mx-auto bg-danger">
-                          <img
-                            id="profilePic"
-                            src="https://pngimg.com/d/apple_logo_PNG19666.png"
-                            width={150}
-                            height={150}
-                            className=""
-                          />
-                        </div> */}
-                        {/* <label
-                          htmlFor="newProfilePhoto"
-                          className="upload-file-block "
-                          data-bs-toggle="modal"
-                          data-bs-target="#profilePhotoModal"
-                        >
-                          <div className="text-center">
-                            <div className="">
-                              Upload <br /> Organization Logo
-                            </div>
-                          </div>
-                        </label> */}
 
 
                       </div>
 
-                      {/* Profile Photo upload Modal */}
 
                       <div
                         className="modal fade"
@@ -352,7 +343,7 @@ const MyAccount = () => {
                                         <div className="pic-holder mb-0  w-75">
 
                                           <div className="company-logo-container rounded-0">
-                                            <img                                              id="profilePic"                                              name="profile_pic"                                              src=""
+                                            <img id="profilePic" name="profile_pic" src=""
                                             />
                                           </div>
 
@@ -363,9 +354,9 @@ const MyAccount = () => {
                                       <p className="text-center  image-format-text">(Only  .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC formats are supported)</p>
                                     </div>
                                     <div className="text-center pt-4">
-                                      <button                                        id="employerUploadProfilePhotoButton"                                        type="button"                                        htmlFor="fileInput"                                        className="btn btn-brand-color mx-3 upload-btn"                                        data-bs-dismiss="modal"                                        onClick={() =>
-                                          document.getElementById("company-photo").click()
-                                        }
+                                      <button id="employerUploadProfilePhotoButton" type="button" htmlFor="fileInput" className="btn btn-brand-color mx-3 upload-btn" data-bs-dismiss="modal" onClick={() =>
+                                        document.getElementById("company-photo").click()
+                                      }
                                       >
 
                                         <input type="file" name="profile_pic" id="company-photo" hidden className="form-control"
@@ -376,8 +367,8 @@ const MyAccount = () => {
                                       </button>
                                       {
 
-                                        <button id="employerDeleteUploadProfilePhotoButton" type="button" className={`btn btn-outline-secondary profile-picture-delete-button`} data-bs-toggle="modal" data-bs-target="#deletePhotoModal" >                                       
-                                           <span>Delete Logo</span>                                        </button>
+                                        <button id="employerDeleteUploadProfilePhotoButton" type="button" className={`btn btn-outline-secondary profile-picture-delete-button`} data-bs-toggle="modal" data-bs-target="#deletePhotoModal" >
+                                          <span>Delete Logo</span>                                        </button>
                                       }
                                     </div>
                                   </div>
@@ -394,17 +385,17 @@ const MyAccount = () => {
                               <h1 className="modal-title fs-5" id="deletePhotoModal">
                                 Delete Organization Logo
                               </h1>
-                              <button                                type="button"                                className="btn-close"                                id="deleteProfilePhotoModalConfirmationModal"                                data-bs-dismiss="modal"                                aria-label="Close"                              ></button>
+                              <button type="button" className="btn-close" id="deleteProfilePhotoModalConfirmationModal" data-bs-dismiss="modal" aria-label="Close"                              ></button>
                             </div>
                             <div className="modal-body text-center pb-4">
                               Are you sure you want to delete this logo?
                               <div className="text-center pt-4">
-                                <button                                  id="cancelDeletePhotoButton"                                  type="button"                                  className="btn btn-outline-secondary"                                  data-bs-dismiss="modal"                                >
+                                <button id="cancelDeletePhotoButton" type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal"                                >
 
                                   <span>Cancel</span>
                                 </button>
-                                <button                                  id="deleteProfilePhotoDeleteButton"                                  type="button"                                  className="btn btn-brand-color mx-3 upload-btn"                                >
-                                  <label                                    className="custom-file-label upload-btn"                                    onClick=""                                  >
+                                <button id="deleteProfilePhotoDeleteButton" type="button" className="btn btn-brand-color mx-3 upload-btn"                                >
+                                  <label className="custom-file-label upload-btn" onClick=""                                  >
                                     Delete
                                   </label>
                                 </button>

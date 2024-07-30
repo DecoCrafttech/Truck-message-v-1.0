@@ -462,8 +462,19 @@ const PortfolioV1 = () => {
                         <div className="col" key={card.id}>
                             <div className="card h-100 shadow truckcard">
                                 <div className='card-header mt-2 border-0 mb-0 '>
-                                    <h5 className="card-title cardmodify">{card.company_name}</h5><p className='mb-0'>review</p>
+                                    <h5 className="card-title cardmodify">{card.company_name}</h5>
+                                    <div className='col-6 col-md-6 float-right text-start .fs-6 pe-0 ps-0 pb-0 mt-2 mb-0'>
+                                        <p className='.fs-6 reviewtext'>(12)
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        </p>
+                                    </div>
+                                    
                                 </div>
+
                                 <div className="card-body p-3 mt-2 mb-2">
                                     <div className='row'>
                                         <div className="col-lg-12 cardicon">

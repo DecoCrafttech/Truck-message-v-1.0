@@ -120,15 +120,18 @@ const BlogList = () => {
             tone: formData.get('tone'),
             truck_body_type: formData.get('truck_body_type'),
             no_of_tyres: formData.get('tyre_count'),
+            images: formData.get('images'),
             description: formData.get('description'),
             user_id: userId
         };
         axios.post('https://truck.truckmessage.com/truck_buy_sell', data, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data'
             }
-
+            
         })
+        console.log(data)
+
             .then(response => {
                 toast.success('Form submitted successfully!');
                 formRef.current.reset();
@@ -142,6 +145,8 @@ const BlogList = () => {
                 console.error('There was an error!', error);
             });
     };
+
+
 
     const handleViewDetails = () => {
         setIsSignedIn(true);
@@ -324,7 +329,7 @@ const BlogList = () => {
                                     </div>
                                     <div class="mb-3">
                                         <label for="formFileMultiple" class="form-label">Multiple files input example</label>
-                                        <input class="form-control" type="file" id="formFileMultiple" multiple />
+                                        <input class="form-control" type="file" name="images" id="formFileMultiple" multiple />
                                     </div>
                                     <div className="row">
                                         <div className="col-12">
@@ -353,7 +358,7 @@ const BlogList = () => {
                                 <span className='object-fit-fill rounded justify-content-center d-flex'>
                                     <img
                                         className="m-3 rounded-3 justify-content-center d-flex"
-                                        src={`${publicUrl}assets/img/slider/21.jpg`}
+                                        src={card.images.length > 0 ? card.images[0] : ''}
                                         alt="truck message Logo - All in one truck solutions"
                                         style={{ width: '390px', height: '290px', objectFit: 'cover' }}
                                     />
@@ -362,7 +367,7 @@ const BlogList = () => {
                                     <div className='col-12 col-md-12 mb-2 text-wrap'>
                                         <div className='row'>
                                             <div className='col-8 col-md-8 text-start ps-0'>
-                                                <h5 className="card-title text-wrap">{card.brand} {card.model}</h5>
+                                                <h5 className="card-title text-wrap">{card.brand}</h5>
                                             </div>
                                             <div className='col-4 col-md-4 text-end .fs-6 pe-0'>
                                                 <p className='.fs-6 reviewtext'>(12)
