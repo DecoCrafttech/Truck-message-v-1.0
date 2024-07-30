@@ -24,7 +24,7 @@ const Banner = () => {
 											<p className='para'>"Experience seamless logistics management and maximize efficiency with our comprehensive suite of trucking solutions."</p>
 										</div>
 										<div className="btn-wrapper animated ">
-											<Link to="/contact" className="theme-btn-1 btn btn-effect-1 go-top">Make An Enquiry</Link>				                  </div>
+											<Link to="/contact" className="btn btn-danger ps-4 pt-2 pb-2 pe-4	 go-top">Make An Enquiry</Link>				                  </div>
 									</div>
 								</div>
 								<div className="slide-item-img">

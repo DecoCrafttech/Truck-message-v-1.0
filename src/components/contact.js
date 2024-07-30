@@ -12,7 +12,6 @@ const ContactV1 = () => {
         {/* <PageHeader headertitle="Contact Us" subheader="Contact" /> */}
         <ContactInfo />
         <ContactForm />
-        {/* <Map /> */}
         {/* <CallToActionV1 /> */}
     </div>
 }

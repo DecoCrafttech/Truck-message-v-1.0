@@ -4,6 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
+import { GiTruck } from "react-icons/gi";
 import Cookies from 'js-cookie';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -483,6 +484,7 @@ const WishList = () => {
         <div className='card vh-100 m-2'>
           <div className='card-body h-25 row align-items-center'>
             <p className='text-center'>No data found</p>
+            <div><GiTruck /></div>
           </div>
         </div>
       : null
@@ -560,7 +562,8 @@ const WishList = () => {
         :
         <div className='card vh-100 m-2'>
           <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>
+            <p className='text-center'>No data found</p>            <div><GiTruck /></div>
+
           </div>
         </div>
       :
@@ -634,7 +637,8 @@ const WishList = () => {
         :
         <div className='card vh-100 m-2'>
           <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>
+            <p className='text-center'>No data found</p>            <div><GiTruck /></div>
+
           </div>
         </div>
       :
@@ -707,7 +711,8 @@ const WishList = () => {
               :
               <div className='card vh-100 w-100 my-2'>
                 <div className='card-body h-25 row align-items-center'>
-                  <p className='text-center'>No data found</p>
+                  <p className='text-center'>No data found</p>            <div ><GiTruck /></div>
+
                 </div>
               </div>
             :

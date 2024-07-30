@@ -189,15 +189,15 @@ const PortfolioV1 = () => {
             <div className="ltn__product-area ltn__product-gutter mb-50 mt-60">
                 <div className="container">
                     <div className="row">
-                        <div className="col-lg-12">
+                        <div className="col-lg-12 mb-2">
                             <div className='row'>
-                                <div className=" col-lg-6 ltn__shop-options">
+                                <div className=" col-lg-8 mb-2">
                                     <div className="showing-product-number text-right">
                                         <span>Showing {indexOfFirstCard + 1}-{Math.min(indexOfLastCard, filteredCards.length)} of {filteredCards.length} results</span>
                                     </div>
                                 </div>
-                                <div className='col-lg-6 ' >
-                                    <div className="header-top-btn  float-end">
+                                <div className='col-lg-4 mb-2' >
+                                    <div >
                                         {/* <Link to="/add-listing"> + Add Load availability</Link> */}
                                         <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
                                     </div>
@@ -205,6 +205,7 @@ const PortfolioV1 = () => {
                             </div>
 
                         </div>
+                        <hr></hr>
                         <div className='col-12'>
                             <div className='row'>
                                 <div className="col-lg-8">

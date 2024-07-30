@@ -136,21 +136,7 @@ const Navbar = () => {
 
             const res = await axiosInstance.post('/validate_otp', otpData);
             if (res.data.error_code === 0) {
-                // const userId = window.btoa(res.data.data.user_id);
-                // var date = new Date();
-                // date.setDate(date.getDate() + 1);
-                // console.log(date)
-                // //updating username in cookies
-                // Cookie.set("usrin", userId, {
-                //     expires: date, // 1 day
-                //     secure: true,
-                //     sameSite: 'strict',
-                //     path: '/'
-                // })
-
-                // dispatch(updateUserDetails(loginData));
-                // dispatch(updateIsLoggedIn(true));
-
+             
                 document.getElementById("registrationModalClose").click();
             }
 
@@ -199,12 +185,10 @@ const Navbar = () => {
                                                                     <span className="active-currency">English</span>
                                                                 </a>
                                                                 <ul>
-                                                                    <li><Link to="#">Arabic</Link></li>
-                                                                    <li><Link to="#">Bengali</Link></li>
-                                                                    <li><Link to="#">Chinese</Link></li>
+                                                                    <li><Link to="#">Tamil</Link></li>
                                                                     <li><Link to="#">English</Link></li>
-                                                                    <li><Link to="#">French</Link></li>
                                                                     <li><Link to="#">Hindi</Link></li>
+                                                                  
                                                                 </ul>
                                                             </li>
                                                         </ul>

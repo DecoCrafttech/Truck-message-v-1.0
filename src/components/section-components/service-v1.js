@@ -95,7 +95,7 @@ class ServiceV5 extends Component {
 								<span><FaHandHoldingDollar /></span>
 							</div>
 							<div className="ltn__feature-info">
-								<h3><Link to="/service-details" className='apara'>Expense Calculator</Link></h3>
+								<h3><Link to="/expense-calculator" className='apara'>Expense Calculator</Link></h3>
 								<p>Manage & Calculate Your Realtime Trucking Costs</p>
 							</div>
 						</div>

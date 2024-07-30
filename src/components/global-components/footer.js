@@ -62,7 +62,7 @@ class Footer_v1 extends Component {
 													<i className=" para icon-placeholder" />
 												</div>
 												<div className="footer-address-info footercls">
-													Brooklyn, New York, United States
+												10/61,North Street, Near Sri Ambiga Press, P.Velur,Namakkal-638182
 												</div>
 											</li>
 											<li>
