@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/Truck-message-v-1.0/static/css/main.55b03b60.css",
-    "main.js": "/Truck-message-v-1.0/static/js/main.75453052.js",
+    "main.css": "/Truck-message-v-1.0/static/css/main.cf63c88f.css",
+    "main.js": "/Truck-message-v-1.0/static/js/main.cec8aff3.js",
     "static/media/slick.svg": "/Truck-message-v-1.0/static/media/slick.2630a3e3eab21c607e21.svg",
     "static/media/slick.eot": "/Truck-message-v-1.0/static/media/slick.a4e97f5a2a64f0ab1323.eot",
     "static/media/slick.ttf": "/Truck-message-v-1.0/static/media/slick.c94f7671dcc99dce43e2.ttf",
     "index.html": "/Truck-message-v-1.0/index.html",
     "static/media/slick.woff": "/Truck-message-v-1.0/static/media/slick.295183786cd8a1389865.woff",
-    "main.55b03b60.css.map": "/Truck-message-v-1.0/static/css/main.55b03b60.css.map",
-    "main.75453052.js.map": "/Truck-message-v-1.0/static/js/main.75453052.js.map"
+    "main.cf63c88f.css.map": "/Truck-message-v-1.0/static/css/main.cf63c88f.css.map",
+    "main.cec8aff3.js.map": "/Truck-message-v-1.0/static/js/main.cec8aff3.js.map"
   },
   "entrypoints": [
-    "static/css/main.55b03b60.css",
-    "static/js/main.75453052.js"
+    "static/css/main.cf63c88f.css",
+    "static/js/main.cec8aff3.js"
   ]
 }
