@@ -328,6 +328,7 @@ const WishList = () => {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
+
   const InputChange = (e) => {
     if (e.target.files.length > 0) {
       setMultipleImages(e.target.files)
@@ -359,6 +360,7 @@ const WishList = () => {
       }
     }
   }
+
   const DeleteSelectFile = (id) => {
     const result = selectedfile.filter((data) => data.id !== id);
     SetSelectedFile(result);
@@ -377,7 +379,7 @@ const WishList = () => {
 
   const handleBuyAndSellUpdate = async () => {
     const userId = window.atob(Cookies.get("usrin"));
-    console.log(userId)
+
     const edit = { ...editingData }
     edit.images = multipleImages
 
@@ -394,27 +396,33 @@ const WishList = () => {
     formData.append("model", edit.model)
     formData.append("owner_name", edit.owner_name)
     formData.append("vehicle_number", edit.vehicle_number)
-
-    if (edit.images.length > 0) {
-      console.log(edit.images)
-
-      for (let i = 0; i < edit.images.length; i++) {
-        formData.append(`truck_image${i + 1}`, edit.images[i]);
-        console.log(edit.images[i])
-      }
-    } else {
-      formData.append(`images`, null);
-    }
+ 
+    if (multipleImages.length > 0) {
+      if (edit.images.length > 0) {
+        for (let i = 0; i < edit.images.length; i++) {
+          formData.append(`truck_image${i + 1}`, edit.images[i]);
+        }
+      } 
+      // else {
+      //   formData.append(`images`, null);
+      // }
+    } 
 
     try {
-      const res = axios.post("https://truck.truckmessage.com/buy_sell_id_details", formData,
+      const res = await axios.post("https://truck.truckmessage.com/truck_buy_sell", formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
 
-      console.log(res)
+      if (res.data.error_code === 0) {
+        document.getElementById("clodeBuySellModel").click()
+        toast.success(res.data.message)
+        initialRender("user_buy_sell_details")
+      } else {
+        toast.error(res.data.message)
+      }
     }
     catch (err) {
       console.log(err)
@@ -492,9 +500,6 @@ const WishList = () => {
       : null
     )
   };
-
-
-
 
   const renderTruckCard = () => {
     return (!gettingDetails ?
@@ -663,7 +668,7 @@ const WishList = () => {
                     <span className='object-fit-fill rounded justify-content-center d-flex'>
                       <img
                         className="m-3 rounded-3 justify-content-center d-flex"
-                        src={card.images.length > 0 ? card.images[0] : ''}
+                        src={card.images!==undefined ? card.images.length > 0 ? card.images[0] : '' : ''}
                         alt="truck message Logo - All in one truck solutions"
                         style={{ width: '390px', height: '290px', objectFit: 'cover' }}
                       />
@@ -777,8 +782,6 @@ const WishList = () => {
       toast.error("plaese login to get data")
     }
   }
-
-
 
   return (
     <div className='container'>
@@ -1224,7 +1227,7 @@ const WishList = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Load</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="clodeBuySellModel"></button>
             </div>
             <div className="modal-body">
               <div className="ltn__appointment-inner">
@@ -1233,13 +1236,13 @@ const WishList = () => {
                     <div className="col-12 col-md-6">
                       <h6>Brand</h6>
                       <div className="input-item input-item-name ltn__custom-icon">
-                        <input type="text" name="company_name" placeholder="Name of the Owner" value={editingData.brand} onChange={(e) => setEditingData({ ...editingData, brand: e.target.value })} required />
+                        <input type="text" name="company_name" placeholder="Name of the Brand" value={editingData.brand} onChange={(e) => setEditingData({ ...editingData, brand: e.target.value })} required />
                       </div>
                     </div>
                     <div className="col-12 col-md-6">
                       <h6>Model</h6>
                       <div className="input-item input-item-name ltn__custom-icon">
-                        <input type="text" name="company_name" placeholder="Name of the Owner" value={editingData.model} onChange={(e) => setEditingData({ ...editingData, model: e.target.value })} required />
+                        <input type="text" name="company_name" placeholder="Name of the Model" value={editingData.model} onChange={(e) => setEditingData({ ...editingData, model: e.target.value })} required />
                       </div>
                     </div>
                     <div className="col-12 col-md-6">
@@ -1251,8 +1254,13 @@ const WishList = () => {
                     <div className="col-12 col-md-6">
                       <h6>Vehicle Number</h6>
                       <div className="input-item input-item-email ltn__custom-icon">
-                        <input type="tel" name="contact_no" placeholder="Type your contact number" value={editingData.vehicle_number} onChange={(e) => setEditingData({ ...editingData, vehicle_number: e.target.value })} required />
-                        {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
+                        <input type="tel" name="contact_no" placeholder="Type your Vehicle Number" value={editingData.vehicle_number} onChange={(e) => setEditingData({ ...editingData, vehicle_number: e.target.value })} required />
+                      </div>
+                    </div>
+                    <div className="col-12 col-md-6">
+                      <h6>Kilometers driven</h6>
+                      <div className="input-item">
+                        <input type="number" name="contact_no" placeholder="Type Kilometers driven" className='w-100 py-3' value={editingData.kms_driven} onChange={(e) => setEditingData({ ...editingData, kms_driven: e.target.value })} required />
                       </div>
                     </div>
                     <div className="col-12 col-md-6">
@@ -1279,9 +1287,7 @@ const WishList = () => {
                         />
                       </div>
                     </div>
-                  </div>
 
-                  <div className="row">
                     <div className="col-12 col-md-6">
                       <h6>Truck Body Type</h6>
                       <div className="input-item">
@@ -1309,6 +1315,7 @@ const WishList = () => {
                       </div>
                     </div>
                   </div>
+ 
                   <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">Multiple files input example</label>
                     <input type="file" id="fileupload" className="file-upload-input form-control" onChange={InputChange} multiple />

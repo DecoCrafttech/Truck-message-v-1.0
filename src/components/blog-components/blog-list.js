@@ -10,12 +10,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import Autocomplete from "react-google-autocomplete";
+import shortid from "https://cdn.skypack.dev/shortid@2.2.16";
+
 
 
 const BlogList = () => {
-    const LoginDetails = useSelector((state) => state.login);
-    const pageRender = useNavigate();
-
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [cardsPerPage] = useState(21);
@@ -35,6 +34,8 @@ const BlogList = () => {
         city: "",
         state: "",
     });
+
+    const [showingBuyAndSellLocation, setShowingBuyAndSellLocation] = useState("");
 
     const [contactError, setContactError] = useState(''); // State to manage contact number validation error
 
@@ -63,7 +64,15 @@ const BlogList = () => {
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    const publicUrl = process.env.PUBLIC_URL + '/';
+    const [editingData, setEditingData] = useState({
+        company_name: "",
+        contact_no: "",
+        description: "",
+        material: "",
+        no_of_tyres: "",
+        tone: "",
+        truck_body_type: "",
+    })
 
     useEffect(() => {
         initialRender()
@@ -99,90 +108,16 @@ const BlogList = () => {
         return contactNumberPattern.test(contact);
     };
 
+    const handleBuyAndSellLocation = (selectedLocation) => {
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const contactNumber = formData.get('contact_no');
-
-        if (!validateContactNumber(contactNumber)) {
-            setContactError('Please enter a valid 10-digit contact number.');
-            return;
-        }
-
-        const userId = window.atob(Cookies.get("usrin"));
-        const data = {
-            company_name: formData.get('company_name'),
-            contact_no: contactNumber,
-            from: formData.get('from_location'),
-            to: formData.get('to_location'),
-            material: formData.get('material'),
-            tone: formData.get('tone'),
-            truck_body_type: formData.get('truck_body_type'),
-            no_of_tyres: formData.get('tyre_count'),
-            images: formData.get('images'),
-            description: formData.get('description'),
-            user_id: userId
-        };
-        axios.post('https://truck.truckmessage.com/truck_buy_sell', data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+            if (cityComponent && stateComponent) {
+                setShowingBuyAndSellLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
             }
-            
-        })
-        console.log(data)
-
-            .then(response => {
-                toast.success('Form submitted successfully!');
-                formRef.current.reset();
-                setContactError('');
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100);
-            })
-            .catch(error => {
-                toast.error('Failed to submit the form.');
-                console.error('There was an error!', error);
-            });
-    };
-
-
-
-    const handleViewDetails = () => {
-        setIsSignedIn(true);
-    };
-
-    const handleLogin = () => {
-        setIsSignedIn(true);
-        setShowLoginPopup(false);
-    };
-
-
-    const handleFromLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
-
-        if (cityComponent && stateComponent) {
-            setEditCompanyFromLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
         }
-    };
-
-    const handleToLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
-
-        if (cityComponent && stateComponent) {
-            setEditCompanyToLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
-        }
-    };
+    }
 
     const handleSaveBusAndSellId = (buyAndSellDetails) => {
         Cookies.set("buyAndSellViewDetailsId", window.btoa(buyAndSellDetails.buy_sell_id), {
@@ -190,6 +125,115 @@ const BlogList = () => {
             sameSite: 'strict',
             path: '/'
         })
+    }
+
+    //Image upload and delete functions
+    const [selectedfile, SetSelectedFile] = useState([]);
+    const [Files, SetFiles] = useState([]);
+    const [multipleImages, setMultipleImages] = useState([]);
+
+    const filesizes = (bytes, decimals = 2) => {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const dm = decimals < 0 ? 0 : decimals;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    }
+    const InputChange = (e) => {
+        if (e.target.files.length > 0) {
+            setMultipleImages(e.target.files)
+        }
+
+        // --For Multiple File Input
+        let images = [];
+        for (let i = 0; i < e.target.files.length; i++) {
+            images.push((e.target.files[i]));
+            let reader = new FileReader();
+            let file = e.target.files[i];
+            reader.onloadend = () => {
+                SetSelectedFile((preValue) => {
+                    return [
+                        ...preValue,
+                        {
+                            id: shortid.generate(),
+                            filename: e.target.files[i].name,
+                            filetype: e.target.files[i].type,
+                            fileimage: reader.result,
+                            datetime: e.target.files[i].lastModifiedDate.toLocaleString('en-IN'),
+                            filesize: filesizes(e.target.files[i].size)
+                        }
+                    ]
+                });
+            }
+            if (e.target.files[i]) {
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+    const DeleteSelectFile = (id) => {
+        const result = selectedfile.filter((data) => data.id !== id);
+        SetSelectedFile(result);
+
+        const overallFile = result.map((data) => data.filename)
+
+        var newImages = []
+        for (let i = 0; i < multipleImages.length; i++) {
+            if (overallFile.includes(multipleImages[i].name)) {
+                newImages[newImages.length] = multipleImages[i]
+            }
+        }
+        setMultipleImages(newImages)
+    }
+    //
+
+    const handleBuyAndSellUpdate = async () => {
+        const userId = window.atob(Cookies.get("usrin"));
+
+        const edit = { ...editingData }
+        edit.images = multipleImages
+
+        const formData = new FormData();
+
+        formData.append("user_id", userId);
+        formData.append("brand", edit.brand)
+        formData.append("contact_no", edit.contact_no)
+        formData.append("description", edit.description)
+        formData.append("kms_driven", edit.kms_driven)
+        formData.append("location", showingBuyAndSellLocation)
+        formData.append("model", edit.model)
+        formData.append("owner_name", edit.owner_name)
+        formData.append("vehicle_number", edit.vehicle_number)
+
+        if (multipleImages.length > 0) {
+            if (edit.images.length > 0) {
+                for (let i = 0; i < edit.images.length; i++) {
+                    formData.append(`truck_image${i + 1}`, edit.images[i]);
+                }
+            }
+
+            try {
+                const res = await axios.post("https://truck.truckmessage.com/truck_buy_sell", formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    })
+
+                if (res.data.error_code === 0) {
+                    document.getElementById("clodeBuySellModel").click()
+                    toast.success(res.data.message)
+                    initialRender()
+                } else {
+                    toast.error(res.data.message)
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        } else {
+            toast.error("Image required")
+        }
     }
 
     return (
@@ -221,8 +265,146 @@ const BlogList = () => {
                     </div>
                 </div>
             </div>
+
             {/* modal */}
             <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Load</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="clodeBuySellModel"></button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="ltn__appointment-inner">
+                                <div>
+                                    <div className="row">
+                                        <div className="col-12 col-md-6">
+                                            <h6>Brand</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="company_name" placeholder="Name of the Brand" value={editingData.brand} onChange={(e) => setEditingData({ ...editingData, brand: e.target.value })} required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Model</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="company_name" placeholder="Name of the Model" value={editingData.model} onChange={(e) => setEditingData({ ...editingData, model: e.target.value })} required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Owner Name</h6>
+                                            <div className="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="owner_name" placeholder="Name of the Owner" value={editingData.owner_name} onChange={(e) => setEditingData({ ...editingData, owner_name: e.target.value })} required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Vehicle Number</h6>
+                                            <div className="input-item input-item-email ltn__custom-icon">
+                                                <input type="tel" name="contact_no" placeholder="Type your Vehicle Number" value={editingData.vehicle_number} onChange={(e) => setEditingData({ ...editingData, vehicle_number: e.target.value })} required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Kilometers driven</h6>
+                                            <div className="tel-item">
+                                                <input type="number" name="kms driven" className="w-100 py-4" placeholder="Type Kms driven" value={editingData.kms_driven} onChange={(e) => setEditingData({ ...editingData, kms_driven: e.target.value })} required />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Contact Number</h6>
+                                            <div className="input-item input-item-email ltn__custom-icon">
+                                                <input type="tel" name="contact_no" placeholder="Type your contact number" value={editingData.contact_no} onChange={(e) => setEditingData({ ...editingData, contact_no: e.target.value })} required />
+                                                {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Location</h6>
+                                            <div className="input-item input-item-name">
+                                                <Autocomplete name="from_location"
+                                                    className="google-location location-input bg-transparent py-2"
+                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                    onPlaceSelected={(place) => {
+                                                        if (place) {
+                                                            handleBuyAndSellLocation(place.address_components);
+                                                        }
+                                                    }}
+                                                    required
+                                                    value={showingBuyAndSellLocation}
+                                                    onChange={(e) => setShowingBuyAndSellLocation(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>Truck Body Type</h6>
+                                            <div className="input-item">
+                                                <select className="nice-select" name="truck_body_type" required value={editingData.truck_body_type} onChange={(e) => setEditingData({ ...editingData, truck_body_type: e.target.value })}>
+                                                    <option value="open_body">Open Body</option>
+                                                    <option value="container">Container</option>
+                                                    <option value="trailer">Trailer</option>
+                                                    <option value="tanker">Tanker</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-12 col-md-6">
+                                            <h6>No. of Tyres</h6>
+                                            <div className="input-item">
+                                                <select className="nice-select" name="tyre_count" value={editingData.no_of_tyres} onChange={(e) => setEditingData({ ...editingData, no_of_tyres: e.target.value })} required>
+                                                    <option value="6">6</option>
+                                                    <option value="10">10</option>
+                                                    <option value="12">12</option>
+                                                    <option value="14">14</option>
+                                                    <option value="16">16</option>
+                                                    <option value="18">18</option>
+                                                    <option value="20">20</option>
+                                                    <option value="22">22</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+                                        <input type="file" id="fileupload" className="file-upload-input form-control" onChange={InputChange} multiple required />
+                                    </div>
+                                    <div className='my-3'>
+                                        {selectedfile.map((data, index) => {
+                                            const { id, filename, filetype, fileimage, datetime, filesize } = data;
+                                            return (
+                                                <div className="file-atc-box" key={id}>
+                                                    {
+                                                        filename.match(/.(jpg|jpeg|png|gif|svg)$/i) ?
+                                                            <div className="file-image"> <img src={fileimage} alt="" /></div> :
+                                                            <div className="file-image"><i className="far fa-file-alt"></i></div>
+                                                    }
+                                                    <div className="file-detail row">
+                                                        <h6>{filename}</h6>
+                                                        <div className='col-9'>
+                                                            <p><span>Size : {filesize}</span>,<span className="ps-1 ml-2">Modified Time : {datetime}</span></p>
+                                                        </div>
+                                                        <div className="file-actions col-3">
+                                                            <button type="button" className="file-action-btn" onClick={() => DeleteSelectFile(id)}>Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                                <div className="row">
+                                    <div className="col-12">
+                                        <h6>Descriptions (Optional)</h6>
+                                        <div className="input-item input-item-textarea ltn__custom-icon">
+                                            <textarea name="description" placeholder="Enter a text here" value={editingData.description} onChange={(e) => setEditingData({ ...editingData, description: e.target.value })} required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleBuyAndSellUpdate}>Create</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -347,7 +529,7 @@ const BlogList = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
 
             <div className='container'>

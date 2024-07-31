@@ -22,24 +22,40 @@ const PortfolioV1 = () => {
         search: '',
     });
 
+    const [filterModelData, SetfilterModelData] = useState({
+        company_name:"",
+        user_id:"",
+        from_location: "",
+        to_location: "",
+        truck_body_type: "",
+        no_of_tyres: "",
+        material: "",
+        tone: ""
+    })
+
     const [contactError, setContactError] = useState(''); // State to manage contact number validation error
 
 
     const formRef = useRef(null);
     const modalRef = useRef(null);
 
-    useEffect(() => {
-        axios.get('https://truck.truckmessage.com/all_load_details')
-            .then(response => {
-                if (response.data.success && Array.isArray(response.data.data)) {
-                    setCards(response.data.data);
-                } else {
-                    console.error('Unexpected response format:', response.data);
-                }
-            })
-            .catch(error => {
-                console.error('There was an error fetching the data!', error);
-            });
+    useEffect(async () => {
+        try {
+            await axios.get('https://truck.truckmessage.com/all_load_details')
+                .then(response => {
+                    if (response.data.success && Array.isArray(response.data.data)) {
+                        setCards(response.data.data);
+                    } else {
+                        console.error('Unexpected response format:', response.data);
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error fetching the data!', error);
+                });
+        }
+        catch (err) {
+            console.log(err)
+        }
     }, []);
 
     const handleFilterChange = (e) => {
@@ -112,8 +128,6 @@ const PortfolioV1 = () => {
             });
     };
 
-
-
     const filteredCards = filterCards(cards);
 
     // Calculate the index of the last card on the current page
@@ -128,22 +142,6 @@ const PortfolioV1 = () => {
 
     // Handle page change
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-    // Handle "View Details" button click
-    const handleViewDetails = () => {
-        setIsSignedIn(true);
-        // if (isSignedIn) {
-        //     // Logic to show call and message buttons
-        // } else {
-        //     setShowLoginPopup(false); // Show login popup if not signed in
-        // }
-    };
-
-    // Handle login (dummy implementation for demonstration)
-    const handleLogin = () => {
-        setIsSignedIn(true);
-        setShowLoginPopup(false);
-    };
 
 
     const [showingFromLocation, setShowingFromLocation] = useState("");
@@ -183,6 +181,31 @@ const PortfolioV1 = () => {
         }
     };
 
+    const handleApplyFilter = async () => {
+        const filterObj = { ...filterModelData }
+        filterObj.from_location = showingFromLocation
+        filterObj.to_location = showingToLocation
+
+        try {
+            const res = await axios.post("https://truck.truckmessage.com/user_load_details_filter", filterObj, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            
+            if(res.data.error_code === 0){ 
+                setCards(res.data.data)
+                toast.success(res.data.message)
+                document.getElementById("closeFilterBox").click()
+            }else{
+                toast.error(res.data.message)
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+
 
     return (
         <div>
@@ -218,8 +241,7 @@ const PortfolioV1 = () => {
                                 </div>
                                 <div className="col-lg-4 ">
                                     {/* Filter */}
-                                    <button type="button" class=" filterbtn" data-bs-toggle="modal" data-bs-target="#loadfilter" >Filter</button>
-
+                                    <button type="button" class="filterbtn" data-bs-toggle="modal" data-bs-target="#loadfilter" >Filter</button>
                                 </div>
 
                             </div>
@@ -230,7 +252,6 @@ const PortfolioV1 = () => {
                 </div>
             </div>
 
-            {/* modal  */}
             {/* modal */}
             <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -361,7 +382,7 @@ const PortfolioV1 = () => {
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
                         </div>
                         <div className="modal-body ps-4 pe-4 p-">
                             <div className="ltn__appointment-inner ">
@@ -378,7 +399,6 @@ const PortfolioV1 = () => {
                                                             handleFromLocation(place.address_components);
                                                         }
                                                     }}
-                                                    required
                                                     value={showingFromLocation}
                                                     onChange={(e) => setShowingFromLocation(e.target.value)}
                                                 />
@@ -395,7 +415,6 @@ const PortfolioV1 = () => {
                                                             handleToLocation(place.address_components);
                                                         }
                                                     }}
-                                                    required
                                                     value={showingToLocation}
                                                     onChange={(e) => setShowingToLocation(e.target.value)}
                                                 />
@@ -406,7 +425,7 @@ const PortfolioV1 = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>Truck Body Type</h6>
                                             <div className="input-item">
-                                                <select className="nice-select" name="truck_body_type" required>
+                                                <select className="nice-select" name="truck_body_type" onChange={(e) => SetfilterModelData({ ...filterModelData, truck_body_type: e.target.value })}>
                                                     <option value="open_body">Open Body</option>
                                                     <option value="container">Container</option>
                                                     <option value="trailer">Trailer</option>
@@ -417,7 +436,7 @@ const PortfolioV1 = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>No. of Tyres</h6>
                                             <div className="input-item">
-                                                <select className="nice-select" name="tyre_count" required>
+                                                <select className="nice-select" name="tyre_count" onChange={(e) => SetfilterModelData({ ...filterModelData, no_of_tyres: e.target.value })}>
                                                     <option value="6">6</option>
                                                     <option value="10">10</option>
                                                     <option value="12">12</option>
@@ -434,13 +453,13 @@ const PortfolioV1 = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>Material</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="material" placeholder="What type of material" required />
+                                                <input type="text" name="material" placeholder="What type of material" onChange={(e) => SetfilterModelData({ ...filterModelData, material: e.target.value })} />
                                             </div>
                                         </div>
                                         <div className="col-12 col-md-6">
                                             <h6>Ton</h6>
                                             <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="tone" placeholder="Example: 2 tones" required />
+                                                <input type="text" name="tone" placeholder="Example: 2 tones" onChange={(e) => SetfilterModelData({ ...filterModelData, tone: e.target.value })} />
                                             </div>
                                         </div>
                                     </div>
@@ -448,7 +467,7 @@ const PortfolioV1 = () => {
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary">Apply Filter</button>
+                            <button type="button" class="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
                         </div>
                     </div>
                 </div>
@@ -473,7 +492,7 @@ const PortfolioV1 = () => {
                                             <span className="float-right"><i className="text-warning fa fa-star"></i></span>
                                         </p>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div className="card-body p-3 mt-2 mb-2">

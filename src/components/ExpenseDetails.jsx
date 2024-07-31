@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import Cookies from 'js-cookie';
+
 
 const ExpenseDetails = () => {
-    let publicUrl = process.env.PUBLIC_URL + '/';
+    const params = useParams()
+    const userId = window.atob(Cookies.get("usrin"));
+    const pageRender = useNavigate()
 
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -11,50 +16,52 @@ const ExpenseDetails = () => {
     const [modalTitle, setModalTitle] = useState('Credit Entry');
 
     const fetchCashFlowDetails = async () => {
-        try {
-            const response = await axios.post('https://truck.truckmessage.com/get_load_trip_cash_flow', {
-                user_id: '1',
-                load_trip_id: '4'
-            });
+        if (userId && params.id) {
+            try {
+                const response = await axios.post('https://truck.truckmessage.com/get_load_trip_cash_flow', {
+                    user_id: userId,
+                    load_trip_id: params.id
+                });
 
-            console.log(response)
-            const fetchedData = response.data.data.map(item => ({
-                date: new Date(item.updt).toLocaleDateString(),
-                total: item.amount,
-                spend: item.cash_flow_type === 'OUT' ? item.amount : 0,
-                balance: item.closing_balance,
-                transactions: [
-                    {
-                        reason: item.cash_flow_name,
-                        description: item.category,
-                        debitorcredit: item.cash_flow_type === 'IN' ? 'credit' : 'debit',
-                        rupees: item.amount,
-                        time: new Date(item.updt).toLocaleString()
+                console.log(response)
+                const fetchedData = response.data.data.map(item => ({
+                    date: new Date(item.updt).toLocaleDateString(),
+                    total: item.amount,
+                    spend: item.cash_flow_type === 'OUT' ? item.amount : 0,
+                    balance: item.closing_balance,
+                    transactions: [
+                        {
+                            reason: item.cash_flow_name,
+                            description: item.category,
+                            debitorcredit: item.cash_flow_type === 'IN' ? 'credit' : 'debit',
+                            rupees: item.amount,
+                            time: new Date(item.updt).toLocaleString()
+                        }
+                    ]
+                }));
+
+                // Group transactions by date
+                const groupedData = fetchedData.reduce((acc, current) => {
+                    if (!acc[current.date]) {
+                        acc[current.date] = {
+                            date: current.date,
+                            total: current.total,
+                            spend: current.spend,
+                            balance: current.balance,
+                            transactions: []
+                        };
                     }
-                ]
-            }));
+                    acc[current.date].transactions.push(...current.transactions);
+                    return acc;
+                }, {});
 
-            // Group transactions by date
-            const groupedData = fetchedData.reduce((acc, current) => {
-                if (!acc[current.date]) {
-                    acc[current.date] = {
-                        date: current.date,
-                        total: current.total,
-                        spend: current.spend,
-                        balance: current.balance,
-                        transactions: []
-                    };
-                }
-                acc[current.date].transactions.push(...current.transactions);
-                return acc;
-            }, {});
-
-            setData(Object.values(groupedData));
-        } catch (error) {
-            console.error('Error fetching cash flow details:', error);
-            setError('Failed to fetch data');
-        } finally {
-            setLoading(false);
+                setData(Object.values(groupedData));
+            } catch (error) {
+                console.error('Error fetching cash flow details:', error);
+                setError('Failed to fetch data');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -91,6 +98,9 @@ const ExpenseDetails = () => {
         <section>
             <div className="ltn__page-details-area ltn__service-details-area mb-105">
                 <div className="container py-5">
+                    <div className='my-4'>
+                        <button type='button' className='btn btn-primary col-12 col-md-4 col-lg-2 col-xl-1' onClick={() => pageRender('/expense-calculator')}>Back</button>
+                    </div>
                     <div className="row shadow">
                         <div className="card w-100 shadow">
                             <div className="card-body">
@@ -181,7 +191,7 @@ const ExpenseDetails = () => {
                 </div>
             </div>
 
-            
+
 
             {/* Modal Form */}
             <div className="modal fade" id="modalForm" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

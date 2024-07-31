@@ -1,90 +1,121 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import Slider from "react-slick";
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 const ShopDetails = () => {
-    let publicUrl = process.env.PUBLIC_URL + '/';
+	let publicUrl = process.env.PUBLIC_URL + '/';
+	let sliderRef = useRef(null);
 
-    const pageRender = useNavigate();
+	const [Images, setImages] = useState([]);
+	const [currentImage, setCurrentImage] = useState("")
+	const [isOpen, setIsOpen] = useState(false);
 
-    const [data, setData] = useState({
-        brand: "",
-        buy_sell_id: "",
-        contact_no: "",
-        description: "",
-        images: [],
-        kms_driven: "",
-        location: "",
-        model: "",
-        owner_name: "",
-        truck_image2: "",
-        truck_image3: "",
-        upload_image_name: "",
-        vehicle_number: ""
-    });
+	const pageRender = useNavigate();
 
-    useEffect(() => {
-        const fetchDetails = async () => {
-            const getViewDetailsId = Cookies.get("buyAndSellViewDetailsId");
+	const [data, setData] = useState({
+		brand: "",
+		buy_sell_id: "",
+		contact_no: "",
+		description: "",
+		images: [],
+		kms_driven: "",
+		location: "",
+		model: "",
+		owner_name: "",
+		truck_image2: "",
+		truck_image3: "",
+		upload_image_name: "",
+		vehicle_number: ""
+	});
 
-            if (getViewDetailsId) {
-                try {
-                    const data = {
-                        buy_sell_id: window.atob(getViewDetailsId)
-                    };
-                    const res = await axios.post('https://truck.truckmessage.com/buy_sell_id_details', data, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
+	const settings = {
+		customPaging: function(i) {
+		  return (
+			<a className='p-1 row justify-content-center align-items-center'>
+			  <img src={Images[i]} />
+			</a>
+		  );
+		},
+		dots: true,
+		dotsClass: "slick-dots slick-thumb",
+		infinite: true,
+		speed: 500,
+		slidesToShow: 1,
+		slidesToScroll: 1
+	  };
 
-                    if (res.data.error_code === 0) {
-                        if (res.data.data.length > 0) {
-                            setData(...res.data.data);
-                        }
-                    } else {
-                        toast.error(res.data.message);
-                    }
-                } catch (err) {
-                    console.log(err);
-                }
-            } else {
-                toast.error("Something went wrong");
-            }
-        };
+	useEffect(() => {
+		const fetchDetails = async () => {
+			const getViewDetailsId = Cookies.get("buyAndSellViewDetailsId");
 
-       
-    }, []);
+			if (getViewDetailsId) {
+				try {
+					const data = {
+						buy_sell_id: window.atob(getViewDetailsId)
+					};
+					const res = await axios.post('https://truck.truckmessage.com/buy_sell_id_details', data, {
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					});
 
+					if (res.data.error_code === 0) {
+						if (res.data.data.length > 0) {
+							setData(...res.data.data);
+							setImages(res.data.data[0].images)
+						}
+					} else {
+						toast.error(res.data.message);
+					}
+				} catch (err) {
+					console.log(err);
+				}
+			} else {
+				toast.error("Something went wrong");
+			}
+		};
 
-	return  <div className="ltn__shop-details-area pb-10">
+		fetchDetails()
+	}, []);
+
+	const handleOpenLightBox = (index) => {
+		setCurrentImage(Images[index])
+		setIsOpen(true)
+	}
+
+	return <div className="ltn__shop-details-area pb-10">
 		<div className="container">
 			<div className="row">
 				<div className='my-4'>
-				<button type='button' className='btn' onClick={() => pageRender('/blog-left-sidebar')}>Back</button>
+					<button type='button' className='btn btn-primary col-12 col-md-4 col-lg-2 col-xl-1' onClick={() => pageRender('/blog-left-sidebar')}>Back</button>
 				</div>
 				<div className="col-lg-12 col-md-12">
 					<div className="ltn__shop-details-inner ltn__page-details-inner mb-60">
 						<h4 className="title-2">Images</h4>
 						<div className="ltn__property-details-gallery mb-30">
 							<div className="row">
-								<div className="col-md-6">
-									<a href={publicUrl + "assets/img/others/14.jpg"} data-rel="lightcase:myCollection">
-										<img className="mb-30" src={publicUrl + "assets/img/others/14.jpg"} alt="Image" />
-									</a>
-									<a href={publicUrl + "assets/img/others/15.jpg"} data-rel="lightcase:myCollection">
-										<img className="mb-30" src={publicUrl + "assets/img/others/15.jpg"} alt="Image" />
-									</a>
-								</div>
-								<div className="col-md-6">
-									<a href={publicUrl + "assets/img/others/16.jpg"} data-rel="lightcase:myCollection">
-										<img className="mb-30" src={publicUrl + "assets/img/others/16.jpg"} alt="Image" />
-									</a>
+							<div className="slider-container text-center mb-5 ">
+									<Slider ref={slider => {
+										sliderRef = slider;
+									}} {...settings}>
+										{data.images.map((image, index) => (
+											<img src={image} onClick={() => handleOpenLightBox(index)}  height={"400px"}/>
+										))}
+									</Slider>
 								</div>
 							</div>
 						</div>
+						{isOpen &&
+							<Lightbox
+								mainSrc={currentImage}
+								onCloseRequest={() => setIsOpen(false)}
+							/>
+						}
 						<div className='col-12'>
 							<div className='row'>
 								<div className='col-12 col-md-8'>
@@ -125,8 +156,6 @@ const ShopDetails = () => {
 					</div>
 				</div>
 
-
-
 				<div className="property-detail-info-list section-bg-1 clearfix mb-60">
 					<ul>
 						<li><label>brand:</label> <span>{data.brand}</span></li>
@@ -140,10 +169,10 @@ const ShopDetails = () => {
 				<h4 className="title-2">Description</h4>(description)
 				<p>{data.description}</p>
 
-				<h4 className="title-2">Location</h4>
+				{/* <h4 className="title-2">Location</h4>
 				<div className="property-details-google-map mb-60">
 					<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9334.271551495209!2d-73.97198251485975!3d40.668170674982946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b0456b5a2e7%3A0x68bdf865dda0b669!2sBrooklyn%20Botanic%20Garden%20Shop!5e0!3m2!1sen!2sbd!4v1590597267201!5m2!1sen!2sbd" width="100%" height="100%" frameBorder={0} allowFullScreen aria-hidden="false" tabIndex={0} />
-				</div>
+				</div> */}
 				{/* comment-reply */}
 
 			</div>
