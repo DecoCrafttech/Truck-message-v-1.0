@@ -125,20 +125,11 @@ export const ExpenseCalculator = () => {
                                                 <b>To:</b> <span>{trip.to_location}</span>
                                             </p>
                                             <p className="card-text mb-1">
-                                                <b>Load price:</b> <span>20000</span>
-                                            </p>
-                                            <p className="card-text mb-1">
-                                                <b>Spend:</b> <span>2000</span>
-                                            </p>
-                                            <p className="card-text mb-1">
-                                                <b>Balance:</b> <span>18000</span>
-                                            </p>
-                                            <p className="card-text mb-1">
                                                 <b>Created on:</b> <span>{new Date(trip.updt).toLocaleString()}</span>
                                             </p>
                                         </div>
-                                        <div className="d-flex justify-content-between mt-3">
-                                            <Link to={`/expense-details/${trip.id}`} className="btn btn-primary">Full details {`>>`}</Link>
+                                        <div className="d-flex justify-content-center mt-3 gap-2">
+                                            <Link to={`/expense-details/${trip.id}`} className="btn btn-primary w-100">Full details {`>>`}</Link>
                                             <button 
                                                 type="button" 
                                                 className="btn btn-danger d-flex align-items-center" 

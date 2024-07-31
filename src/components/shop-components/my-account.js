@@ -14,7 +14,9 @@ import toast from 'react-hot-toast';
 
 
 const MyAccount = () => {
-  const [profile, setProfile] = useState({});
+  const [profileData, setProfileData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [vehicleData, setVehicleData] = useState([]);
   const [newVehicleNumber, setNewVehicleNumber] = useState('');
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
@@ -24,7 +26,7 @@ const MyAccount = () => {
   const [updateImage, setUpdateImage] = useState("")
   const [pageRefresh, setPageRefresh] = useState(false)
 
-  const [name,setName] = useState("")
+  const [name, setName] = useState("")
 
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
@@ -40,44 +42,68 @@ const MyAccount = () => {
   }, [pageRefresh]);
 
   const fetchUserProfile = () => {
-
-    console.log("fetchUserProfile")
+    console.log("Fetching User Profile");
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
-      
 
       axios.post('https://truck.truckmessage.com/get_user_profile', {
         user_id: userId,
       })
         .then(response => {
-          console.log(response)
-          const { data } = response;
-          if (data.success && data.data.length > 0) {
-
-            setName(data.data[1].name)
-            const profileData = data.data[1].find(item => item.name);
-            const vehicleData = data.data.find(item => item.vehicle_data);
-            setProfile(profileData ? profileData.profile : {});
-            setVehicleData(vehicleData ? vehicleData.vehicle_data : []);
-            setEditProfile(profileData ? profileData.profile : {});
-            setImage(profileData.profile.profile_image_name ? profileData.profile.profile_image_name : '');
-
-          } else {
-            toast.error('Failed to fetch user profile');
-          }
+          console.log(response.data); // Check the response data structure
+          setProfileData(response.data.data);
+          setLoading(false);
         })
         .catch(error => {
-          toast.error('Error fetching user profile:', error);
+          setError(error);
+          setLoading(false);
         });
     } else {
-      toast.error('User not logged in');
+      setError("User ID not found in cookies");
+      setLoading(false);
     }
   };
 
-  const handleAddVehicle = () => {
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error fetching data: {error.message}</p>;
 
+  if (!profileData || profileData.length < 2) return <p>No data available.</p>;
+
+  const userProfile = profileData[1];
+
+  // const handleAddVehicle = () => {
+
+  //   const encodedUserId = Cookies.get("usrin");
+  //   if (vehicleData.length <= 10) {
+  //     if (encodedUserId) {
+  //       const userId = window.atob(encodedUserId);
+
+  //       axios.post('https://truck.truckmessage.com/add_user_vehicle_details', {
+  //         user_id: userId,
+  //         vehicle_no: newVehicleNumber,
+  //       })
+  //         .then(response => {
+  //           if (response.data.success) {
+  //             setNewVehicleNumber('');
+  //             fetchUserProfile();
+  //             document.getElementById('closeModalButton').click();
+  //           } else {
+  //             toast.error('Failed to add vehicle');
+  //           }
+  //         })
+  //         .catch(error => {
+  //           toast.error('Error adding vehicle:', error);
+  //         });
+  //     }
+  //   } else {
+  //     toast.error("You can able to add more than 10 vehicle")
+  //   }
+  // };
+
+  const handleAddVehicle = () => {
     const encodedUserId = Cookies.get("usrin");
+
     if (vehicleData.length <= 10) {
       if (encodedUserId) {
         const userId = window.atob(encodedUserId);
@@ -88,22 +114,24 @@ const MyAccount = () => {
         })
           .then(response => {
             if (response.data.success) {
-              setNewVehicleNumber('');
-              fetchUserProfile();
-              document.getElementById('closeModalButton').click();
+              setNewVehicleNumber('');  // Reset vehicle number input
+              fetchUserProfile();  // Refresh the user profile data
+              document.getElementById('closeModalButton').click();  // Close the modal
+              toast.success('Vehicle added successfully!');
             } else {
               toast.error('Failed to add vehicle');
             }
           })
           .catch(error => {
-            toast.error('Error adding vehicle:', error);
+            toast.error('Error adding vehicle: ' + error.message);
           });
+      } else {
+        toast.error('User ID not found in cookies.');
       }
     } else {
-      toast.error("You can able to add more than 10 vehicle")
+      toast.error("You can't add more than 10 vehicles.");
     }
   };
-
   const handleDeleteVehicle = () => {
     if (!vehicleToDelete) return;
 
@@ -175,7 +203,6 @@ const MyAccount = () => {
     // setUpdateImage(image)
   }
 
-  console.log(image)
 
   const handleEditProfile = (e) => {
     const encodedUserId = Cookies.get("usrin");
@@ -298,175 +325,53 @@ const MyAccount = () => {
                 <div className="row">
                   <div className='col-lg-4 col-md-4 '>
                     <div className="ltn-author-introducing clearfix mb-3  ">
-                     
+
 
                       <div className='h-100 mx-auto'>
-                        <img id="profilePic" src={`${image}`} width={150} height={150} className="d-block mx-auto my-auto"
-                        />
+                        <img src={userProfile.profile_image_name || ''} width={150} height={150} className="d-block mx-auto my-auto" alt="Profile" />
                       </div>
-
-
-                      <div className="mb-0  ">
-                        {/* <div className="placeholder rounded-2 mx-auto bg-danger">
-                          <img
-                            id="profilePic"
-                            src="https://pngimg.com/d/apple_logo_PNG19666.png"
-                            width={150}
-                            height={150}
-                            className=""
-                          />
-                        </div> */}
-                        {/* <label
-                          htmlFor="newProfilePhoto"
-                          className="upload-file-block "
-                          data-bs-toggle="modal"
-                          data-bs-target="#profilePhotoModal"
-                        >
-                          <div className="text-center">
-                            <div className="">
-                              Upload <br /> Organization Logo
-                            </div>
-                          </div>
-                        </label> */}
-
-
-                      </div>
-
-                      {/* Profile Photo upload Modal */}
-
-                      <div
-                        className="modal fade"
-                        id="profilePhotoModal"
-                        aria-hidden="true"
-                        aria-labelledby="exampleModalToggleLabel"
-                        tabIndex="-1"
-                      >
-                        <div className="modal-dialog modal-dialog-centered">
-                          <div className="modal-content">
-                            <div className="modal-header">
-                              <h1 className="modal-title fs-5" id="exampleModalToggleLabel">
-                                Organization Logo Upload
-                              </h1>
-                              <button id="employerCloseUploadProfilePhotoButton" type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-                            </div>
-                            <div className="modal-body">
-                              <div className="card border-0 h-100 rounded-4">
-                                <div className="card-body d-flex align-items-center justify-content-center">
-
-
-                                  <div className="w-100">
-
-
-                                    <div className="w-100 ">
-                                      <div className="row justify-content-center p-0">
-                                        <div className="pic-holder mb-0  w-75">
-
-                                          <div className="company-logo-container rounded-0">
-                                            <img                                              id="profilePic"                                              name="profile_pic"                                              src=""
-                                            />
-                                          </div>
-
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="mt-3">
-                                      <p className="text-center  image-format-text">(Only  .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC formats are supported)</p>
-                                    </div>
-                                    <div className="text-center pt-4">
-                                      <button                                        id="employerUploadProfilePhotoButton"                                        type="button"                                        htmlFor="fileInput"                                        className="btn btn-brand-color mx-3 upload-btn"                                        data-bs-dismiss="modal"                                        onClick={() =>
-                                          document.getElementById("company-photo").click()
-                                        }
-                                      >
-
-                                        <input type="file" name="profile_pic" id="company-photo" hidden className="form-control"
-                                        // onChange={handleCompanyPictureUpload}
-                                        />
-
-                                        <span>Upload Logo</span>
-                                      </button>
-                                      {
-
-                                        <button id="employerDeleteUploadProfilePhotoButton" type="button" className={`btn btn-outline-secondary profile-picture-delete-button`} data-bs-toggle="modal" data-bs-target="#deletePhotoModal" >                                       
-                                           <span>Delete Logo</span>                                        </button>
-                                      }
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="modal fade" id="deletePhotoModal" aria-hidden="true" aria-labelledby="deletePhotoModal" tabIndex="-1" >
-                        <div className="modal-dialog modal-dialog-centered">
-                          <div className="modal-content">
-                            <div className="modal-header">
-                              <h1 className="modal-title fs-5" id="deletePhotoModal">
-                                Delete Organization Logo
-                              </h1>
-                              <button                                type="button"                                className="btn-close"                                id="deleteProfilePhotoModalConfirmationModal"                                data-bs-dismiss="modal"                                aria-label="Close"                              ></button>
-                            </div>
-                            <div className="modal-body text-center pb-4">
-                              Are you sure you want to delete this logo?
-                              <div className="text-center pt-4">
-                                <button                                  id="cancelDeletePhotoButton"                                  type="button"                                  className="btn btn-outline-secondary"                                  data-bs-dismiss="modal"                                >
-
-                                  <span>Cancel</span>
-                                </button>
-                                <button                                  id="deleteProfilePhotoDeleteButton"                                  type="button"                                  className="btn btn-brand-color mx-3 upload-btn"                                >
-                                  <label                                    className="custom-file-label upload-btn"                                    onClick=""                                  >
-                                    Delete
-                                  </label>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-
                     </div>
                   </div>
                   <div className='col-lg-8 col-md-4'>
                     <div className="ltn-author-introducing clearfix mb-3 ps-5 ">
                       <div className="author-info ">
-                        <h2>{name}</h2>
+                        <h2>{userProfile.name || 'No Name'}</h2>
                         <div className="footer-address">
                           <ul>
                             <li>
                               <div className="footer-address-icon"></div>
                               <div>
-                                <p><FaRegCalendarAlt className="me-3" /> {formatDate(profile.date_of_birth)}</p>
+                                <p><FaRegCalendarAlt className="me-3" /> {userProfile.date_of_birth ? new Date(userProfile.date_of_birth).toLocaleDateString() : 'Not Available'}</p>
                               </div>
                             </li>
                             <li>
                               <div className="footer-address-icon"></div>
                               <div className="footer-address-info">
-                                <p><IoCallOutline className='me-3' /> <a href={`tel:+${profile.phone_number}`}> {profile.phone_number}</a></p>
+                                <p><IoCallOutline className='me-3' /> <a href={`tel:+${userProfile.phone_number}`}>{userProfile.phone_number || 'Not Available'}</a></p>
                               </div>
                             </li>
                             <li>
                               <div className="footer-address-icon"></div>
                               <div className="footer-address-info">
-                                <p><FaUsersGear className='me-3' /> {profile.category}</p>
+                                <p><FaUsersGear className='me-3' /> {userProfile.category || 'Not Available'}</p>
                               </div>
                             </li>
                             <li>
                               <div className="footer-address-icon"></div>
                               <div className="footer-address-info">
-                                <p> <GrMapLocation className='me-3' />  {profile.operating_city}</p>
+                                <p> <GrMapLocation className='me-3' />   {userProfile.operating_city.length ? userProfile.operating_city.join(', ') : 'Not Available'}</p>
                               </div>
                             </li>
                             <li>
                               <div className="footer-address-icon"></div>
                               <div className="footer-address-info">
-                                <p> <GrLocation className='me-3' />  {profile.state}</p>
+                                <p> <GrLocation className='me-3' />   {userProfile.state.length ? userProfile.state.join(', ') : 'Not Available'}</p>
                               </div>
                             </li>
                           </ul>
                         </div>
                       </div>
-                      <button type="button" className="btn btn-primary mt-3" onClick={() => handleEditModalClick()} data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                      <button type="button" className="btn btn-primary mt-3" onClick={() => handleEditProfile()} data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         Edit Profile
                       </button>
                     </div>
@@ -549,7 +454,7 @@ const MyAccount = () => {
 
                   {/* Add Vehicle Modal */}
                   <div className="modal fade" id="vehicleNumber" tabIndex="-1" aria-labelledby="vehicleNumberLabel" aria-hidden="true">
-                    <div className="modal-dialog">
+                    <div className="modal-dialog modal-dialog-center ">
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title" id="vehicleNumberLabel">Add Vehicle</h5>
@@ -704,3 +609,5 @@ const MyAccount = () => {
 };
 
 export default MyAccount;
+
+

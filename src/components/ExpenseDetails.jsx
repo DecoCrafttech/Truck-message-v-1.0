@@ -14,9 +14,10 @@ const ExpenseDetails = () => {
         try {
             const response = await axios.post('https://truck.truckmessage.com/get_load_trip_cash_flow', {
                 user_id: '1',
-                load_trip_id: '5'
+                load_trip_id: '4'
             });
 
+            console.log(response)
             const fetchedData = response.data.data.map(item => ({
                 date: new Date(item.updt).toLocaleDateString(),
                 total: item.amount,
@@ -65,7 +66,7 @@ const ExpenseDetails = () => {
         e.preventDefault();
         try {
             await axios.post('https://truck.truckmessage.com/load_trip_cash_flow_entry', {
-                load_trip_id: '5',
+                load_trip_id: '4',
                 ...form
             });
             fetchCashFlowDetails(); // Refresh the data after submission
@@ -93,8 +94,8 @@ const ExpenseDetails = () => {
                     <div className="row shadow">
                         <div className="card w-100 shadow">
                             <div className="card-body">
-                                <div>
-                                    <button type="button" className="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
+                                <div className="d-flex justify-content-center mt-3 mb-3 gap-2">
+                                    <button type="button" className="btn btn-success h-100" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
                                     <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('OUT')}>Debit</button>
                                 </div>
                                 <div className="col-12 d-inline-flex align-items-center p-0">
@@ -179,6 +180,8 @@ const ExpenseDetails = () => {
                     </div>
                 </div>
             </div>
+
+            
 
             {/* Modal Form */}
             <div className="modal fade" id="modalForm" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
