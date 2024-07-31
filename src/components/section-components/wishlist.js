@@ -399,7 +399,7 @@ const WishList = () => {
       console.log(edit.images)
 
       for (let i = 0; i < edit.images.length; i++) {
-        formData.append(`truck_image${i+1}`, edit.images[i]);
+        formData.append(`truck_image${i + 1}`, edit.images[i]);
         console.log(edit.images[i])
       }
     } else {
@@ -409,10 +409,10 @@ const WishList = () => {
     try {
       const res = axios.post("https://truck.truckmessage.com/buy_sell_id_details", formData,
         {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
 
       console.log(res)
     }
@@ -473,7 +473,9 @@ const WishList = () => {
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleEdit(item)}>Edit</button>
 
+                    <button className="btn btn-primary cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete</button>
                     <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(item)}>Delete</button>
+
                   </div>
                 </div>
               </div>
@@ -490,6 +492,9 @@ const WishList = () => {
       : null
     )
   };
+
+
+
 
   const renderTruckCard = () => {
     return (!gettingDetails ?
@@ -1189,6 +1194,24 @@ const WishList = () => {
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Understood</button>
+            </div>
           </div>
         </div>
       </div>
