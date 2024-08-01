@@ -331,7 +331,7 @@ const WishList = () => {
 
   const InputChange = (e) => {
     if (e.target.files.length > 0) {
-      setMultipleImages(e.target.files)
+      setMultipleImages([...multipleImages , ...e.target.files]) 
     }
 
     // --For Multiple File Input
@@ -381,7 +381,6 @@ const WishList = () => {
     const userId = window.atob(Cookies.get("usrin"));
 
     const edit = { ...editingData }
-    edit.images = multipleImages
 
     const formData = new FormData();
 
@@ -396,17 +395,12 @@ const WishList = () => {
     formData.append("model", edit.model)
     formData.append("owner_name", edit.owner_name)
     formData.append("vehicle_number", edit.vehicle_number)
- 
+
     if (multipleImages.length > 0) {
-      if (edit.images.length > 0) {
-        for (let i = 0; i < edit.images.length; i++) {
-          formData.append(`truck_image${i + 1}`, edit.images[i]);
-        }
+      for (let i = 0; i < multipleImages.length; i++) {
+        formData.append(`truck_image${i + 1}`, multipleImages[i]);
       } 
-      // else {
-      //   formData.append(`images`, null);
-      // }
-    } 
+    }
 
     try {
       const res = await axios.post("https://truck.truckmessage.com/truck_buy_sell", formData,
@@ -480,10 +474,7 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleEdit(item)}>Edit</button>
-
-                    <button className="btn btn-primary cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Delete</button>
                     <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(item)}>Delete</button>
-
                   </div>
                 </div>
               </div>
@@ -668,7 +659,7 @@ const WishList = () => {
                     <span className='object-fit-fill rounded justify-content-center d-flex'>
                       <img
                         className="m-3 rounded-3 justify-content-center d-flex"
-                        src={card.images!==undefined ? card.images.length > 0 ? card.images[0] : '' : ''}
+                        src={card.images !== undefined ? card.images.length > 0 ? card.images[0] : '' : ''}
                         alt="truck message Logo - All in one truck solutions"
                         style={{ width: '390px', height: '290px', objectFit: 'cover' }}
                       />
@@ -711,7 +702,10 @@ const WishList = () => {
                       </div>
 
                       <div className='d-flex gap-2 justify-content-between mt-3'>
-                        <button type="button" className='btn btn-danger' data-bs-toggle="modal" data-bs-target="#buyAndSellModal" onClick={() => handleEdit(card)} >Edit</button>
+                        <button type="button" className='btn btn-danger' data-bs-toggle="modal" data-bs-target="#buyAndSellModal" onClick={() => {
+                          handleEdit(card)
+                          SetSelectedFile([])
+                        }} >Edit</button>
                         <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(card)}>Delete</button>
                       </div>
                     </div>
@@ -721,8 +715,8 @@ const WishList = () => {
               :
               <div className='card vh-100 w-100 my-2'>
                 <div className='card-body h-25 row align-items-center'>
-                  <p className='text-center'>No data found</p>            <div ><GiTruck /></div>
-
+                  <p className='text-center'>No data found</p>
+                  <div ><GiTruck /></div>
                 </div>
               </div>
             :
@@ -1315,10 +1309,10 @@ const WishList = () => {
                       </div>
                     </div>
                   </div>
- 
+
                   <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">Multiple files input example</label>
-                    <input type="file" id="fileupload" className="file-upload-input form-control" onChange={InputChange} multiple />
+                    <input type="file" id="fileupload" className="file-upload-input form-control" accept="image/jpg, image/jpeg" onChange={InputChange} multiple />
                   </div>
                   <div className='my-3'>
                     {selectedfile.map((data, index) => {

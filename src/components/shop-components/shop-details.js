@@ -34,20 +34,23 @@ const ShopDetails = () => {
 	});
 
 	const settings = {
-		customPaging: function(i) {
-		  return (
-			<a className='p-1 row justify-content-center align-items-center'>
-			  <img src={Images[i]} />
-			</a>
-		  );
+		customPaging: function (i) {
+			return (
+				<a className='p-1 row justify-content-center align-items-center'>
+					<img src={Images[i]} />
+				</a>
+			);
 		},
 		dots: true,
 		dotsClass: "slick-dots slick-thumb",
 		infinite: true,
 		speed: 500,
 		slidesToShow: 1,
-		slidesToScroll: 1
-	  };
+		slidesToScroll: 1,
+		className: "center",
+		centerPadding: "60px",
+		swipeToSlide: true,
+	};
 
 	useEffect(() => {
 		const fetchDetails = async () => {
@@ -99,13 +102,13 @@ const ShopDetails = () => {
 						<h4 className="title-2">Images</h4>
 						<div className="ltn__property-details-gallery mb-30">
 							<div className="row">
-							<div className="slider-container text-center mb-5 ">
-									<Slider ref={slider => {
-										sliderRef = slider;
-									}} {...settings}>
-										{data.images.map((image, index) => (
-											<img src={image} onClick={() => handleOpenLightBox(index)}  height={"400px"}/>
-										))}
+								<div className="slider-container text-center mb-5">
+									<Slider  {...settings}>
+										{Images.map((image, index) => {
+											return (
+											<img src={image} onClick={() => handleOpenLightBox(index)} height={"400px"} />
+											)
+										})}
 									</Slider>
 								</div>
 							</div>

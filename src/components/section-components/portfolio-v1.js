@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
-import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import Autocomplete from "react-google-autocomplete";
@@ -16,15 +15,13 @@ const PortfolioV1 = () => {
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [cardsPerPage] = useState(21); // Adjust the number of cards per page as needed
-    const [isSignedIn, setIsSignedIn] = useState(false); // State for user sign-in status
-    const [showLoginPopup, setShowLoginPopup] = useState(false); // State to manage login popup visibility
     const [filters, setFilters] = useState({
         search: '',
     });
 
     const [filterModelData, SetfilterModelData] = useState({
-        company_name:"",
-        user_id:"",
+        company_name: "",
+        user_id: "",
         from_location: "",
         to_location: "",
         truck_body_type: "",
@@ -37,47 +34,28 @@ const PortfolioV1 = () => {
 
 
     const formRef = useRef(null);
-    const modalRef = useRef(null);
-
-    // useEffect(async () => {
-    //     try {
-    //         await axios.get('https://truck.truckmessage.com/all_load_details')
-    //             .then(response => {
-    //                 if (response.data.success && Array.isArray(response.data.data)) {
-    //                     setCards(response.data.data);
-    //                 } else {
-    //                     console.error('Unexpected response format:', response.data);
-    //                 }
-    //             })
-    //             .catch(error => {
-    //                 console.error('There was an error fetching the data!', error);
-    //             });
-    //     }
-    //     catch (err) {
-    //         console.log(err)
-    //     }
-    // }, []);
 
     useEffect(() => {
-        const fetchData = async () => {
+        async function fetchData() {
             try {
-                const response = await axios.get('https://truck.truckmessage.com/all_load_details');
-                if (response.data.success && Array.isArray(response.data.data)) {
-                    setCards(response.data.data);
-                } else {
-                    console.error('Unexpected response format:', response.data);
-                }
-            } catch (error) {
-                console.error('There was an error fetching the data!', error);
+                await axios.get('https://truck.truckmessage.com/all_load_details')
+                    .then(response => {
+                        if (response.data.success && Array.isArray(response.data.data)) {
+                            setCards(response.data.data);
+                        } else {
+                            console.error('Unexpected response format:', response.data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There was an error fetching the data!', error);
+                    });
             }
-        };
-        fetchData();
+            catch (err) {
+                console.log(err)
+            }
+        }
+        fetchData()
     }, []);
-    
-
-
-    
-
 
     const handleFilterChange = (e) => {
         setFilters({
@@ -213,12 +191,12 @@ const PortfolioV1 = () => {
                     'Content-Type': 'application/json'
                 }
             })
-            
-            if(res.data.error_code === 0){ 
+
+            if (res.data.error_code === 0) {
                 setCards(res.data.data)
                 toast.success(res.data.message)
                 document.getElementById("closeFilterBox").click()
-            }else{
+            } else {
                 toast.error(res.data.message)
             }
         }
@@ -241,14 +219,10 @@ const PortfolioV1 = () => {
                                     </div>
                                 </div>
                                 <div className='col-lg-4 mb-2' >
-                                <div>
-                                        {LoginDetails.isLoggedIn ? (
+                                    <div >
+                                        {/* <Link to="/add-listing"> + Add Load availability</Link> */}
                                         <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
-
-                                        ) :
-                                        <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Load availability check</button>
-                                        }
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
 
