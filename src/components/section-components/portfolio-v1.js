@@ -39,24 +39,45 @@ const PortfolioV1 = () => {
     const formRef = useRef(null);
     const modalRef = useRef(null);
 
-    useEffect(async () => {
-        try {
-            await axios.get('https://truck.truckmessage.com/all_load_details')
-                .then(response => {
-                    if (response.data.success && Array.isArray(response.data.data)) {
-                        setCards(response.data.data);
-                    } else {
-                        console.error('Unexpected response format:', response.data);
-                    }
-                })
-                .catch(error => {
-                    console.error('There was an error fetching the data!', error);
-                });
-        }
-        catch (err) {
-            console.log(err)
-        }
+    // useEffect(async () => {
+    //     try {
+    //         await axios.get('https://truck.truckmessage.com/all_load_details')
+    //             .then(response => {
+    //                 if (response.data.success && Array.isArray(response.data.data)) {
+    //                     setCards(response.data.data);
+    //                 } else {
+    //                     console.error('Unexpected response format:', response.data);
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 console.error('There was an error fetching the data!', error);
+    //             });
+    //     }
+    //     catch (err) {
+    //         console.log(err)
+    //     }
+    // }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('https://truck.truckmessage.com/all_load_details');
+                if (response.data.success && Array.isArray(response.data.data)) {
+                    setCards(response.data.data);
+                } else {
+                    console.error('Unexpected response format:', response.data);
+                }
+            } catch (error) {
+                console.error('There was an error fetching the data!', error);
+            }
+        };
+        fetchData();
     }, []);
+    
+
+
+    
+
 
     const handleFilterChange = (e) => {
         setFilters({
@@ -220,10 +241,14 @@ const PortfolioV1 = () => {
                                     </div>
                                 </div>
                                 <div className='col-lg-4 mb-2' >
-                                    <div >
-                                        {/* <Link to="/add-listing"> + Add Load availability</Link> */}
+                                <div>
+                                        {LoginDetails.isLoggedIn ? (
                                         <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addloadavailability">+ Add Load availability</button>
-                                    </div>
+
+                                        ) :
+                                        <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Load availability check</button>
+                                        }
+                                    </div> 
                                 </div>
                             </div>
 

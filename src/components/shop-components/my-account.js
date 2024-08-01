@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { TbCircleFilled } from "react-icons/tb";
-import { MdOutlineDeleteOutline, MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
 import { FaRegCalendarAlt } from "react-icons/fa";
-import { GrMapLocation } from "react-icons/gr";
-import { GrLocation } from "react-icons/gr";
+import { GrMapLocation, GrLocation } from "react-icons/gr";
 import { IoCallOutline } from "react-icons/io5";
 import { FaUsersGear } from "react-icons/fa6";
 import axios from 'axios';
@@ -11,7 +10,6 @@ import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-
 
 const MyAccount = () => {
   const [profileData, setProfileData] = useState(null);
@@ -22,18 +20,17 @@ const MyAccount = () => {
   const [selectedVehicleDetails, setSelectedVehicleDetails] = useState({});
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
   const [editProfile, setEditProfile] = useState({});
-  const [image, setImage] = useState(""); // Set default image path
-  const [updateImage, setUpdateImage] = useState("")
-  const [pageRefresh, setPageRefresh] = useState(false)
-
-  const [name, setName] = useState("")
+  const [image, setImage] = useState("");
+  const [updateImage, setUpdateImage] = useState("");
+  const [pageRefresh, setPageRefresh] = useState(false);
+  const [name, setName] = useState("");
 
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
 
   useEffect(() => {
     if (!Cookies.get("usrin")) {
-      pageRender('/')
+      pageRender('/');
     }
   }, [LoginDetails.isLoggedIn]);
 
@@ -51,7 +48,7 @@ const MyAccount = () => {
         user_id: userId,
       })
         .then(response => {
-          console.log(response.data); // Check the response data structure
+          console.log(response.data);
           setProfileData(response.data.data);
           setLoading(false);
         })
@@ -67,39 +64,9 @@ const MyAccount = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error fetching data: {error.message}</p>;
-
   if (!profileData || profileData.length < 2) return <p>No data available.</p>;
 
   const userProfile = profileData[1];
-
-  // const handleAddVehicle = () => {
-
-  //   const encodedUserId = Cookies.get("usrin");
-  //   if (vehicleData.length <= 10) {
-  //     if (encodedUserId) {
-  //       const userId = window.atob(encodedUserId);
-
-  //       axios.post('https://truck.truckmessage.com/add_user_vehicle_details', {
-  //         user_id: userId,
-  //         vehicle_no: newVehicleNumber,
-  //       })
-  //         .then(response => {
-  //           if (response.data.success) {
-  //             setNewVehicleNumber('');
-  //             fetchUserProfile();
-  //             document.getElementById('closeModalButton').click();
-  //           } else {
-  //             toast.error('Failed to add vehicle');
-  //           }
-  //         })
-  //         .catch(error => {
-  //           toast.error('Error adding vehicle:', error);
-  //         });
-  //     }
-  //   } else {
-  //     toast.error("You can able to add more than 10 vehicle")
-  //   }
-  // };
 
   const handleAddVehicle = () => {
     const encodedUserId = Cookies.get("usrin");
@@ -114,9 +81,9 @@ const MyAccount = () => {
         })
           .then(response => {
             if (response.data.success) {
-              setNewVehicleNumber('');  // Reset vehicle number input
-              fetchUserProfile();  // Refresh the user profile data
-              document.getElementById('closeModalButton').click();  // Close the modal
+              setNewVehicleNumber('');
+              fetchUserProfile();
+              document.getElementById('closeModalButton').click();
               toast.success('Vehicle added successfully!');
             } else {
               toast.error('Failed to add vehicle');
@@ -132,6 +99,7 @@ const MyAccount = () => {
       toast.error("You can't add more than 10 vehicles.");
     }
   };
+
   const handleDeleteVehicle = () => {
     if (!vehicleToDelete) return;
 
@@ -175,36 +143,17 @@ const MyAccount = () => {
   };
 
   const handleUpdatePhoto = (e) => {
-    console.log(e.target.files[0])
     const file = e.target.files[0];
-    if (
-      file.name.includes(".png") ||
-      file.name.includes(".jpeg") ||
-      file.name.includes(".jpg") ||
-      file.name.includes(".PNG") ||
-      file.name.includes(".JPEG") ||
-      file.name.includes(".JPG") ||
-      file.name.includes(".HEIC")
-    ) {
-      setUpdateImage(file)
-      //      if (updateImage) {
-      //   setImage(URL.createObjectURL(updateImage));
-      //   URL.revokeObjectURL(updateImage); 
-      // }
-      // setUpdateImage("");
-    } else {
-      console.log(
-        "Unsupported file format. Please upload .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC files only."
-      );
+    if (file) {
+      if (["image/png", "image/jpeg", "image/jpg", "image/heic"].includes(file.type)) {
+        setUpdateImage(file);
+      } else {
+        toast.error("Unsupported file format. Please upload .jpeg, .jpg, .png, .JPEG, .JPG, .PNG, .HEIC files only.");
+      }
     }
-  }
+  };
 
-  const handleEditModalClick = () => {
-    // setUpdateImage(image)
-  }
-
-
-  const handleEditProfile = (e) => {
+  const handleEditProfile = () => {
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
@@ -218,7 +167,6 @@ const MyAccount = () => {
           } else {
             toast.error('Failed to update profile');
           }
-
         })
         .catch(error => {
           toast.error('Error updating profile:', error);
@@ -227,75 +175,48 @@ const MyAccount = () => {
   };
 
   const handleSaveChanges = async () => {
-    console.log('save')
     try {
-
       const encodedUserId = Cookies.get("usrin");
       if (encodedUserId) {
         const userId = window.atob(encodedUserId);
 
-
         let formData = new FormData();
-        formData.append("user_id", userId)
-        formData.append("first_name", editProfile.first_name)
-        formData.append("date_of_birth", editProfile.date_of_birth)
-        formData.append("category", editProfile.category)
-        formData.append("state", editProfile.state)
-        formData.append("phone_number", editProfile.phone_number)
-        formData.append("operating_city", editProfile.operating_city)
+        formData.append("user_id", userId);
+        formData.append("first_name", editProfile.first_name);
+        formData.append("date_of_birth", editProfile.date_of_birth);
+        formData.append("category", editProfile.category);
+        formData.append("state", editProfile.state);
+        formData.append("phone_number", editProfile.phone_number);
+        formData.append("operating_city", editProfile.operating_city);
         if (updateImage) {
           formData.append('profile_image', updateImage);
         }
-
-        console.log("profile_image", updateImage)
-        console.log("user_id", userId)
-        console.log("first_name", editProfile.first_name)
-        console.log("date_of_birth", editProfile.date_of_birth)
-        console.log("category", editProfile.category)
-        console.log("state", editProfile.state)
-        console.log("phone_number", editProfile.phone_number)
-        console.log("operating_city", editProfile.operating_city)
 
         const res = await axios.post("https://truck.truckmessage.com/update_profile", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
-        })
+        });
+
         if (res.data.error_code === 0) {
-          document.getElementById('editProfileCloseIcon').click()
-          console.log(res.data)
-          setUpdateImage("")
-          // setEditing(false);
-          setPageRefresh(!pageRefresh)
+          document.getElementById('editProfileCloseIcon').click();
+          setUpdateImage("");
+          setPageRefresh(!pageRefresh);
         } else {
-          console.log(res.data.message)
+          toast.error(res.data.message);
         }
       }
-
-
     } catch (err) {
-      console.log(err)
-    }
-  }
-
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImage(e.target.result);
-      };
-      reader.readAsDataURL(e.target.files[0]);
+      toast.error(err.message);
     }
   };
-
-
-
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB');
   };
+
   const downloadCSV = () => {
     const csvContent = Object.keys(selectedVehicleDetails).map(key => {
       const value = selectedVehicleDetails[key] !== null ?
