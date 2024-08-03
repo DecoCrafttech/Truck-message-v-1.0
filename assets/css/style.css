@@ -20007,3 +20007,7 @@ button {
   margin-bottom: 0px !important;
   border:1px solid gray;
 }
+
+.cursor-pointer{
+  cursor: pointer;
+}
