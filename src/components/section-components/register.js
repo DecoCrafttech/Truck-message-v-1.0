@@ -109,10 +109,10 @@ const RegistrationForm = () => {
                                     <div className="input-item">
                                         <label>Phone Number</label>
                                         <div className="input-group">
-                                            <div className="input-group-prepend">
+                                            <div className="input-group-prepend d-flex">
                                                 <span className="input-group-text">+91</span>
                                             </div>
-                                            <input type="tel" className="form-control" placeholder="Phone number" value={phoneNumber} onInput={handlePhoneNumberInput} maxLength="10" />
+                                            <input type="tel" className="form-control mb-0" placeholder="Phone number" value={phoneNumber} onInput={handlePhoneNumberInput} maxLength="10" />
                                         </div>
                                     </div>
                                     <div className="input-item">
@@ -126,6 +126,10 @@ const RegistrationForm = () => {
                                             <option value="DRIVER">Driver</option>
                                             <option value="LORRY BUY & SELL DEALER/OWNER">Lorry Buy & Sell Dealer/Owner</option>
                                         </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Operating State</label>
+                                        <input type="text" className="form-control" placeholder="Enter Operating City" value={operatingCity} onChange={(e) => setOperatingCity(e.target.value)} />
                                     </div>
                                     <div className="form-group">
                                         <label>Operating City</label>

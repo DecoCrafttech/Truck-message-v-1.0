@@ -37,6 +37,7 @@ const WishList = () => {
   const [showingFromLocation, setShowingFromLocation] = useState("");
   const [showingToLocation, setShowingToLocation] = useState("");
   const [showingBuyAndSellLocation, setShowingBuyAndSellLocation] = useState("");
+  const [deletingData, setDeletingData] = useState({})
 
   useEffect(() => {
     const getPath = window.location.pathname;
@@ -292,6 +293,8 @@ const WishList = () => {
       if (res.data.error_code === 0) {
         toast.success(res.data.message);
         setReload(!reload)
+
+        document.getElementById("deleteCloseModel").click()
       } else {
         toast.error(res.data.message)
       }
@@ -331,7 +334,7 @@ const WishList = () => {
 
   const InputChange = (e) => {
     if (e.target.files.length > 0) {
-      setMultipleImages([...multipleImages , ...e.target.files]) 
+      setMultipleImages([...multipleImages, ...e.target.files])
     }
 
     // --For Multiple File Input
@@ -399,7 +402,7 @@ const WishList = () => {
     if (multipleImages.length > 0) {
       for (let i = 0; i < multipleImages.length; i++) {
         formData.append(`truck_image${i + 1}`, multipleImages[i]);
-      } 
+      }
     }
 
     try {
@@ -474,7 +477,7 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(item)}>Delete</button>
+                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(item)}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -553,7 +556,7 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModaltwo" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(item)}>Delete</button>
+                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(item)}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -628,7 +631,7 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalthree" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(item)}>Delete</button>
+                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(item)}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -706,7 +709,7 @@ const WishList = () => {
                           handleEdit(card)
                           SetSelectedFile([])
                         }} >Edit</button>
-                        <button className="btn cardbutton" type="button" onClick={() => handleChooseDelete(card)}>Delete</button>
+                        <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(card)}>Delete</button>
                       </div>
                     </div>
                   </div>
@@ -745,6 +748,187 @@ const WishList = () => {
         return null;
     }
   };
+
+  const renderDeleteModalData = () => {
+    const getPath = window.location.pathname;
+    const splitPath = getPath.split('/');
+    const path = splitPath[3]
+    switch (path) {
+      case 'load':
+        return <div className="card bg-transparent h-100 truckcard">
+          <div className='card-header mt-2 border-0 bg-transparent mb-2'>
+            <h5 className="card-title cardmodify">{deletingData.company_name}</h5>
+          </div>
+          <div className="card-body p-3 mt-2 mb-2">
+            <div className='row'>
+              <div className="col-lg-12 cardicon">
+                <div>
+                  <label><FaLocationDot className="me-2 text-danger" />{deletingData.from_location}</label>
+                </div>
+              </div>
+              <div className="col-lg-12 cardicon">
+                <div><label><FaLocationDot className='me-2 text-success' />{deletingData.to_location}</label></div>
+              </div>
+            </div>
+            <hr className="hr m-2" />
+            <div className='row'>
+              <div className="col-lg-6 cardicon">
+                <div>
+                  <label><FaWeightHanging className='me-2' />{deletingData.tone} ton</label>
+                </div>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <div><label><SiMaterialformkdocs className='me-2' />{deletingData.material}</label></div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className="col-lg-6 cardicon">
+                <label><GiCarWheel className='me-2' />{deletingData.no_of_tyres} wheels</label>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <label><FaTruck className='me-2' />{deletingData.truck_body_type}</label>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <label><FaTruck className='me-2' />{deletingData.contact_no}</label>
+              </div>
+            </div>
+            <div className='m-2'>
+              <h5 className="card-title mt-3">Description</h5>
+              <p className="card-text paragraph">{deletingData.description}</p>
+            </div>
+          </div>
+          <div className="card-footer bg-transparent mb-3">
+            <div>
+              <div className="d-flex gap-2 justify-content-between mt-3">
+                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => handleChooseDelete(deletingData)}>Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>;
+      case 'truck':
+        return <div className="card h-100 truckcard">
+          <div className='card-header bg-transparent mt-2 border-0 mb-2'>
+            <h5 className="card-title cardmodify">{deletingData.company_name}</h5>
+          </div>
+          <div className="card-body p-3 mt-2 mb-2">
+            <div className='row'>
+              <div className="col-lg-12 cardicon">
+                <div>
+                  <label><FaLocationDot className="me-2 text-danger" />{deletingData.from_location}</label>
+                </div>
+              </div>
+              <div className="col-lg-12 cardicon">
+                <div><label><FaLocationDot className='me-2 text-success' />{deletingData.to_location}</label></div>
+              </div>
+            </div>
+            <hr className="hr m-2" />
+            <div className='row'>
+              <div className="col-lg-6 cardicon">
+                <div>
+                  <label><FaWeightHanging className='me-2' />{deletingData.tone} ton</label>
+                </div>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <div><label><SiMaterialformkdocs className='me-2' />{deletingData.material}</label></div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className="col-lg-6 cardicon">
+                <label><GiCarWheel className='me-2' />{deletingData.no_of_tyres} wheels</label>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <label><FaTruck className='me-2' />{deletingData.truck_body_type}</label>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <label><FaTruck className='me-2' />{deletingData.contact_no}</label>
+              </div>
+            </div>
+            <div className='row px-2'>
+              <div className='col-6'>
+                <h5 className="card-title mt-3">Truck name</h5>
+                <p className="card-text paragraph">{deletingData.truck_name}</p>
+              </div>
+              <div className='col-6'>
+                <h5 className="card-title mt-3">vehicle number</h5>
+                <p className="card-text paragraph">{deletingData.vehicle_number}</p>
+              </div>
+            </div>
+            <div className='m-2'>
+              <h5 className="card-title mt-3">Description</h5>
+              <p className="card-text paragraph">{deletingData.description}</p>
+            </div>
+          </div>
+          <div className="card-footer mb-3">
+            <div>
+              <div className="d-flex gap-2 bg-transparent justify-content-between mt-3">
+                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(deletingData)}>Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      case 'driver':
+        return <div className="card h-100 shadow truckcard">
+          <div className='card-header mt-2 border-0 mb-2'>
+            <h5 className="card-title cardmodify">{deletingData.company_name}</h5>
+          </div>
+          <div className="card-body p-3 mt-2 mb-2">
+            <div className='row'>
+              <div className="col-lg-12 cardicon">
+                <div>
+                  <label><FaLocationDot className="me-2 text-danger" />{deletingData.from_location}</label>
+                </div>
+              </div>
+              <div className="col-lg-12 cardicon">
+                <div><label><FaLocationDot className='me-2 text-success' />{deletingData.to_location}</label></div>
+              </div>
+            </div>
+
+            <hr className="hr m-2" />
+            <div className='row'>
+              <div className="col-lg-6 cardicon">
+                <label><GiCarWheel className='me-2' />{deletingData.no_of_tyres} wheels</label>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <label><FaTruck className='me-2' />{deletingData.truck_body_type}</label>
+              </div>
+              <div className="col-lg-6 cardicon">
+                <label><FaTruck className='me-2' />{deletingData.contact_no}</label>
+              </div>
+            </div>
+            <div className='row px-2'>
+              <div className='col-6'>
+                <h5 className="card-title mt-3">Driver name</h5>
+                <p className="card-text paragraph">{deletingData.driver_name}</p>
+              </div>
+              <div className='col-6'>
+                <h5 className="card-title mt-3">Truck name</h5>
+                <p className="card-text paragraph">{deletingData.truck_name}</p>
+              </div>
+              <div className='col-6'>
+                <h5 className="card-title mt-3">vehicle number</h5>
+                <p className="card-text paragraph">{deletingData.vehicle_number}</p>
+              </div>
+            </div>
+            <div className='m-2'>
+              <h5 className="card-title mt-3">Description</h5>
+              <p className="card-text paragraph">{deletingData.description}</p>
+            </div>
+          </div>
+          <div className="card-footer mb-3">
+            <div>
+              <div className="d-flex gap-2 justify-content-between mt-3">
+                <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalthree" onClick={() => handleEdit(deletingData)}>Edit</button>
+                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(deletingData)}>Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      case 'buy_sell':
+        return <div className="row">{renderBuyandSell()}</div>;
+      default:
+        return null;
+    }
+  }
 
   const getWhishlistData = (tabEndpoint) => {
     setData([]);
@@ -920,7 +1104,6 @@ const WishList = () => {
       </div>
 
 
-
       {/* Modal 02 */}
       <div class="modal fade" id="exampleModaltwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -1056,7 +1239,6 @@ const WishList = () => {
           </div>
         </div>
       </div>
-
 
 
       {/* Modal 03 */}
@@ -1195,26 +1377,6 @@ const WishList = () => {
         </div>
       </div>
 
-      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              ...
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Understood</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
       {/* modal 4 */}
       <div className="modal fade" id="buyAndSellModal" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -1351,6 +1513,21 @@ const WishList = () => {
                   <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleBuyAndSellUpdate}>Save changes</button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="modal fade" id="handleDeleteModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" id="deleteCloseModel" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {renderDeleteModalData()}
             </div>
           </div>
         </div>

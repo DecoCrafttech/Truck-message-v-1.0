@@ -6,12 +6,13 @@ import axiosInstance from '../../Services/axiosInstance';
 import { updateIsLoggedIn, updateUserDetails } from '../../Storage/Slices/LoginSlice';
 import Cookie from 'js-cookie';
 import axios from 'axios';
+import { MdDelete } from "react-icons/md";
+import Autocomplete from "react-google-autocomplete";
 
 const Navbar = () => {
     const Login = useSelector((state) => state.login);
     const dispatch = useDispatch();
     const pageRender = useNavigate();
-
 
     const publicUrl = process.env.PUBLIC_URL + '/';
 
@@ -25,8 +26,12 @@ const Navbar = () => {
     const [step, setStep] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [dob, setDob] = useState('');
-    const [operatingCity, setOperatingCity] = useState('');
     const [state, setState] = useState('');
+
+    const [operatingStates, setOperatingStates] = useState([])
+    const [operatingStateString, setoperatingStateString] = useState('')
+    const [operatingStateStringdupli, setoperatingStateStringdupli] = useState('')
+    const [checked, setChecked] = useState(false)
 
     useEffect(() => {
         const isUserExist = Cookie.get("usrin")
@@ -77,7 +82,7 @@ const Navbar = () => {
 
     const register = async () => {
         try {
-            if (firstName === '' || dob === '' || phoneNumber === '' || password === '' || confirmPassword === '' || operatingCity === '') {
+            if (firstName === '' || dob === '' || phoneNumber === '' || password === '' || confirmPassword === '' || operatingStates.length === 0) {
                 toast.error('Please fill in all fields.');
                 return;
             } else if (password !== confirmPassword) {
@@ -95,7 +100,7 @@ const Navbar = () => {
                 state: state,
                 phone_number: phoneNumber,
                 password: password,
-                operating_city: operatingCity
+                operating_city: operatingStates
             };
 
             const res = await axios.post('https://truck.truckmessage.com/registration', registrationData)
@@ -104,7 +109,7 @@ const Navbar = () => {
                     toast.success(res.data.message)
                     sendOTP(phoneNumber); // Send OTP after successful registration
                     setStep(2); // Move to step 2 after registration
-                }else{
+                } else {
                     document.getElementById("registrationModalClose").click()
                     toast.error(res.data.message)
                 }
@@ -136,7 +141,7 @@ const Navbar = () => {
 
             const res = await axiosInstance.post('/validate_otp', otpData);
             if (res.data.error_code === 0) {
-             
+
                 document.getElementById("registrationModalClose").click();
             }
 
@@ -153,6 +158,43 @@ const Navbar = () => {
     const handleLogOut = () => {
         Cookie.remove("usrin");
         dispatch(updateIsLoggedIn(false));
+    }
+
+    useEffect(() => {
+        if (operatingStateStringdupli !== '') {
+            operatingStates[operatingStates.length] = operatingStateStringdupli
+            setOperatingStates(operatingStates)
+            setoperatingStateString("")
+            setoperatingStateStringdupli("")
+        }
+    }, [operatingStateStringdupli])
+
+    const handleFromLocation = (selectedLocation) => {
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+            if (cityComponent && stateComponent) {
+                setoperatingStateStringdupli(`${cityComponent.long_name}, ${stateComponent.long_name}`)
+                setoperatingStateString(`${cityComponent.long_name}, ${stateComponent.long_name}`)
+            }
+        }
+    };
+
+    const handleDeleteOperatingState = (deletingIndex) => {
+        const deleteState = operatingStates.filter((v, i) => {
+            return i !== deletingIndex
+        })
+        setOperatingStates(deleteState)
+    }
+
+    const handleCheckbox = (e) => {
+        setChecked(e.target.checked)
+        if (e.target.checked) {
+            setOperatingStates(["All state and cities"])
+        } else {
+            setOperatingStates([])
+        }
     }
 
     return (
@@ -188,7 +230,7 @@ const Navbar = () => {
                                                                     <li><Link to="#">Tamil</Link></li>
                                                                     <li><Link to="#">English</Link></li>
                                                                     <li><Link to="#">Hindi</Link></li>
-                                                                  
+
                                                                 </ul>
                                                             </li>
                                                         </ul>
@@ -396,12 +438,12 @@ const Navbar = () => {
                                                         <div className="input-group-prepend d-flex">
                                                             <span className="input-group-text py-3">+91</span>
                                                         </div>
-                                                        <input type="tel" className="form-control py-3" placeholder="Phone number" value={phoneNumber} onInput={handlePhoneNumberInput} maxLength="10" />
+                                                        <input type="tel" className="form-control py-3 mb-0" placeholder="Phone number" value={phoneNumber} onInput={handlePhoneNumberInput} maxLength="10" />
                                                     </div>
                                                 </div>
-                                                <div className="input-item mb-3">
+                                                <div className="input-item">
                                                     <label>Category</label>
-                                                    <select className="form-control nice-select " value={state} onChange={(e) => setState(e.target.value)}>
+                                                    <select className="form-control nice-select" value={state} onChange={(e) => setState(e.target.value)}>
                                                         <option value="">Category</option>
                                                         <option value="LORRY OWNER">Lorry Owner</option>
                                                         <option value="LOGISTICS">Logistics</option>
@@ -412,9 +454,47 @@ const Navbar = () => {
                                                     </select>
                                                 </div>
                                                 <div className="form-group mb-3">
-                                                    <label>Operating City</label>
-                                                    <input type="text" className="form-control" placeholder="Enter Operating City" value={operatingCity} onChange={(e) => setOperatingCity(e.target.value)} />
+                                                    <label>Operating State and City</label>
+                                                    <Autocomplete name="from_location"
+                                                        className="google-location location-input bg-transparent mb-1"
+                                                        apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                        onPlaceSelected={(place) => {
+                                                            if (place) {
+                                                                handleFromLocation(place.address_components);
+                                                            }
+                                                        }}
+                                                        required
+                                                        options={{
+                                                            componentRestrictions: { country: "in" },
+                                                        }}
+                                                        value={operatingStateString}
+                                                        onChange={(e) => setoperatingStateString(e.target.value)}
+                                                        disabled={checked}
+                                                    />
+                                                    <div className='row g-2 mb-3 h-100'>
+                                                        {!checked ?
+                                                            operatingStates.map((v, i) => {
+                                                                return <div className='col-6 h-100'>
+                                                                    <div className='p-2 border rounded-2 col-12 d-flex flex-wrap'>
+                                                                        <div className="col-10 p-0">
+                                                                            <p className='m-0 text-break'>{v}</p>
+                                                                        </div>
+                                                                        <div className="col-2">
+                                                                            <MdDelete className='cursor-pointer text-danger' onClick={() => handleDeleteOperatingState(i)} />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            })
+                                                            :
+                                                            null}
+                                                    </div>
                                                 </div>
+                                                <div class="form-check mb-3">
+                                                        <input class="form-check-input" type="checkbox" value="" id="allStatesandCities" onChange={handleCheckbox} />
+                                                        <label class="form-check-label ps-2" for="allStatesandCities">
+                                                            All states and cities
+                                                        </label>
+                                                    </div>
                                                 <div className="form-group mb-3">
                                                     <label>Password</label>
                                                     <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />

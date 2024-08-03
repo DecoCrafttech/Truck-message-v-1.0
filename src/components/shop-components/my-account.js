@@ -50,6 +50,7 @@ const MyAccount = () => {
         .then(response => {
           console.log(response.data);
           setProfileData(response.data.data);
+          setVehicleData(response.data.data[0].vehicle_data)
           setLoading(false);
         })
         .catch(error => {
