@@ -16,11 +16,13 @@ const TruckAvailability = () => {
     const [cards, setCards] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [cardsPerPage] = useState(21); // Adjust the number of cards per page as needed
-    const [isSignedIn, setIsSignedIn] = useState(false); // State for user sign-in status
-    const [showLoginPopup, setShowLoginPopup] = useState(false); // State to manage login popup visibility
     const [filters, setFilters] = useState({
         search: '',
     });
+
+    const [aadharNumber, setAadharNumber] = useState("")
+    const [aadharStep, setAadharStep] = useState(1);
+    const [otpNumber, setOtpNumber] = useState("")
 
     const [filterModelData, SetfilterModelData] = useState({
         // company_name: "",
@@ -33,16 +35,16 @@ const TruckAvailability = () => {
         // tone: ""
 
 
-        user_id:"",
-        vehicle_number:"",
-        company_name:"",
-        contact_no:"",
-        from_location:"",
-        to_location:"",
-        truck_name:"",
-        truck_body_type:"",
-        no_of_tyres:"",
-        tone:""
+        user_id: "",
+        vehicle_number: "",
+        company_name: "",
+        contact_no: "",
+        from_location: "",
+        to_location: "",
+        truck_name: "",
+        truck_body_type: "",
+        no_of_tyres: "",
+        tone: ""
     })
 
     const [contactError, setContactError] = useState(''); // State to manage contact number validation error
@@ -150,12 +152,6 @@ const TruckAvailability = () => {
     // Handle page change
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    // Handle login (dummy implementation for demonstration)
-    const handleLogin = () => {
-        setIsSignedIn(true);
-        setShowLoginPopup(false);
-    };
-
     const [showingFromLocation, setShowingFromLocation] = useState("");
     const [showingToLocation, setShowingToLocation] = useState("");
     const [editCompanyFromLocation, setEditCompanyFromLocation] = useState({
@@ -218,9 +214,6 @@ const TruckAvailability = () => {
         }
     }
 
-
-
-
     const [distance, setDistance] = useState('');
 
     useEffect(() => {
@@ -249,6 +242,287 @@ const TruckAvailability = () => {
         fetchDistance();
     }, [cards.from_location, cards.to_location]);
 
+
+    const handleTruckAvailabilityModelOpen = async () => {
+        if (Cookies.get("otpId")) {
+            setAadharStep(3)
+        } else {
+            setAadharStep(1)
+            try {
+                const encodedUserId = Cookies.get("usrin");
+                if (encodedUserId) {
+                    const userId = window.atob(encodedUserId);
+
+                    const res = await axios.post('https://truck.truckmessage.com/check_aadhar_verification', {
+                        user_id: userId,
+                    })
+
+                    if (res.data.error_code === 0) {
+                        if (res.data.data.is_aadhar_verified) {
+                            setTimeout(() => {
+                                setAadharStep(4)
+                            }, 1500)
+                        } else {
+                            setTimeout(() => {
+                                setAadharStep(2)
+                            }, 1500)
+                        }
+                    } else {
+                        setAadharStep(1)
+                    }
+                }
+                else {
+                    toast.error("User ID not found in cookies");
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    }
+
+    const handleUpdateAadhar = e => {
+        const aadharnum = e.target.value.replace(/[^0-9]/g, '')
+        if (aadharnum.length <= 12) {
+            setAadharNumber(aadharnum)
+        }
+    }
+
+    const handleVerifyAadhar = async () => {
+        if (aadharNumber !== '' && aadharNumber.length === 12) {
+            try {
+                const res = await axios.post("https://truck.truckmessage.com/aadhaar_generate_otp", { id_number: aadharNumber })
+                if (res.data.error_code === 0) {
+                    Cookies.set("otpId", res.data.data[0].client_id, {
+                        secure: true,
+                        sameSite: 'strict',
+                        path: '/'
+                    })
+                    setAadharStep(3)
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        }
+        else {
+            toast.error("invalid aadhar number")
+        }
+    }
+
+    const handleUpdateOtp = e => {
+        const otpnum = e.target.value.replace(/[^0-9]/g, '')
+        if (otpnum.length <= 6) {
+            setOtpNumber(otpnum)
+        }
+    }
+
+    const handleVerifyOtp = async () => {
+        if (otpNumber !== '' && otpNumber.length === 6) {
+            try {
+                const encodedUserId = Cookies.get("usrin");
+                const userId = window.atob(encodedUserId);
+
+                const data = {
+                    client_id: Cookies.get('otpId'),
+                    user_id: userId
+                }
+                const res = await axios.post("https://truck.truckmessage.com/aadhaar_submit_otp", data)
+                if (res.data.error_code === 0) {
+                    Cookies.remove("otpId")
+                    setAadharStep(4)
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        }
+        else {
+            toast.error("invalid otp number")
+        }
+    }
+
+    const handleAddarVerifiactionStatus = () => {
+        switch (aadharStep) {
+            case 1:
+                return <div className="py-5 row align-items-center justify-content-center text-center">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p className='text-success mt-3'>Verifying Aadhar</p>
+                </div>
+
+            case 2:
+                return <div>
+                    <div className="py-5 row align-items-center justify-content-center">
+                        <div className="col-12 col-md-6">
+                            <h4 className='mb-3'>Verify Aadhar</h4>
+                            <div className="input-item input-item-name ltn__custom-icon">
+                                <input type="text" value={aadharNumber} placeholder="Enter your aadhar number" onChange={handleUpdateAadhar} required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
+                    </div>
+                </div>
+
+            case 3:
+                return <div>
+                    <div className="py-5 row align-items-center justify-content-center">
+                        <div className="col-12 col-md-6">
+                            <h4 className='mb-3'>Verify Otp</h4>
+                            <div className="input-item input-item-name ltn__custom-icon">
+                                <input type="text" value={otpNumber} placeholder="Enter Otp" onChange={handleUpdateOtp} required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
+                    </div>
+                </div>
+
+            case 4:
+                return <div className="ltn__appointment-inner">
+                    <form ref={formRef} onSubmit={handleSubmit}>
+                        <div className="row">
+                            <div className="col-12 col-md-6">
+                                <h6>Vehicle Number</h6>
+                                <div className="input-item input-item-name ltn__custom-icon">
+                                    <input type="text" name="vehicle_number" placeholder="Enter a Vehicle Number" required />
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                                <h6>Owner Name</h6>
+                                <div className="input-item input-item-name ltn__custom-icon">
+                                    <input type="text" name="company_name" placeholder="Name of the Owner" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-12 col-md-6">
+                                <h6>Contact Number</h6>
+                                <div className="input-item input-item-name ltn__custom-icon">
+                                    <input type="text" name="contact_no" placeholder="Type your contact number" required />
+                                    {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                                <h6>Truck Name</h6>
+                                <div className="input-item input-item-name ltn__custom-icon">
+                                    <input type="text" name="truck_name" placeholder="What type of material" required />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="row">
+                            <div className="col-12 col-md-6">
+                                <h6>From</h6>
+                                <div className="input-item input-item-name">
+                                    <Autocomplete name="from_location"
+                                        className="google-location location-input bg-transparent py-2"
+                                        apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                        onPlaceSelected={(place) => {
+                                            if (place) {
+                                                handleFromLocation(place.address_components);
+                                            }
+                                        }}
+                                        required
+                                        value={showingFromLocation}
+                                        onChange={(e) => setShowingFromLocation(e.target.value)}
+                                    />
+                                </div>
+                                {/*                                             
+                            <div className="input-item input-item-name ltn__custom-icon">
+                                <input type="text" name="from_location" placeholder="Location" required />
+                            </div> */}
+                            </div>
+                            <div className="col-12 col-md-6">
+                                <h6>To</h6>
+                                <div className="input-item input-item-name">
+                                    <Autocomplete name="to_location"
+                                        className="google-location location-input bg-transparent py-2"
+                                        apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                        onPlaceSelected={(place) => {
+                                            if (place) {
+                                                handleToLocation(place.address_components);
+                                            }
+                                        }}
+                                        required
+                                        value={showingToLocation}
+                                        onChange={(e) => setShowingToLocation(e.target.value)}
+                                    />
+                                </div>
+                                {/*                                             
+                            <div className="input-item input-item-name ltn__custom-icon">
+                                <input type="text" name="to_location" placeholder="Location" required />
+                            </div> */}
+                            </div>
+                        </div>
+                        <div className="row">
+                            {/* <div>
+                            <h6>Material</h6>
+                            <div className="input-item input-item-name ltn__custom-icon">
+                                <input type="text" name="material_type" placeholder="What type of material" required />
+                            </div>
+                        </div> */}
+
+                            <div>
+                                <h6>Ton</h6>
+                                <div className="input-item input-item-name ltn__custom-icon">
+                                    <input type="text" name="tone" placeholder="Example: 2 tones" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-12 col-md-6">
+                                <h6>Truck Body Type</h6>
+                                <div className="input-item">
+                                    <select className="nice-select" name="truck_body_type" required>
+                                        <option value="open_body">Open Body</option>
+                                        <option value="container">Container</option>
+                                        <option value="trailer">Trailer</option>
+                                        <option value="tanker">Tanker</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="col-12 col-md-6">
+                                <h6>No. of Tyres</h6>
+                                <div className="input-item">
+                                    <select className="nice-select" name="tyre_count" required>
+                                        <option value="6">6</option>
+                                        <option value="10">10</option>
+                                        <option value="12">12</option>
+                                        <option value="14">14</option>
+                                        <option value="16">16</option>
+                                        <option value="18">18</option>
+                                        <option value="20">20</option>
+                                        <option value="22">22</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div>
+                                <h6>Descriptions (Optional)</h6>
+                                <div className="input-item input-item-textarea ltn__custom-icon">
+                                    <textarea name="description" placeholder="Enter a text here" />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer btn-wrapper text-center mt-3">
+                            <button className="btn theme-btn-1 text-uppercase" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+
+            default:
+                break;
+        }
+    }
+
+
     return (
         <div>
             <Toaster />
@@ -265,17 +539,17 @@ const TruckAvailability = () => {
                                 <div className='col-lg-4 mb-2' >
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
-                                        <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addtruckavailability">+ Add Truck availability</button>
+                                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addtruckavailability" onClick={handleTruckAvailabilityModelOpen}>+ Add Truck availability</button>
 
                                         ) :
-                                        <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Truck availability check</button>
+                                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Truck availability check</button>
                                         }
-                                    </div>                      
+                                    </div>
                                 </div>
                             </div>
 
                         </div>
-                        
+
                         <hr></hr>
                         <div className='col-12'>
                             <div className='row'>
@@ -301,150 +575,15 @@ const TruckAvailability = () => {
 
             {/* modal */}
             <div className="modal fade" id="addtruckavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep===4 ? 'modal-lg':'modal-md'}`}>
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Truck</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <div className="ltn__appointment-inner">
-                                <form ref={formRef} onSubmit={handleSubmit}>
-                                    <div className="row">
-                                        <div className="col-12 col-md-6">
-                                            <h6>Vehicle Number</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="vehicle_number" placeholder="Enter a Vehicle Number" required />
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-md-6">
-                                            <h6>Owner Name</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="company_name" placeholder="Name of the Owner" required />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-12 col-md-6">
-                                            <h6>Contact Number</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="contact_no" placeholder="Type your contact number" required />
-                                                {contactError && <p style={{ color: 'red' }}>{contactError}</p>}
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-md-6">
-                                            <h6>Truck Name</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="truck_name" placeholder="What type of material" required />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-12 col-md-6">
-                                            <h6>From</h6>
-                                            <div className="input-item input-item-name">
-                                                <Autocomplete name="from_location"
-                                                    className="google-location location-input bg-transparent py-2"
-                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
-                                                    onPlaceSelected={(place) => {
-                                                        if (place) {
-                                                            handleFromLocation(place.address_components);
-                                                        }
-                                                    }}
-                                                    required
-                                                    value={showingFromLocation}
-                                                    onChange={(e) => setShowingFromLocation(e.target.value)}
-                                                />
-                                            </div>
-                                            {/*                                             
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="from_location" placeholder="Location" required />
-                                            </div> */}
-                                        </div>
-                                        <div className="col-12 col-md-6">
-                                            <h6>To</h6>
-                                            <div className="input-item input-item-name">
-                                                <Autocomplete name="to_location"
-                                                    className="google-location location-input bg-transparent py-2"
-                                                    apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
-                                                    onPlaceSelected={(place) => {
-                                                        if (place) {
-                                                            handleToLocation(place.address_components);
-                                                        }
-                                                    }}
-                                                    required
-                                                    value={showingToLocation}
-                                                    onChange={(e) => setShowingToLocation(e.target.value)}
-                                                />
-                                            </div>
-                                            {/*                                             
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="to_location" placeholder="Location" required />
-                                            </div> */}
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        {/* <div>
-                                            <h6>Material</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="material_type" placeholder="What type of material" required />
-                                            </div>
-                                        </div> */}
-
-                                        <div>
-                                            <h6>Ton</h6>
-                                            <div className="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="tone" placeholder="Example: 2 tones" required />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-12 col-md-6">
-                                            <h6>Truck Body Type</h6>
-                                            <div className="input-item">
-                                                <select className="nice-select" name="truck_body_type" required>
-                                                    <option value="open_body">Open Body</option>
-                                                    <option value="container">Container</option>
-                                                    <option value="trailer">Trailer</option>
-                                                    <option value="tanker">Tanker</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="col-12 col-md-6">
-                                            <h6>No. of Tyres</h6>
-                                            <div className="input-item">
-                                                <select className="nice-select" name="tyre_count" required>
-                                                    <option value="6">6</option>
-                                                    <option value="10">10</option>
-                                                    <option value="12">12</option>
-                                                    <option value="14">14</option>
-                                                    <option value="16">16</option>
-                                                    <option value="18">18</option>
-                                                    <option value="20">20</option>
-                                                    <option value="22">22</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div>
-                                            <h6>Descriptions (Optional)</h6>
-                                            <div className="input-item input-item-textarea ltn__custom-icon">
-                                                <textarea name="description" placeholder="Enter a text here" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="modal-footer btn-wrapper text-center mt-3">
-                                        <button className="btn theme-btn-1 text-uppercase" type="submit">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
+                            {handleAddarVerifiactionStatus()}
                         </div>
-                        {/* <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" >Understood</button>
-                        </div> */}
                     </div>
                 </div>
             </div>

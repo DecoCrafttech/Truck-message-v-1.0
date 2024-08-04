@@ -41,8 +41,7 @@ const Navbar = () => {
             dispatch(updateIsLoggedIn(false));
         }
     })
-
-
+    
     const signIn = async () => {
         if (phoneNumber === '' || password === '') {
             toast.error('Please fill in all fields.');
@@ -78,7 +77,6 @@ const Navbar = () => {
             }
         }
     };
-
 
     const register = async () => {
         try {
@@ -490,11 +488,11 @@ const Navbar = () => {
                                                     </div>
                                                 </div>
                                                 <div class="form-check mb-3">
-                                                        <input class="form-check-input" type="checkbox" value="" id="allStatesandCities" onChange={handleCheckbox} />
-                                                        <label class="form-check-label ps-2" for="allStatesandCities">
-                                                            All states and cities
-                                                        </label>
-                                                    </div>
+                                                    <input class="form-check-input" type="checkbox" value="" id="allStatesandCities" onChange={handleCheckbox} />
+                                                    <label class="form-check-label ps-2" for="allStatesandCities">
+                                                        All states and cities
+                                                    </label>
+                                                </div>
                                                 <div className="form-group mb-3">
                                                     <label>Password</label>
                                                     <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />

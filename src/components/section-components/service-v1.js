@@ -22,9 +22,6 @@ class ServiceV5 extends Component {
 
 		return <div className="ltn__service-area section-bg-1 pt-115 pb-70 go-top">
 			<div className="container">
-			
-			
-
 				<div className="row">
 					<div className="col-lg-12">
 						<div className="section-title-area ltn__section-title-2--- text-center">

@@ -10,6 +10,8 @@ import Cookies from 'js-cookie';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { MdDelete } from "react-icons/md";
+import Autocomplete from "react-google-autocomplete";
 
 const MyAccount = () => {
   const [profileData, setProfileData] = useState(null);
@@ -23,7 +25,11 @@ const MyAccount = () => {
   const [image, setImage] = useState("");
   const [updateImage, setUpdateImage] = useState("");
   const [pageRefresh, setPageRefresh] = useState(false);
-  const [name, setName] = useState("");
+
+  const [operatingStates, setOperatingStates] = useState([])
+  const [operatingStateString, setoperatingStateString] = useState('')
+  const [operatingStateStringdupli, setoperatingStateStringdupli] = useState('')
+  const [checked, setChecked] = useState(false)
 
   const LoginDetails = useSelector((state) => state.login);
   const pageRender = useNavigate();
@@ -38,8 +44,44 @@ const MyAccount = () => {
     fetchUserProfile();
   }, [pageRefresh]);
 
-  const fetchUserProfile = () => {
-    console.log("Fetching User Profile");
+  useEffect(() => {
+    if (operatingStateStringdupli !== '') {
+      operatingStates[operatingStates.length] = operatingStateStringdupli
+      setOperatingStates(operatingStates)
+      setoperatingStateString("")
+      setoperatingStateStringdupli("")
+    }
+  }, [operatingStateStringdupli])
+
+  const handleFromLocation = (selectedLocation) => {
+    if (selectedLocation) {
+      const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+      const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+      if (cityComponent && stateComponent) {
+        setoperatingStateStringdupli(`${cityComponent.long_name}, ${stateComponent.long_name}`)
+        setoperatingStateString(`${cityComponent.long_name}, ${stateComponent.long_name}`)
+      }
+    }
+  };
+
+  const handleDeleteOperatingState = (deletingIndex) => {
+    const deleteState = operatingStates.filter((v, i) => {
+      return i !== deletingIndex
+    })
+    setOperatingStates(deleteState)
+  }
+
+  const handleCheckbox = (e) => {
+    setChecked(e.target.checked)
+    if (e.target.checked) {
+      setOperatingStates(["All state and cities"])
+    } else {
+      setOperatingStates([])
+    }
+  }
+
+  const fetchUserProfile = () => { 
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
@@ -51,6 +93,14 @@ const MyAccount = () => {
           console.log(response.data);
           setProfileData(response.data.data);
           setVehicleData(response.data.data[0].vehicle_data)
+          setEditProfile(response.data.data[1])
+          if (response.data.data[1].operating_city[0] === "All state and cities") {
+            setOperatingStates(["All state and cities"])
+            setChecked(true)
+          } else {
+            setOperatingStates(response.data.data[1].operating_city)
+            setChecked(false)
+          }
           setLoading(false);
         })
         .catch(error => {
@@ -154,26 +204,30 @@ const MyAccount = () => {
     }
   };
 
-  const handleEditProfile = () => {
-    const encodedUserId = Cookies.get("usrin");
-    if (encodedUserId) {
+  const handleUploadProfileImage = async () => {
+    try {
+      const encodedUserId = Cookies.get("usrin");
       const userId = window.atob(encodedUserId);
-      const updatedProfile = { ...editProfile, user_id: userId };
 
-      axios.post('https://truck.truckmessage.com/update_profile', updatedProfile)
-        .then(response => {
-          if (response.data.success) {
-            fetchUserProfile();
-            document.getElementById('closeEditProfileModalButton').click();
-          } else {
-            toast.error('Failed to update profile');
-          }
-        })
-        .catch(error => {
-          toast.error('Error updating profile:', error);
-        });
+      let formData = new FormData();
+      formData.append("user_id", userId); 
+      formData.append("profile_image", updateImage);
+      const res = await axios.post("https://truck.truckmessage.com/update_profile_image", formData,{
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
+      });
+
+      if(res.data.error_code === 0){
+        toast.success(res.data.message)
+        fetchUserProfile()
+      }else{
+        toast.error(res.data.message)
+      }
+    } catch (err) {
+      console.log(err)
     }
-  };
+  }
 
   const handleSaveChanges = async () => {
     try {
@@ -181,27 +235,22 @@ const MyAccount = () => {
       if (encodedUserId) {
         const userId = window.atob(encodedUserId);
 
-        let formData = new FormData();
-        formData.append("user_id", userId);
-        formData.append("first_name", editProfile.first_name);
-        formData.append("date_of_birth", editProfile.date_of_birth);
-        formData.append("category", editProfile.category);
-        formData.append("state", editProfile.state);
-        formData.append("phone_number", editProfile.phone_number);
-        formData.append("operating_city", editProfile.operating_city);
-        if (updateImage) {
-          formData.append('profile_image', updateImage);
+        const data = {
+          user_id: userId,
+          first_name: editProfile.name,
+          date_of_birth: editProfile.date_of_birth,
+          category: editProfile.category,
+          phone_number: editProfile.phone_number,
+          operating_city: operatingStates,
+          state: operatingStates
         }
 
-        const res = await axios.post("https://truck.truckmessage.com/update_profile", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        });
+        const res = await axios.post("https://truck.truckmessage.com/update_profile", data);
 
         if (res.data.error_code === 0) {
           document.getElementById('editProfileCloseIcon').click();
           setUpdateImage("");
+          fetchUserProfile()
           setPageRefresh(!pageRefresh);
         } else {
           toast.error(res.data.message);
@@ -236,6 +285,7 @@ const MyAccount = () => {
     a.click();
     document.body.removeChild(a);
   };
+
 
   return (
     <div className="liton__wishlist-area mt-5 pb-70">
@@ -293,7 +343,7 @@ const MyAccount = () => {
                           </ul>
                         </div>
                       </div>
-                      <button type="button" className="btn btn-primary mt-3" onClick={() => handleEditProfile()} data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                      <button type="button" className="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         Edit Profile
                       </button>
                     </div>
@@ -459,28 +509,27 @@ const MyAccount = () => {
                           <button type="button" id='editProfileCloseIcon' className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body ">
-                          <div className="row   px-4">
-                            <div className='h-100 mx-auto '>
-                              <img
-                                id="profilePic"
-                                src={updateImage === "" ? image : URL.createObjectURL(updateImage)}
-                                width={120}
-                                height={120}
-                                className="mb-4 border border-1 p-2 rounded-3"
-                              />
+                          <div className="row px-4">
+                            <div className='h-100 w-100 row align-items-center'>
+                              <div className='col-3 mb-4 border border-1 p-2 rounded-3 text-center'>
+                                <img
+                                  id="profilePic"
+                                  src={updateImage === "" ? editProfile.profile_image_name : URL.createObjectURL(updateImage)}
+                                />
+                              </div>
 
-                              <span className='ms-5'><a href="">Upload Image</a></span>
-                              <input type='file' id='updateImage' onChange={(e) => handleUpdatePhoto(e)} />
+                              <div className='col-5'>
+                                <input type='file' id='updateImage' className='w-100' onChange={(e) => handleUpdatePhoto(e)} />
+                              </div>
+                              <div className='col-4'>
+                                <button type='button' className='btn btn-primary' onClick={handleUploadProfileImage}>Upload Image</button>
+                              </div>
                             </div>
                             <div className="col-12 col-md-6 ">
                               <label htmlFor="editFirstName" className="form-label">First Name</label>
-                              <input type="text" className="form-control" id="editFirstName" value={editProfile.first_name} onChange={(e) => setEditProfile({ ...editProfile, first_name: e.target.value })} />
+                              <input type="text" className="form-control" id="editFirstName" value={editProfile.name} onChange={(e) => setEditProfile({ ...editProfile, name: e.target.value })} />
                             </div>
 
-                            {/* <div className="mb-3">
-                            <label htmlFor="editLastName" className="form-label">Last Name</label>
-                            <input type="text" className="form-control" id="editLastName" value={editProfile.last_name} onChange={(e) => setEditProfile({...editProfile, last_name: e.target.value})} />
-                            </div> */}
                             <div className="col-12 col-md-6">
                               <label htmlFor="editDateOfBirth" className="form-label  border-0 shadow-none">Date of Birth</label>
                               <input type="date" className="form-control" id="editDateOfBirth" value={editProfile.date_of_birth} onChange={(e) => setEditProfile({ ...editProfile, date_of_birth: e.target.value })} />
@@ -493,33 +542,63 @@ const MyAccount = () => {
                               <label htmlFor="editCategory" className="form-label">Category</label>
                               <input type="text" className="form-control" id="editCategory" value={editProfile.category} onChange={(e) => setEditProfile({ ...editProfile, category: e.target.value })} />
                             </div>
-                            <div className=" col-12 col-md-6">
-                              <label htmlFor="editOperatingCity" className="form-label">Operating City</label>
-                              <input type="text" className="form-control" id="editOperatingCity" value={editProfile.operating_city} onChange={(e) => setEditProfile({ ...editProfile, operating_city: e.target.value })} />
+                            <div className="form-group mb-3">
+                              <label>Operating State and City</label>
+                              <Autocomplete name="from_location"
+                                className="google-location location-input bg-transparent mb-1"
+                                apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                onPlaceSelected={(place) => {
+                                  if (place) {
+                                    handleFromLocation(place.address_components);
+                                  }
+                                }}
+                                required
+                                options={{
+                                  componentRestrictions: { country: "in" },
+                                }}
+                                value={operatingStateString}
+                                onChange={(e) => setoperatingStateString(e.target.value)}
+                                disabled={checked}
+                              />
+                              <div className='row g-2 mb-3'>
+                                {!checked ?
+                                  operatingStates.map((v, i) => {
+                                    return <div className='col-6 '>
+                                      <div className='p-2 border rounded-2 col-12 d-flex flex-wrap'>
+                                        <div className="col-10 p-0">
+                                          <p className='m-0 text-break'>{v}</p>
+                                        </div>
+                                        <div className="col-2">
+                                          <MdDelete className='cursor-pointer text-danger' onClick={() => handleDeleteOperatingState(i)} />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  })
+                                  :
+                                  null}
+                              </div>
+                              <div class="form-check ms-2 w-100">
+                                <input class="form-check-input" type="checkbox" id="profileAllStatesandCities" onChange={handleCheckbox} checked={checked}/>
+                                <label class="form-check-label ps-2" for="profileAllStatesandCities">
+                                  All states and cities
+                                </label>
+                              </div>
                             </div>
-                            <div className=" col-12 col-md-6">
-                              <label htmlFor="editState" className="form-label">State</label>
-                              <input type="text" className="form-control" id="editState" value={editProfile.state} onChange={(e) => setEditProfile({ ...editProfile, state: e.target.value })} />
-                            </div>
 
-                            <hr />
-
-                            <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-between">
-                              <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleSaveChanges}>
-                                Save Changes
-                              </button>
-                              <button type="button" className="btn btn-secondary  mb-md-0 p-2 col-12 col-md-6" data-bs-dismiss="modal" id="closeEditProfileModalButton">
-                                Close
-                              </button>
-
-                            </div>
-
+                          </div>
+                          <hr />
+                          <div className="d-flex flex-column flex-md-row gap-2 justify-content-md-between">
+                            <button type="button" className="btn btn-primary p-2 col-12 col-md-6" onClick={handleSaveChanges}>
+                              Save Changes
+                            </button>
+                            <button type="button" className="btn btn-secondary  mb-md-0 p-2 col-12 col-md-6" data-bs-dismiss="modal" id="closeEditProfileModalButton" onClick={() => { setUpdateImage("") }}>
+                              Close
+                            </button>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
