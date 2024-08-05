@@ -13,7 +13,7 @@ const PortfolioV2 = () => {
         <PageHeader headertitle="Our Portfolio" subheader="Portfolio" />
         <PortfolioV1 />
         <CallToActonV2 />
-        <BlogSlider sectionClass="pt-120" />
+        <BlogSlider sectionclassName="pt-120" />
         <Sponsor />
         <CallToActionV1 />
     </div>

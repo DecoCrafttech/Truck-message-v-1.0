@@ -164,28 +164,32 @@ const TruckAvailability = () => {
     });
 
     const handleFromLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        if (cityComponent && stateComponent) {
-            setEditCompanyFromLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            if (cityComponent && stateComponent) {
+                setEditCompanyFromLocation({
+                    city: cityComponent.long_name,
+                    state: stateComponent.long_name,
+                });
+                setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
         }
     };
 
     const handleToLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        if (cityComponent && stateComponent) {
-            setEditCompanyToLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            if (cityComponent && stateComponent) {
+                setEditCompanyToLocation({
+                    city: cityComponent.long_name,
+                    state: stateComponent.long_name,
+                });
+                setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
         }
     };
 
@@ -216,31 +220,50 @@ const TruckAvailability = () => {
 
     const [distance, setDistance] = useState('');
 
-    useEffect(() => {
-        const fetchDistance = async () => {
-            try {
-                const response = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
-                    params: {
-                        origins: cards.from_location,
-                        destinations: cards.to_location,
-                        key: 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw',
-                    }
-                });
+    // useEffect(() => {
+    //     const fetchDistance = async (from_location,to_location) => {
+    //         // try {
+    //         //     const response = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+    //         //         params: {
+    //         //             origins: from_location,
+    //         //             destinations: to_location,
+    //         //             key: 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw',
+    //         //         }
+    //         //     });
 
-                const data = response.data;
-                if (data.rows[0].elements[0].status === 'OK') {
-                    setDistance(data.rows[0].elements[0].distance.text);
-                } else {
-                    setDistance('Distance not available');
-                }
-            } catch (error) {
-                console.error('Error fetching distance:', error);
-                setDistance('Error fetching distance');
-            }
-        };
+    //         //     const data = response.data;
+    //         //     if (data.rows[0].elements[0].status === 'OK') {
+    //         //         console.log(data.rows[0].elements[0].distance.text)
+    //         //         setDistance(data.rows[0].elements[0].distance.text);
+    //         //     } else {
+    //         //         setDistance('Distance not available');
+    //         //     }
+    //         // } catch (error) {
+    //         //     console.error('Error fetching distance:', error);
+    //         //     setDistance('Error fetching distance');
+    //         // }
 
-        fetchDistance();
-    }, [cards.from_location, cards.to_location]);
+    //         const API_KEY = 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw';
+    //         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${encodeURIComponent("tenkasi")}&destinations=${encodeURIComponent("chennai")}&key=${API_KEY}`;
+            
+    //         try {
+    //           const response = await axios.get(url);
+    //           console.log(response)
+    //           if (response.data.rows[0].elements[0].status === 'OK') {
+    //             const distanceText = response.data.rows[0].elements[0].distance.text;
+    //             setDistance(distanceText);
+    //           } else {
+    //             setDistance('Unable to find the distance.');
+    //           }
+    //         } catch (error) {
+    //           console.error('Error fetching the distance:', error);
+    //           setDistance('Error calculating distance.');
+    //         }
+    //     };
+    //     // fetchDistance(card.from_location,card.to_location)
+    //     fetchDistance("tenkasi","chennai")
+        
+    // }, [cards.from_location, cards.to_location]);
 
 
     const handleTruckAvailabilityModelOpen = async () => {
@@ -324,7 +347,8 @@ const TruckAvailability = () => {
 
                 const data = {
                     client_id: Cookies.get('otpId'),
-                    user_id: userId
+                    user_id: userId,
+                    otp: otpNumber
                 }
                 const res = await axios.post("https://truck.truckmessage.com/aadhaar_submit_otp", data)
                 if (res.data.error_code === 0) {
@@ -345,8 +369,8 @@ const TruckAvailability = () => {
         switch (aadharStep) {
             case 1:
                 return <div className="py-5 row align-items-center justify-content-center text-center">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="sr-only">Loading...</span>
+                    <div className="spinner-border text-success" role="status">
+                        <span className="sr-only">Loading...</span>
                     </div>
                     <p className='text-success mt-3'>Verifying Aadhar</p>
                 </div>
@@ -361,9 +385,9 @@ const TruckAvailability = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
                     </div>
                 </div>
 
@@ -377,9 +401,9 @@ const TruckAvailability = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
                     </div>
                 </div>
 
@@ -563,7 +587,7 @@ const TruckAvailability = () => {
                                 </div>
                                 <div className="col-lg-4 ">
                                     {/* Filter */}
-                                    <button type="button" class="filterbtn" data-bs-toggle="modal" data-bs-target="#truckfilter" >Filter</button>
+                                    <button type="button" className="filterbtn" data-bs-toggle="modal" data-bs-target="#truckfilter" >Filter</button>
                                 </div>
 
                             </div>
@@ -575,7 +599,7 @@ const TruckAvailability = () => {
 
             {/* modal */}
             <div className="modal fade" id="addtruckavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep===4 ? 'modal-lg':'modal-md'}`}>
+                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep === 4 ? 'modal-lg' : 'modal-md'}`}>
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Truck</h1>
@@ -590,12 +614,12 @@ const TruckAvailability = () => {
 
 
             {/* filter modal */}
-            <div class="modal fade" id="truckfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
+            <div className="modal fade" id="truckfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
                         </div>
                         <div className="modal-body ps-4 pe-4 p-">
                             <div className="ltn__appointment-inner ">
@@ -679,8 +703,8 @@ const TruckAvailability = () => {
                                 </form>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
                         </div>
                     </div>
                 </div>
@@ -705,9 +729,9 @@ const TruckAvailability = () => {
                                         <div className="col-lg-12 cardicon">
                                             <div><label><FaLocationDot className='me-2 text-success' />{card.to_location}</label></div>
                                         </div>
-                                        <div className="col-lg-12 cardicon">
-                                            <div><label>Distance: {distance}</label></div>
-                                        </div>
+                                        {/* <div className="col-lg-12 cardicon">
+                                            <div><label>Distance: {"hii"}</label></div>
+                                        </div> */}
                                     </div>
                                     <hr className="hr m-2" />
                                     <div className='row mt-3'>

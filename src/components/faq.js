@@ -12,7 +12,7 @@ const FaqV1 = () => {
         <PageHeader headertitle="Frequently asked questions" subheader="FAQ" />
         <Faq />
         <Counter />
-        <BlogSlider sectionClass="pt-120" />
+        <BlogSlider sectionclassName="pt-120" />
         <CallToActionV1 />
     </div>
 }

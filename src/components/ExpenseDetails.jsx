@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Cookies from 'js-cookie';
-
+import toast from 'react-hot-toast';
 
 const ExpenseDetails = () => {
     const params = useParams()
@@ -15,6 +15,10 @@ const ExpenseDetails = () => {
     const [form, setForm] = useState({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '' });
     const [modalTitle, setModalTitle] = useState('Credit Entry');
 
+    useEffect(() => {
+        fetchCashFlowDetails()
+    }, [])
+
     const fetchCashFlowDetails = async () => {
         if (userId && params.id) {
             try {
@@ -23,7 +27,6 @@ const ExpenseDetails = () => {
                     load_trip_id: params.id
                 });
 
-                console.log(response)
                 const fetchedData = response.data.data.map(item => ({
                     date: new Date(item.updt).toLocaleDateString(),
                     total: item.amount,
@@ -56,6 +59,7 @@ const ExpenseDetails = () => {
                 }, {});
 
                 setData(Object.values(groupedData));
+                setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '',description:'' })
             } catch (error) {
                 console.error('Error fetching cash flow details:', error);
                 setError('Failed to fetch data');
@@ -72,11 +76,16 @@ const ExpenseDetails = () => {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('https://truck.truckmessage.com/load_trip_cash_flow_entry', {
-                load_trip_id: '4',
+            const res = await axios.post('https://truck.truckmessage.com/load_trip_cash_flow_entry', {
+                load_trip_id: params.id,
                 ...form
             });
-            fetchCashFlowDetails(); // Refresh the data after submission
+            if (res.data.error_code === 0) {
+                fetchCashFlowDetails(); // Refresh the data after submission
+                document.getElementById("closeExpenseCalculatorModel").click()
+            } else {
+                toast.error(res.data.message)
+            }
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -86,10 +95,6 @@ const ExpenseDetails = () => {
         setModalTitle(type === 'IN' ? 'Credit Entry' : 'Debit Entry');
         setForm({ ...form, cash_flow_type: type });
     };
-
-    useEffect(() => {
-        fetchCashFlowDetails();
-    }, []);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -108,7 +113,7 @@ const ExpenseDetails = () => {
                                     <button type="button" className="btn btn-success h-100" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
                                     <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('OUT')}>Debit</button>
                                 </div>
-                                <div className="col-12 d-inline-flex align-items-center p-0">
+                                {/* <div className="col-12 d-inline-flex align-items-center p-0">
                                     <div className="col-7 col-lg-9 px-0">
                                         <h5 className="card-title">Load one</h5>
                                         <p className="card-text mb-1 d-inline-flex p-0 w-100">
@@ -132,7 +137,7 @@ const ExpenseDetails = () => {
                                             <span className='ps-2'>18000</span>
                                         </p>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className="col-12 p-0 mt-3">
                                     <div className="border rounded p-3">
@@ -199,7 +204,7 @@ const ExpenseDetails = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">{modalTitle}</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" id="closeExpenseCalculatorModel" aria-label="Close" onClick={()=>setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '',description:'' })}></button>
                         </div>
                         <form onSubmit={handleFormSubmit}>
                             <div className="modal-body">
@@ -266,7 +271,7 @@ const ExpenseDetails = () => {
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '',description:'' })}>Close</button>
                                 <button type="submit" className="btn btn-primary">Save changes</button>
                             </div>
                         </form>

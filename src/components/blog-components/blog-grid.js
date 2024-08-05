@@ -22,18 +22,6 @@ const BlogGrid = () => {
     });
 
     const [filterModelData, SetfilterModelData] = useState({
-        // company_name: "",
-        // user_id: "",
-        // driver_name: "",
-        // vehicle_number: "",
-        // from_location: "",
-        // to_location: "",
-        // truck_body_type: "",
-        // no_of_tyres: "",
-        // material: "",
-        // tone: ""
-
-
         user_id: "",
         driver_name: "",
         vehicle_number: "",
@@ -170,28 +158,32 @@ const BlogGrid = () => {
     });
 
     const handleFromLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        if (cityComponent && stateComponent) {
-            setEditCompanyFromLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            if (cityComponent && stateComponent) {
+                setEditCompanyFromLocation({
+                    city: cityComponent.long_name,
+                    state: stateComponent.long_name,
+                });
+                setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
         }
     };
 
     const handleToLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        if (cityComponent && stateComponent) {
-            setEditCompanyToLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            if (cityComponent && stateComponent) {
+                setEditCompanyToLocation({
+                    city: cityComponent.long_name,
+                    state: stateComponent.long_name,
+                });
+                setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
         }
     };
 
@@ -301,7 +293,8 @@ const BlogGrid = () => {
 
                 const data = {
                     client_id: Cookies.get('otpId'),
-                    user_id: userId
+                    user_id: userId,
+                    otp: otpNumber
                 }
                 const res = await axios.post("https://truck.truckmessage.com/aadhaar_submit_otp", data)
                 if (res.data.error_code === 0) {
@@ -322,8 +315,8 @@ const BlogGrid = () => {
         switch (aadharStep) {
             case 1:
                 return <div className="py-5 row align-items-center justify-content-center text-center">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="sr-only">Loading...</span>
+                    <div className="spinner-border text-success" role="status">
+                        <span className="sr-only">Loading...</span>
                     </div>
                     <p className='text-success mt-3'>Verifying Aadhar</p>
                 </div>
@@ -338,9 +331,9 @@ const BlogGrid = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
                     </div>
                 </div>
 
@@ -354,9 +347,9 @@ const BlogGrid = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
                     </div>
                 </div>
 
@@ -406,14 +399,10 @@ const BlogGrid = () => {
                                                 handleFromLocation(place.address_components);
                                             }
                                         }}
-                                        required
                                         value={showingFromLocation}
                                         onChange={(e) => setShowingFromLocation(e.target.value)}
                                     />
                                 </div>
-                                {/* <div className="input-item input-item-name ltn__custom-icon">
-                                <input type="text" name="from_location" placeholder="Location" required />
-                            </div> */}
                             </div>
 
                             <div className="col-12 col-md-6">
@@ -427,14 +416,10 @@ const BlogGrid = () => {
                                                 handleToLocation(place.address_components);
                                             }
                                         }}
-                                        required
                                         value={showingToLocation}
                                         onChange={(e) => setShowingToLocation(e.target.value)}
                                     />
                                 </div>
-                                {/* <div className="input-item input-item-name ltn__custom-icon">
-                                <input type="text" name="to_location" placeholder="Location" required />
-                            </div> */}
                             </div>
                         </div>
                         <div className="row">
@@ -529,7 +514,7 @@ const BlogGrid = () => {
                                 </div>
                                 <div className="col-lg-4 ">
                                     {/* Filter */}
-                                    <button type="button" class="filterbtn" data-bs-toggle="modal" data-bs-target="#driverfilter" >Filter</button>
+                                    <button type="button" className="filterbtn" data-bs-toggle="modal" data-bs-target="#driverfilter" >Filter</button>
                                 </div>
 
                             </div>
@@ -542,7 +527,7 @@ const BlogGrid = () => {
 
             {/* modal */}
             <div className="modal fade" id="addDriveravailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep===4 ? 'modal-lg':'modal-md'}`}>
+                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep === 4 ? 'modal-lg' : 'modal-md'}`}>
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Driver</h1>
@@ -557,12 +542,12 @@ const BlogGrid = () => {
 
 
             {/* filter modal */}
-            <div class="modal fade" id="driverfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
+            <div className="modal fade" id="driverfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
                         </div>
                         <div className="modal-body ps-4 pe-4 p-">
                             <div className="ltn__appointment-inner ">
@@ -646,8 +631,8 @@ const BlogGrid = () => {
                                 </form>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
                         </div>
                     </div>
                 </div>

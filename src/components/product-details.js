@@ -8,7 +8,7 @@ import Footer from './global-components/footer';
 
 const Product_Details = () => {
     return <div>
-        {/* <PageHeader headertitle="Product Details" customclass="mb-0" /> */}
+        {/* <PageHeader headertitle="Product Details" customclassName="mb-0" /> */}
         {/* <ProductSlider /> */}
         <ProductDetails />
         {/* <CallToActionV1 /> */}

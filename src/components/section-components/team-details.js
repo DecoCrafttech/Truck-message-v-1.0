@@ -62,7 +62,7 @@
 //                             <div className="ltn__feature-info">
 //                                 <h4><Link to="/service">Home Buying</Link></h4>
 //                                 <p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or</p>
-//                                 {/* <a class="ltn__service-btn" href="service.html">Read More</a> */}
+//                                 {/* <a className="ltn__service-btn" href="service.html">Read More</a> */}
 //                                 <Link className="ltn__service-btn" to="/service-details">Read More <i className="flaticon-right-arrow" /></Link>
 //                             </div>
 //                             </div>
@@ -75,7 +75,7 @@
 //                             <div className="ltn__feature-info go-top">
 //                                 <h4><Link to="/team">Home Selling</Link></h4>
 //                                 <p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or</p>
-//                                 {/* <a class="ltn__service-btn" href="service.html">Read More</a> */}
+//                                 {/* <a className="ltn__service-btn" href="service.html">Read More</a> */}
 //                                 <Link className="ltn__service-btn" to="/service-details">Read More <i className="flaticon-right-arrow" /></Link>
 //                             </div>
 //                             </div>
@@ -88,7 +88,7 @@
 //                             <div className="ltn__feature-info go-top">
 //                                 <h4><Link to="/service-details">Escrow Services</Link></h4>
 //                                 <p>Lorem ipsum dolor sit ame it, consectetur adipisicing elit, sed do eiusmod te mp or</p>
-//                                 {/* <a class="ltn__service-btn" href="service.html">Read More</a> */}
+//                                 {/* <a className="ltn__service-btn" href="service.html">Read More</a> */}
 //                                 <Link className="ltn__service-btn" to="/service-details">Read More <i className="flaticon-right-arrow" /></Link>
 //                             </div>
 //                             </div>

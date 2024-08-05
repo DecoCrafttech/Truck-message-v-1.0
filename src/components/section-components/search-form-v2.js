@@ -82,7 +82,7 @@ class SearchFormV2 extends Component {
 									<div className="slider-range" />
 								</div>
 								<div className="btn-wrapper text-center">
-									{/* <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> */}
+									{/* <button type="submit" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> */}
 									<Link to="/shop-right-sidebar" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</Link>
 								</div>
 								</div>
@@ -151,7 +151,7 @@ class SearchFormV2 extends Component {
 									<div className="slider-range" />
 								</div>
 								<div className="btn-wrapper text-center">
-									{/* <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> */}
+									{/* <button type="submit" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> */}
 									<Link to="/shop-right-sidebar" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</Link>
 								</div>
 								</div>

@@ -20,7 +20,7 @@ const Home_V1 = () => {
        
         <WhyChooseUs />
         <Testimonial />
-        <BlogSlider customClass="section-subtitle-2" />
+        <BlogSlider customclassName="section-subtitle-2" />
         {/* <CallToActionV1 /> */}
 
     </>

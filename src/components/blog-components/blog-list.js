@@ -24,6 +24,18 @@ const BlogList = () => {
         search: '',
     });
 
+    const [filterModelData, SetfilterModelData] = useState({
+        user_id: "",
+        brand: '',
+        contact_no: '',
+        description: '',
+        kms_driven: '',
+        model: '',
+        owner_name: '',
+        vehicle_number: "",
+        location: ''
+    })
+
     const [showingBuyAndSellLocation, setShowingBuyAndSellLocation] = useState("");
 
     const [contactError, setContactError] = useState(''); // State to manage contact number validation error
@@ -34,6 +46,43 @@ const BlogList = () => {
     const [aadharStep, setAadharStep] = useState(1);
     const [otpNumber, setOtpNumber] = useState("")
 
+    const [showingFromLocation, setShowingFromLocation] = useState("");
+    const [showingToLocation, setShowingToLocation] = useState("");
+
+    const handleLocation = (selectedLocation) => {
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+
+            if (cityComponent && stateComponent) {
+                setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
+        }
+    };
+
+    const handleApplyFilter = async () => {
+        const filterObj = { ...filterModelData }
+        filterObj.location = showingFromLocation
+
+        try {
+            const res = await axios.post("https://truck.truckmessage.com/user_buy_sell_details_filter", filterObj, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (res.data.error_code === 0) {
+                setCards(res.data.data)
+                toast.success(res.data.message)
+                document.getElementById("closeFilterBox").click()
+            } else {
+                toast.error(res.data.message)
+            }
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
 
     const filterCards = (cards) => {
         return cards.filter(card => {
@@ -301,7 +350,8 @@ const BlogList = () => {
 
                 const data = {
                     client_id: Cookies.get('otpId'),
-                    user_id: userId
+                    user_id: userId,
+                    otp: otpNumber
                 }
                 const res = await axios.post("https://truck.truckmessage.com/aadhaar_submit_otp", data)
                 if (res.data.error_code === 0) {
@@ -322,8 +372,8 @@ const BlogList = () => {
         switch (aadharStep) {
             case 1:
                 return <div className="py-5 row align-items-center justify-content-center text-center">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="sr-only">Loading...</span>
+                    <div className="spinner-border text-success" role="status">
+                        <span className="sr-only">Loading...</span>
                     </div>
                     <p className='text-success mt-3'>Verifying Aadhar</p>
                 </div>
@@ -338,9 +388,9 @@ const BlogList = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
                     </div>
                 </div>
 
@@ -354,9 +404,9 @@ const BlogList = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
                     </div>
                 </div>
 
@@ -445,8 +495,8 @@ const BlogList = () => {
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+                        <div className="mb-3">
+                            <label for="formFileMultiple" className="form-label">Multiple files input example</label>
                             <input type="file" id="fileupload" className="file-upload-input form-control" onChange={InputChange} multiple required />
                         </div>
                         <div className='my-3'>
@@ -481,9 +531,9 @@ const BlogList = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleBuyAndSellUpdate}>Create</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleBuyAndSellUpdate}>Create</button>
                     </div>
                 </div>
 
@@ -511,21 +561,105 @@ const BlogList = () => {
 
                                         ) :
                                             <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Load availability</button>
-                                        } 
+                                        }
                                     </div>
                                 </ul>
                             </div>
                         </div>
                         <div className="col-lg-12">
-                            <div className="ltn__search-widget mb-0">
-                                <form action="">
-                                    <input type="text" name="search" placeholder="Search by" onChange={handleFilterChange} />
-                                </form>
+                            <div className='row'>
+                                <div className="col-lg-8">
+                                    {/* Search Widget */}
+                                    <div className="ltn__search-widget mb-0">
+                                        <form action="">
+                                            <input type="text" name="search" placeholder="Search by ..." onChange={handleFilterChange} />
+                                        </form>
+                                    </div>
+                                </div>
+                                <div className="col-lg-4 ">
+                                    {/* Filter */}
+                                    <button type="button" className="filterbtn" data-bs-toggle="modal" data-bs-target="#buySellfilter" >Filter</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div className="modal fade" id="buySellfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
+                        </div>
+                        <div className="modal-body ps-4 pe-4 p-">
+                            <div className="ltn__appointment-inner ">
+                                <div className="row">
+                                    <div className="col-12 col-md-6">
+                                        <h6>Brand</h6>
+                                        <div className="input-item input-item-name ltn__custom-icon">
+                                            <input type="text" name="material" placeholder="Enter brand" onChange={(e) => SetfilterModelData({ ...filterModelData, brand: e.target.value })} />
+                                        </div>
+                                    </div>
+                                    <div className="col-12 col-md-6">
+                                        <h6>Model</h6>
+                                        <div className="input-item input-item-name ltn__custom-icon">
+                                            <input type="text" name="tone" placeholder="Enter Model" onChange={(e) => SetfilterModelData({ ...filterModelData, model: e.target.value })} />
+                                        </div>
+                                    </div>
+                                    <div className="col-12 col-md-6">
+                                        <h6>Location</h6>
+                                        <div className="input-item input-item-name">
+                                            <Autocomplete name="to_location"
+                                                className="google-location location-input bg-transparent py-2"
+                                                apiKey="AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw"
+                                                onPlaceSelected={(place) => {
+                                                    if (place) {
+                                                        handleLocation(place.address_components);
+                                                    }
+                                                }}
+                                                value={showingToLocation}
+                                                onChange={(e) => setShowingToLocation(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-12 col-md-6">
+                                        <h6>Vehicle Number</h6>
+                                        <div className="input-item input-item-email ltn__custom-icon">
+                                            <input type="tel" name="contact_no" placeholder="Type your Vehicle Number" value={filterModelData.vehicle_number} onChange={(e) => SetfilterModelData({ ...filterModelData, vehicle_number: e.target.value })} required />
+                                        </div>
+                                    </div>
+                                    <div className="col-12 col-md-6">
+                                        <h6>Kilometers driven</h6>
+                                        <div className="tel-item">
+                                            <input type="number" name="kms driven" className="w-100 py-4" placeholder="Type Kms driven" value={filterModelData.kms_driven} onChange={(e) => SetfilterModelData({ ...filterModelData, kms_driven: e.target.value })} required />
+                                        </div>
+                                    </div>
+                                    <div className="col-12 col-md-6">
+                                        <h6>Contact Number</h6>
+                                        <div className="input-item input-item-email ltn__custom-icon">
+                                            <input type="tel" name="contact_no" placeholder="Type your contact number" value={filterModelData.contact_no} onChange={(e) => SetfilterModelData({ ...filterModelData, contact_no: e.target.value })} required />
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-12">
+                                            <h6>Descriptions (Optional)</h6>
+                                            <div className="input-item input-item-textarea ltn__custom-icon">
+                                                <textarea name="description" placeholder="Enter a text here" value={filterModelData.description} onChange={(e) => SetfilterModelData({ ...filterModelData, description: e.target.value })} required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             {/* modal */}
             <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

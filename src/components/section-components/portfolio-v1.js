@@ -158,28 +158,32 @@ const PortfolioV1 = () => {
     });
 
     const handleFromLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        if (cityComponent && stateComponent) {
-            setEditCompanyFromLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            if (cityComponent && stateComponent) {
+                setEditCompanyFromLocation({
+                    city: cityComponent.long_name,
+                    state: stateComponent.long_name,
+                });
+                setShowingFromLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
         }
     };
 
     const handleToLocation = (selectedLocation) => {
-        const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
-        const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
+        if (selectedLocation) {
+            const cityComponent = selectedLocation.find(component => component.types.includes('locality'));
+            const stateComponent = selectedLocation.find(component => component.types.includes('administrative_area_level_1'));
 
-        if (cityComponent && stateComponent) {
-            setEditCompanyToLocation({
-                city: cityComponent.long_name,
-                state: stateComponent.long_name,
-            });
-            setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            if (cityComponent && stateComponent) {
+                setEditCompanyToLocation({
+                    city: cityComponent.long_name,
+                    state: stateComponent.long_name,
+                });
+                setShowingToLocation(`${cityComponent.long_name}, ${stateComponent.long_name}`);
+            }
         }
     };
 
@@ -289,7 +293,8 @@ const PortfolioV1 = () => {
 
                 const data = {
                     client_id: Cookies.get('otpId'),
-                    user_id: userId
+                    user_id: userId,
+                    otp: otpNumber
                 }
                 const res = await axios.post("https://truck.truckmessage.com/aadhaar_submit_otp", data)
                 if (res.data.error_code === 0) {
@@ -310,8 +315,8 @@ const PortfolioV1 = () => {
         switch (aadharStep) {
             case 1:
                 return <div className="py-5 row align-items-center justify-content-center text-center">
-                    <div class="spinner-border text-success" role="status">
-                        <span class="sr-only">Loading...</span>
+                    <div className="spinner-border text-success" role="status">
+                        <span className="sr-only">Loading...</span>
                     </div>
                     <p className='text-success mt-3'>Verifying Aadhar</p>
                 </div>
@@ -326,9 +331,9 @@ const PortfolioV1 = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyAadhar}>verify aadhar</button>
                     </div>
                 </div>
 
@@ -342,9 +347,9 @@ const PortfolioV1 = () => {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleVerifyOtp}>verify Otp</button>
                     </div>
                 </div>
 
@@ -485,7 +490,7 @@ const PortfolioV1 = () => {
 
                                         ) :
                                             <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Load availability</button>
-                                        }  
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -504,7 +509,7 @@ const PortfolioV1 = () => {
                                 </div>
                                 <div className="col-lg-4 ">
                                     {/* Filter */}
-                                    <button type="button" class="filterbtn" data-bs-toggle="modal" data-bs-target="#loadfilter" >Filter</button>
+                                    <button type="button" className="filterbtn" data-bs-toggle="modal" data-bs-target="#loadfilter" >Filter</button>
                                 </div>
 
                             </div>
@@ -517,7 +522,7 @@ const PortfolioV1 = () => {
 
             {/* modal */}
             <div className="modal fade" id="addloadavailability" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep===4 ? 'modal-lg':'modal-md'}`}>
+                <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${aadharStep === 4 ? 'modal-lg' : 'modal-md'}`}>
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">Add Load</h1>
@@ -531,12 +536,12 @@ const PortfolioV1 = () => {
             </div>
 
             {/* filter modal */}
-            <div class="modal fade" id="loadfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
+            <div className="modal fade" id="loadfilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeFilterBox"></button>
                         </div>
                         <div className="modal-body ps-4 pe-4 p-">
                             <div className="ltn__appointment-inner ">
@@ -620,8 +625,8 @@ const PortfolioV1 = () => {
                                 </form>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-primary" onClick={handleApplyFilter}>Apply Filter</button>
                         </div>
                     </div>
                 </div>

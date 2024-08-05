@@ -54,7 +54,7 @@ class SearchForm extends Component {
 			                  </div>
 			                  <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
 			                    <div className="btn-wrapper text-center mt-0 go-top">
-			                      <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button>
+			                      <button type="submit" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button>
 			                      {/* <Link to="/shop" className="btn theme-btn-1 btn-effect-1 text-uppercase">Find Now</Link> */}
 			                    </div>
 			                  </div>
@@ -94,7 +94,7 @@ class SearchForm extends Component {
 			                  </div>
 			                  <div className="ltn__car-dealer-form-item ltn__custom-icon ltn__icon-calendar col-lg-3 col-md-6">
 			                    <div className="btn-wrapper text-center mt-0 go-top">
-			                      {/* <button type="submit" class="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> */}
+			                      {/* <button type="submit" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Inventory</button> */}
 			                      <Link to="/go-top" className="btn theme-btn-1 btn-effect-1 text-uppercase">Search Properties</Link>
 			                    </div>
 			                  </div>

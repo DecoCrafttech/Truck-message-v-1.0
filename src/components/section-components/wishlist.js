@@ -1,19 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
 import { GiTruck } from "react-icons/gi";
 import Cookies from 'js-cookie';
 import { NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Autocomplete from "react-google-autocomplete";
 import { FaUserAlt } from "react-icons/fa";
 import { FaTruckFast } from "react-icons/fa6";
 import { BsFillCalendar2DateFill } from "react-icons/bs";
 import { RiPinDistanceFill } from "react-icons/ri";
-import { Link } from 'react-router-dom';
 import shortid from "https://cdn.skypack.dev/shortid@2.2.16";
 
 
@@ -21,7 +19,6 @@ const WishList = () => {
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(false);
   const [gettingDetails, setGettingDetails] = useState(false);
-  const publicUrl = process.env.PUBLIC_URL + '/';
 
   const [contactError, setContactError] = useState('');
   const [editingData, setEditingData] = useState({
@@ -37,7 +34,12 @@ const WishList = () => {
   const [showingFromLocation, setShowingFromLocation] = useState("");
   const [showingToLocation, setShowingToLocation] = useState("");
   const [showingBuyAndSellLocation, setShowingBuyAndSellLocation] = useState("");
-  const [deletingData, setDeletingData] = useState({})
+  const [deletingData, setDeletingData] = useState({});
+  const [feedbackRadio, setFeedbackRadio] = useState("NO");
+  const [feedback, setfeedback] = useState({
+    feedbackCnt: '',
+    mobNum: ''
+  })
 
   useEffect(() => {
     const getPath = window.location.pathname;
@@ -305,6 +307,87 @@ const WishList = () => {
     }
   }
 
+  const handleSubmitFeedback = async () => {
+    try {
+      const getPath = window.location.pathname;
+      const splitPath = getPath.split('/');
+
+      if (splitPath.length === 4) {
+        const path = splitPath[3]
+        if (path === "load") {
+          var data = {
+            user_id: window.atob(Cookies.get("usrin")),
+            ref_id: JSON.stringify(deletingData.load_id),
+            via_app: feedbackRadio,
+            ref_name: "load"
+          }
+        }
+        else if (path === "truck") {
+          var data = {
+            user_id: window.atob(Cookies.get("usrin")),
+            ref_id: JSON.stringify(deletingData.truck_id),
+            via_app: feedbackRadio,
+            ref_name: "truck"
+          }
+        }
+        else if (path === "driver") {
+          var data = {
+            user_id: window.atob(Cookies.get("usrin")),
+            ref_id: JSON.stringify(deletingData.driver_id),
+            via_app: feedbackRadio,
+            ref_name: "driver"
+          }
+        }
+        else {
+          var data = {
+            user_id: window.atob(Cookies.get("usrin")),
+            ref_id: JSON.stringify(deletingData.buy_sell_id),
+            via_app: feedbackRadio,
+            ref_name: "buy and sell"
+          }
+        }
+      }
+
+      if (feedbackRadio === "NO") {
+        const object = { ...data }
+        object.feedback = feedback.feedbackCnt
+
+        console.log(feedback.feedbackCnt)
+
+        if (feedback.feedbackCnt !== '') {
+          const res = await axios.post("https://truck.truckmessage.com/user_feedback", object)
+          if (res.data.error_code === 0) {
+            handleChooseDelete(deletingData)
+          } else {
+            toast.error(res.data.message)
+          }
+        } else {
+          toast.error("Feedback required")
+        }
+      } else {
+        const object = { ...data }
+        object.feedback = feedback.mobNum
+
+        if (feedback.mobNum !== '' && feedback.mobNum.length === 10) {
+          const res = await axios.post("https://truck.truckmessage.com/user_feedback", object)
+          if (res.data.error_code === 0) {
+            handleChooseDelete(deletingData)
+          } else {
+            toast.error(res.data.message)
+          }
+        } else if(feedback.mobNum === '') {
+          toast.error("Mobile number required")
+        }else{
+          toast.error("Invalid mobile number")
+        }
+      }
+
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   const handleEdit = (editObject) => {
     if (editObject.from_location) {
       setShowingFromLocation(editObject.from_location);
@@ -320,7 +403,6 @@ const WishList = () => {
 
   //Image upload and delete functions
   const [selectedfile, SetSelectedFile] = useState([]);
-  const [Files, SetFiles] = useState([]);
   const [multipleImages, setMultipleImages] = useState([]);
 
   const filesizes = (bytes, decimals = 2) => {
@@ -477,7 +559,13 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(item)}>Delete</button>
+                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => {
+                      setDeletingData(item)
+                      setfeedback({
+                        feedbackCnt: '',
+                        mobNum: ''
+                      })
+                    }}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -556,7 +644,13 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModaltwo" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(item)}>Delete</button>
+                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => {
+                      setDeletingData(item)
+                      setfeedback({
+                        feedbackCnt: '',
+                        mobNum: ''
+                      })
+                    }}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -566,8 +660,7 @@ const WishList = () => {
         :
         <div className='card vh-100 m-2'>
           <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>            <div><GiTruck /></div>
-
+            <p className='text-center'>No data found</p>
           </div>
         </div>
       :
@@ -631,7 +724,13 @@ const WishList = () => {
                 <div>
                   <div className="d-flex gap-2 justify-content-between mt-3">
                     <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalthree" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(item)}>Delete</button>
+                    <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => {
+                      setDeletingData(item)
+                      setfeedback({
+                        feedbackCnt: '',
+                        mobNum: ''
+                      })
+                    }}>Delete</button>
                   </div>
                 </div>
               </div>
@@ -641,8 +740,7 @@ const WishList = () => {
         :
         <div className='card vh-100 m-2'>
           <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>            <div><GiTruck /></div>
-
+            <p className='text-center'>No data found</p>
           </div>
         </div>
       :
@@ -709,7 +807,13 @@ const WishList = () => {
                           handleEdit(card)
                           SetSelectedFile([])
                         }} >Edit</button>
-                        <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(card)}>Delete</button>
+                        <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => {
+                          setDeletingData(card)
+                          setfeedback({
+                            feedbackCnt: '',
+                            mobNum: ''
+                          })
+                        }}>Delete</button>
                       </div>
                     </div>
                   </div>
@@ -719,7 +823,6 @@ const WishList = () => {
               <div className='card vh-100 w-100 my-2'>
                 <div className='card-body h-25 row align-items-center'>
                   <p className='text-center'>No data found</p>
-                  <div ><GiTruck /></div>
                 </div>
               </div>
             :
@@ -748,187 +851,6 @@ const WishList = () => {
         return null;
     }
   };
-
-  const renderDeleteModalData = () => {
-    const getPath = window.location.pathname;
-    const splitPath = getPath.split('/');
-    const path = splitPath[3]
-    switch (path) {
-      case 'load':
-        return <div className="card bg-transparent h-100 truckcard">
-          <div className='card-header mt-2 border-0 bg-transparent mb-2'>
-            <h5 className="card-title cardmodify">{deletingData.company_name}</h5>
-          </div>
-          <div className="card-body p-3 mt-2 mb-2">
-            <div className='row'>
-              <div className="col-lg-12 cardicon">
-                <div>
-                  <label><FaLocationDot className="me-2 text-danger" />{deletingData.from_location}</label>
-                </div>
-              </div>
-              <div className="col-lg-12 cardicon">
-                <div><label><FaLocationDot className='me-2 text-success' />{deletingData.to_location}</label></div>
-              </div>
-            </div>
-            <hr className="hr m-2" />
-            <div className='row'>
-              <div className="col-lg-6 cardicon">
-                <div>
-                  <label><FaWeightHanging className='me-2' />{deletingData.tone} ton</label>
-                </div>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <div><label><SiMaterialformkdocs className='me-2' />{deletingData.material}</label></div>
-              </div>
-            </div>
-            <div className='row'>
-              <div className="col-lg-6 cardicon">
-                <label><GiCarWheel className='me-2' />{deletingData.no_of_tyres} wheels</label>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <label><FaTruck className='me-2' />{deletingData.truck_body_type}</label>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <label><FaTruck className='me-2' />{deletingData.contact_no}</label>
-              </div>
-            </div>
-            <div className='m-2'>
-              <h5 className="card-title mt-3">Description</h5>
-              <p className="card-text paragraph">{deletingData.description}</p>
-            </div>
-          </div>
-          <div className="card-footer bg-transparent mb-3">
-            <div>
-              <div className="d-flex gap-2 justify-content-between mt-3">
-                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => handleChooseDelete(deletingData)}>Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>;
-      case 'truck':
-        return <div className="card h-100 truckcard">
-          <div className='card-header bg-transparent mt-2 border-0 mb-2'>
-            <h5 className="card-title cardmodify">{deletingData.company_name}</h5>
-          </div>
-          <div className="card-body p-3 mt-2 mb-2">
-            <div className='row'>
-              <div className="col-lg-12 cardicon">
-                <div>
-                  <label><FaLocationDot className="me-2 text-danger" />{deletingData.from_location}</label>
-                </div>
-              </div>
-              <div className="col-lg-12 cardicon">
-                <div><label><FaLocationDot className='me-2 text-success' />{deletingData.to_location}</label></div>
-              </div>
-            </div>
-            <hr className="hr m-2" />
-            <div className='row'>
-              <div className="col-lg-6 cardicon">
-                <div>
-                  <label><FaWeightHanging className='me-2' />{deletingData.tone} ton</label>
-                </div>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <div><label><SiMaterialformkdocs className='me-2' />{deletingData.material}</label></div>
-              </div>
-            </div>
-            <div className='row'>
-              <div className="col-lg-6 cardicon">
-                <label><GiCarWheel className='me-2' />{deletingData.no_of_tyres} wheels</label>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <label><FaTruck className='me-2' />{deletingData.truck_body_type}</label>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <label><FaTruck className='me-2' />{deletingData.contact_no}</label>
-              </div>
-            </div>
-            <div className='row px-2'>
-              <div className='col-6'>
-                <h5 className="card-title mt-3">Truck name</h5>
-                <p className="card-text paragraph">{deletingData.truck_name}</p>
-              </div>
-              <div className='col-6'>
-                <h5 className="card-title mt-3">vehicle number</h5>
-                <p className="card-text paragraph">{deletingData.vehicle_number}</p>
-              </div>
-            </div>
-            <div className='m-2'>
-              <h5 className="card-title mt-3">Description</h5>
-              <p className="card-text paragraph">{deletingData.description}</p>
-            </div>
-          </div>
-          <div className="card-footer mb-3">
-            <div>
-              <div className="d-flex gap-2 bg-transparent justify-content-between mt-3">
-                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(deletingData)}>Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      case 'driver':
-        return <div className="card h-100 shadow truckcard">
-          <div className='card-header mt-2 border-0 mb-2'>
-            <h5 className="card-title cardmodify">{deletingData.company_name}</h5>
-          </div>
-          <div className="card-body p-3 mt-2 mb-2">
-            <div className='row'>
-              <div className="col-lg-12 cardicon">
-                <div>
-                  <label><FaLocationDot className="me-2 text-danger" />{deletingData.from_location}</label>
-                </div>
-              </div>
-              <div className="col-lg-12 cardicon">
-                <div><label><FaLocationDot className='me-2 text-success' />{deletingData.to_location}</label></div>
-              </div>
-            </div>
-
-            <hr className="hr m-2" />
-            <div className='row'>
-              <div className="col-lg-6 cardicon">
-                <label><GiCarWheel className='me-2' />{deletingData.no_of_tyres} wheels</label>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <label><FaTruck className='me-2' />{deletingData.truck_body_type}</label>
-              </div>
-              <div className="col-lg-6 cardicon">
-                <label><FaTruck className='me-2' />{deletingData.contact_no}</label>
-              </div>
-            </div>
-            <div className='row px-2'>
-              <div className='col-6'>
-                <h5 className="card-title mt-3">Driver name</h5>
-                <p className="card-text paragraph">{deletingData.driver_name}</p>
-              </div>
-              <div className='col-6'>
-                <h5 className="card-title mt-3">Truck name</h5>
-                <p className="card-text paragraph">{deletingData.truck_name}</p>
-              </div>
-              <div className='col-6'>
-                <h5 className="card-title mt-3">vehicle number</h5>
-                <p className="card-text paragraph">{deletingData.vehicle_number}</p>
-              </div>
-            </div>
-            <div className='m-2'>
-              <h5 className="card-title mt-3">Description</h5>
-              <p className="card-text paragraph">{deletingData.description}</p>
-            </div>
-          </div>
-          <div className="card-footer mb-3">
-            <div>
-              <div className="d-flex gap-2 justify-content-between mt-3">
-                <button className="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModalthree" onClick={() => handleEdit(deletingData)}>Edit</button>
-                <button className="btn cardbutton" type="button" data-bs-toggle="modal" data-bs-target="#handleDeleteModel" onClick={() => setDeletingData(deletingData)}>Delete</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      case 'buy_sell':
-        return <div className="row">{renderBuyandSell()}</div>;
-      default:
-        return null;
-    }
-  }
 
   const getWhishlistData = (tabEndpoint) => {
     setData([]);
@@ -983,14 +905,14 @@ const WishList = () => {
 
 
       {/* Modal 01 */}
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Edit</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModelOne"></button>
+      <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Edit</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModelOne"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div className="ltn__appointment-inner">
                 <div className="row">
                   <div className="col-12 col-md-6">
@@ -1096,24 +1018,23 @@ const WishList = () => {
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
           </div>
         </div>
       </div>
 
-
       {/* Modal 02 */}
-      <div class="modal fade" id="exampleModaltwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModelOne"></button>
+      <div className="modal fade" id="exampleModaltwo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModelOne"></button>
             </div>
 
-            <div class="modal-body">
+            <div className="modal-body">
               <div className="ltn__appointment-inner">
                 <div className="row">
                   <div className="col-12 col-md-6">
@@ -1233,23 +1154,22 @@ const WishList = () => {
               </div>
             </div>
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
           </div>
         </div>
       </div>
 
-
       {/* Modal 03 */}
-      <div class="modal fade" id="exampleModalthree" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Edit</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModelThree"></button>
+      <div className="modal fade" id="exampleModalthree" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Edit</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeModelThree"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div className="ltn__appointment-inner">
                 <div className="row">
                   <div className="col-12 col-md-6">
@@ -1370,9 +1290,9 @@ const WishList = () => {
                 </div>
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleChooseUpdate}>Save changes</button></div>
           </div>
         </div>
       </div>
@@ -1472,8 +1392,8 @@ const WishList = () => {
                     </div>
                   </div>
 
-                  <div class="mb-3">
-                    <label for="formFileMultiple" class="form-label">Multiple files input example</label>
+                  <div className="mb-3">
+                    <label for="formFileMultiple" className="form-label">Multiple files input example</label>
                     <input type="file" id="fileupload" className="file-upload-input form-control" accept="image/jpg, image/jpeg" onChange={InputChange} multiple />
                   </div>
                   <div className='my-3'>
@@ -1508,9 +1428,9 @@ const WishList = () => {
                     </div>
                   </div>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary col-12 col-md-3" onClick={handleBuyAndSellUpdate}>Save changes</button>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+                  <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleBuyAndSellUpdate}>Save changes</button>
                 </div>
               </div>
             </div>
@@ -1518,16 +1438,54 @@ const WishList = () => {
         </div>
       </div>
 
-
-      <div class="modal fade" id="handleDeleteModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" id="deleteCloseModel" aria-label="Close"></button>
+      {/* delete model  */}
+      <div className="modal fade" id="handleDeleteModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">Modal title</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" id="deleteCloseModel" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-              {renderDeleteModalData()}
+            <div className="modal-body">
+              <p></p>
+              <div className='row'>
+                <div className="col-7">
+                  <p>Did you get leads using this platform</p>
+                </div>
+                <div className="col-5 row">
+                  <div className="form-check col-6">
+                    <input className="form-check-input" type="radio" name="flexRadioDefault" value="YES" id="radioYes" onChange={(e) => setFeedbackRadio(e.target.value)} checked={feedbackRadio === "YES"} />
+                    <label className="form-check-label" htmlFor="radioYes">
+                      Yes
+                    </label>
+                  </div>
+                  <div className="form-check col-6">
+                    <input className="form-check-input" type="radio" name="flexRadioDefault" value="NO" id="radioNo" onChange={(e) => setFeedbackRadio(e.target.value)} checked={feedbackRadio === "NO"} />
+                    <label className="form-check-label" htmlFor="radioNo">
+                      No
+                    </label>
+                  </div>
+                </div>
+                {
+                  feedbackRadio === "NO" ?
+                    <div className='col-12'>
+                      <div className="mb-3">
+                        <label htmlFor="feedbackModelTextarea" className="form-label">Feedback</label>
+                        <textarea className="form-control" id="feedbackModelTextarea" rows="6" value={feedback.feedbackCnt} onChange={(e) => setfeedback({ ...feedback, feedbackCnt: e.target.value })}></textarea>
+                      </div>
+                    </div>
+                    :
+                    <div className="mb-3">
+                      <label htmlFor="feedbackModelMobilenumber" className="form-label">Phone number</label>
+                      <input type="number" className="form-control" id="feedbackModelMobilenumber" placeholder="Enter your mobile number" value={feedback.mobNum} onChange={(e) => setfeedback({ ...feedback, mobNum: e.target.value })} />
+                    </div>
+                }
+
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary col-12 col-md-3" data-bs-dismiss="modal">Close</button>
+              <button type="button" className="btn btn-primary col-12 col-md-3" onClick={handleSubmitFeedback}>Submit</button>
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ const History = () => {
         <HistoryV1 />
         <WhyChooseUs />
         <CallToActonV4 />
-        <BlogSlider customClass="pt-120"/>
+        <BlogSlider customclassName="pt-120"/>
         <CallToActionV1 />
     </div>
 }

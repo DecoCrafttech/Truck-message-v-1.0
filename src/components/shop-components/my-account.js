@@ -577,9 +577,9 @@ const MyAccount = () => {
                                   :
                                   null}
                               </div>
-                              <div class="form-check ms-2 w-100">
-                                <input class="form-check-input" type="checkbox" id="profileAllStatesandCities" onChange={handleCheckbox} checked={checked}/>
-                                <label class="form-check-label ps-2" for="profileAllStatesandCities">
+                              <div className="form-check ms-2 w-100">
+                                <input className="form-check-input" type="checkbox" id="profileAllStatesandCities" onChange={handleCheckbox} checked={checked}/>
+                                <label className="form-check-label ps-2" for="profileAllStatesandCities">
                                   All states and cities
                                 </label>
                               </div>

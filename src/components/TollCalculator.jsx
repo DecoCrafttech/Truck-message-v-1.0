@@ -128,7 +128,7 @@ const TollCalculator = () => {
     }
 
     return (
-        <div class="container">
+        <div className="container">
             <div className=' col-12 col-lg-12 col-md-12' >
                 <div className='text-center mt-5 mb-5'>
                     <h3 >Toll Price Calculator</h3>

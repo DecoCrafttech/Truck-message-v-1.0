@@ -7,7 +7,7 @@ import Footer from './global-components/footer';
 
 const LocationPage = () => {
     return <div>
-        <PageHeader headertitle="Location" customclass="mb-0" />
+        <PageHeader headertitle="Location" customclassName="mb-0" />
         <Location  />
         <CallToActionV1 />
     </div>
