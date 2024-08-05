@@ -643,12 +643,12 @@ const PortfolioV1 = () => {
                                 <div className='card-header mt-2 border-0 mb-0 '>
                                     <h5 className="card-title cardmodify">{card.company_name}</h5>
                                     <div className='col-6 col-md-6 float-right text-start .fs-6 pe-0 ps-0 pb-0 mt-2 mb-0'>
-                                        <p className='.fs-6 reviewtext'>(12)
+                                        <p className='.fs-6 reviewtext'>
                                             <span className="float-right"><i className="text-warning fa fa-star"></i></span>
                                             <span className="float-right"><i className="text-warning fa fa-star"></i></span>
                                             <span className="float-right"><i className="text-warning fa fa-star"></i></span>
                                             <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
                                         </p>
                                     </div>
 

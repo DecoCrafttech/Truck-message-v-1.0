@@ -4,7 +4,7 @@ import Aboutv1 from './section-components/about-v1';
 import Counter from './section-components/counter-v1';
 import ServiceV5 from './section-components/service-v1';
 import Testimonial from './section-components/testimonial-v1';
-import BlogSlider from './blog-components/blog-slider-v1';
+// import BlogSlider from './blog-components/blog-slider-v1';
 import WhyChooseUs from './section-components/why-choose-us';
 
 
@@ -20,7 +20,7 @@ const Home_V1 = () => {
        
         <WhyChooseUs />
         <Testimonial />
-        <BlogSlider customclassName="section-subtitle-2" />
+        {/* <BlogSlider customclassName="section-subtitle-2" /> */}
         {/* <CallToActionV1 /> */}
 
     </>

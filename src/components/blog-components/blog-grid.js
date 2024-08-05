@@ -646,6 +646,13 @@ const BlogGrid = () => {
                             <div className="card h-100 shadow truckcard">
                                 <div className='card-header mt-2 border-0 mb-2'>
                                     <h5 className="card-title cardmodify">{card.company_name}</h5>
+                                    <p className='.fs-6 reviewtext'>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
+                                        </p>
                                 </div>
                                 <div className="card-body p-3 mt-2 mb-2">
                                     <div className='row'>
