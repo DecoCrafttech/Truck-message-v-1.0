@@ -106,7 +106,7 @@ const ShopDetails = () => {
 									<Slider  {...settings}>
 										{Images.map((image, index) => {
 											return (
-											<img src={image} onClick={() => handleOpenLightBox(index)} height={"400px"} />
+												<img src={image} onClick={() => handleOpenLightBox(index)} height={"400px"} />
 											)
 										})}
 									</Slider>
@@ -138,9 +138,9 @@ const ShopDetails = () => {
 											<li className="list-inline-item ltn__blog-date mt-3">
 												<i className="far fa-calendar-alt" /> {data.updt}
 											</li>
-											<li className="list-inline-item">
+											{/* <li className="list-inline-item">
 												<Link to="#"><i className="far fa-comments" /> 35 Comments</Link>
-											</li>
+											</li> */}
 										</ul>
 										<label className='mt-3 d-block'>
 											<span className="ltn__secondary-color"><i className="flaticon-pin" /></span> Belmont Gardens, Chicago
@@ -148,9 +148,12 @@ const ShopDetails = () => {
 									</div>
 								</div>
 								<div className='col-4 col-md-4 w-100 '>
-									<div className='d-flex justify-content-center align-items-center gap-2  '>
-										<button type="button" className="btn btn-primary p-2">call</button>
-										<button type="button" className="btn btn-primary p-2 ">Message</button>
+									<div className='d-flex justify-content-center align-items-center gap-2 col-12 p-0'>
+										<div className='col-6 p-0'>
+											{/* <button type="button" className="btn btn-success p-2">call</button> */}
+											< a href={`tel:${data.contact_no}`} className='btn btn-success p-2 w-100'>Call</a>
+										</div>
+										<button type="button" className="btn btn-danger p-2 ">Message</button>
 									</div>
 								</div>
 							</div>

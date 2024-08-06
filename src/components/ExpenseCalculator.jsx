@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export const ExpenseCalculator = () => {
     const [loadTrips, setLoadTrips] = useState([]);
@@ -11,6 +12,17 @@ export const ExpenseCalculator = () => {
         from_location: '',
         to_location: ''
     });
+
+    const LoginDetails = useSelector((state) => state.login);
+    // const pageRender = useNavigate();
+
+    useEffect(() => {
+      if (Cookies.get("usrin")) {
+        fetchLoadTrips();
+      }else{
+        setLoadTrips([])
+      }
+    }, [LoginDetails.isLoggedIn]);
 
     useEffect(() => {
         fetchLoadTrips();
@@ -102,14 +114,20 @@ export const ExpenseCalculator = () => {
                 <div className="container py-5">
                     <h2 className='textheadermil'>Expense Calculator</h2>
                     <div className="col text-end mb-4">
-                        <button 
-                            type="button" 
-                            className='btn btn-md btn-danger' 
-                            data-bs-toggle="modal" 
-                            data-bs-target="#addModal"
-                        >
-                            Add
-                        </button>
+                        {LoginDetails.isLoggedIn ? (
+                            <button
+                                type="button"
+                                className='btn btn-md btn-danger'
+                                data-bs-toggle="modal"
+                                data-bs-target="#addModal"
+                            >
+                                Add
+                            </button>
+
+                        ) :
+                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">Add</button>
+                        }
+
                     </div>
                     <div className="row gy-3">
                         {loadTrips.map((trip, index) => (
@@ -130,9 +148,9 @@ export const ExpenseCalculator = () => {
                                         </div>
                                         <div className="d-flex justify-content-center mt-3 gap-2">
                                             <Link to={`/expense-details/${trip.id}`} className="btn btn-primary w-100">Full details {`>>`}</Link>
-                                            <button 
-                                                type="button" 
-                                                className="btn btn-danger d-flex align-items-center" 
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger d-flex align-items-center"
                                                 onClick={() => handleDelete(trip.id)}
                                             >
                                                 <i className="fas fa-trash-alt me-2"></i>
@@ -159,38 +177,38 @@ export const ExpenseCalculator = () => {
                             <form onSubmit={handleSubmit}>
                                 <div className="form-group">
                                     <label htmlFor="loadName">Load Name</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        id="loadName" 
-                                        name="load_name" 
-                                        value={formData.load_name} 
-                                        onChange={handleFormChange} 
-                                        required 
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="loadName"
+                                        name="load_name"
+                                        value={formData.load_name}
+                                        onChange={handleFormChange}
+                                        required
                                     />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="fromLocation">From Location</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        id="fromLocation" 
-                                        name="from_location" 
-                                        value={formData.from_location} 
-                                        onChange={handleFormChange} 
-                                        required 
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="fromLocation"
+                                        name="from_location"
+                                        value={formData.from_location}
+                                        onChange={handleFormChange}
+                                        required
                                     />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="toLocation">To Location</label>
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        id="toLocation" 
-                                        name="to_location" 
-                                        value={formData.to_location} 
-                                        onChange={handleFormChange} 
-                                        required 
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="toLocation"
+                                        name="to_location"
+                                        value={formData.to_location}
+                                        onChange={handleFormChange}
+                                        required
                                     />
                                 </div>
                                 <button type="submit" className="btn btn-primary">Add Load Trip</button>

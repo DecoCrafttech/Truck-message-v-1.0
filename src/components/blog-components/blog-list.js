@@ -48,6 +48,7 @@ const BlogList = () => {
 
     const [showingFromLocation, setShowingFromLocation] = useState("");
     const [showingToLocation, setShowingToLocation] = useState("");
+    const [isDataFiltered,setIsDataFiltered] = useState(false)
 
     const handleLocation = (selectedLocation) => {
         if (selectedLocation) {
@@ -63,9 +64,10 @@ const BlogList = () => {
     const handleApplyFilter = async () => {
         const filterObj = { ...filterModelData }
         filterObj.location = showingFromLocation
+        setIsDataFiltered(true)
 
         try {
-            const res = await axios.post("https://truck.truckmessage.com/user_buy_sell_details_filter", filterObj, {
+            const res = await axios.post("https://truck.truckmessage.com/user_buy_sell_filter", filterObj, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -75,6 +77,7 @@ const BlogList = () => {
                 setCards(res.data.data)
                 toast.success(res.data.message)
                 document.getElementById("closeFilterBox").click()
+                
             } else {
                 toast.error(res.data.message)
             }
@@ -122,13 +125,14 @@ const BlogList = () => {
 
     const initialRender = async () => {
         try {
-            const res = await axios.get('https://truck.truckmessage.com/all_buy_sell_details')
+             await axios.get('https://truck.truckmessage.com/all_buy_sell_details')
                 .then(response => {
                     if (response.data.success && Array.isArray(response.data.data)) {
                         setCards(response.data.data);
                     } else {
                         console.error('Unexpected response format:', response.data);
                     }
+                    setIsDataFiltered(false)
                 })
                 .catch(error => {
                     console.error('There was an error fetching the data!', error);
@@ -576,9 +580,14 @@ const BlogList = () => {
                                         </form>
                                     </div>
                                 </div>
-                                <div className="col-lg-4 ">
-                                    {/* Filter */}
-                                    <button type="button" className="filterbtn" data-bs-toggle="modal" data-bs-target="#buySellfilter" >Filter</button>
+                                <div className="col-lg-4 row">
+                                    <div className='col-8'>
+                                        {/* Filter */}
+                                        <button type="button" className="filterbtn col-12" data-bs-toggle="modal" data-bs-target="#buySellfilter" >Filter</button>
+                                    </div>
+                                    <div className='col-4'>
+                                        <button type="button" className={`col-12 ${isDataFiltered ? 'filterbtn' : ' btn-secondary pe-none'}`} onClick={initialRender}>Clear</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

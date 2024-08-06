@@ -56,7 +56,7 @@ const Navbar = () => {
                 }
                 const res = await axiosInstance.post('/login', loginData)
                 if (res.data.error_code === 0) {
-                    const userId = window.btoa(res.data.data.user_id);
+                    const userId = window.btoa(res.data.data[0].id);
                     var date = new Date();
                     date.setDate(date.getDate() + 1);
                     

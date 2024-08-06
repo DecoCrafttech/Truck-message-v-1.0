@@ -6,19 +6,31 @@ import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
 import { GiTruck } from "react-icons/gi";
 import Cookies from 'js-cookie';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import Autocomplete from "react-google-autocomplete";
 import { FaUserAlt } from "react-icons/fa";
 import { FaTruckFast } from "react-icons/fa6";
 import { BsFillCalendar2DateFill } from "react-icons/bs";
 import { RiPinDistanceFill } from "react-icons/ri";
 import shortid from "https://cdn.skypack.dev/shortid@2.2.16";
+import { useSelector } from 'react-redux';
 
 
 const WishList = () => {
+  let publicUrl = process.env.PUBLIC_URL + '/'
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(false);
   const [gettingDetails, setGettingDetails] = useState(false);
+
+  const LoginDetails = useSelector((state) => state.login);
+  const pageRender = useNavigate();
+
+  useEffect(() => {
+    if (!Cookies.get("usrin")) {
+      pageRender('/');
+    }
+  }, [LoginDetails.isLoggedIn]);
+
 
   const [contactError, setContactError] = useState('');
   const [editingData, setEditingData] = useState({
@@ -375,9 +387,9 @@ const WishList = () => {
           } else {
             toast.error(res.data.message)
           }
-        } else if(feedback.mobNum === '') {
+        } else if (feedback.mobNum === '') {
           toast.error("Mobile number required")
-        }else{
+        } else {
           toast.error("Invalid mobile number")
         }
       }
@@ -574,9 +586,10 @@ const WishList = () => {
         ))
         :
         <div className='card vh-100 m-2'>
-          <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>
-            <div><GiTruck /></div>
+          <div className='card-body h-25 row align-items-center justify-content-center w-100'>
+            <div className='col-4 text-center'>
+              <img src={publicUrl + "assets/img/2953962.jpg"} height={"250px"} alt="no data image" className='w-100' />
+            </div>
           </div>
         </div>
       : null
@@ -659,8 +672,10 @@ const WishList = () => {
         ))
         :
         <div className='card vh-100 m-2'>
-          <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>
+          <div className='card-body h-25 row align-items-center justify-content-center w-100'>
+            <div className='col-4 text-center'>
+              <img src={publicUrl + "assets/img/2953962.jpg"} height={"250px"} alt="no data image" className='w-100' />
+            </div>
           </div>
         </div>
       :
@@ -739,8 +754,10 @@ const WishList = () => {
         ))
         :
         <div className='card vh-100 m-2'>
-          <div className='card-body h-25 row align-items-center'>
-            <p className='text-center'>No data found</p>
+         <div className='card-body h-25 row align-items-center justify-content-center w-100'>
+            <div className='col-4 text-center'>
+              <img src={publicUrl + "assets/img/2953962.jpg"} height={"250px"} alt="no data image" className='w-100' />
+            </div>
           </div>
         </div>
       :

@@ -113,31 +113,6 @@ const ExpenseDetails = () => {
                                     <button type="button" className="btn btn-success h-100" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
                                     <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('OUT')}>Debit</button>
                                 </div>
-                                {/* <div className="col-12 d-inline-flex align-items-center p-0">
-                                    <div className="col-7 col-lg-9 px-0">
-                                        <h5 className="card-title">Load one</h5>
-                                        <p className="card-text mb-1 d-inline-flex p-0 w-100">
-                                            <b className='px-0'>From :</b>
-                                            <span className='px-0 ps-2 text-break'>Tenkasi, India</span>
-                                        </p>
-                                        <p className="card-text mb-1 d-inline-flex p-0 w-100">
-                                            <b className='px-0'>To :</b>
-                                            <span className='px-0 ps-2 text-break'>Coimbatore, India</span>
-                                        </p>
-                                        <p className="card-text mb-1">
-                                            <b>Load price :</b>
-                                            <span className='ps-2'>20000</span>
-                                        </p>
-                                        <p className="card-text mb-1">
-                                            <b>Spend :</b>
-                                            <span className='ps-2'>2000</span>
-                                        </p>
-                                        <p className="card-text mb-1">
-                                            <b>Balance :</b>
-                                            <span className='ps-2'>18000</span>
-                                        </p>
-                                    </div>
-                                </div> */}
 
                                 <div className="col-12 p-0 mt-3">
                                     <div className="border rounded p-3">

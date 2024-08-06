@@ -294,14 +294,10 @@ const MyAccount = () => {
           <div className="col-lg-12 ">
             <div className="ltn__product-tab-area">
               <div className="container">
-                <div className="row">
-                  <div className='col-lg-4 col-md-4 '>
-                    <div className="ltn-author-introducing clearfix mb-3  ">
-
-
-                      <div className='h-100 mx-auto'>
-                        <img src={userProfile.profile_image_name || ''} width={150} height={150} className="d-block mx-auto my-auto" alt="Profile" />
-                      </div>
+                <div className="row h-100">
+                  <div className='col-lg-4 col-md-4 d-inline-flex '>
+                    <div className="ltn-author-introducing clearfix mb-3 w-100 text-center">
+                        <img src={userProfile.profile_image_name || ''} width={250} height={220} className="rounded-circle" alt="Profile" />
                     </div>
                   </div>
                   <div className='col-lg-8 col-md-4'>
