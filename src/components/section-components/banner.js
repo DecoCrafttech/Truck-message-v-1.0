@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,6 +8,10 @@ const Banner = () => {
 
 	let publicUrl = process.env.PUBLIC_URL + '/'
 	let imagealt = 'image'
+
+	useEffect(()=>{
+		window.scrollTo(0,0)
+	},[])
 
 	return <div className="ltn__slider-area ltn__slider-3  section-bg-1 go-top">
 		<div className="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">

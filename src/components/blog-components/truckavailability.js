@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'; // Assuming you are using react-router 
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import Autocomplete from "react-google-autocomplete";
+import { IoCall } from 'react-icons/io5';
 
 
 const TruckAvailability = () => {
@@ -245,7 +246,7 @@ const TruckAvailability = () => {
 
     //         const API_KEY = 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw';
     //         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${encodeURIComponent("tenkasi")}&destinations=${encodeURIComponent("chennai")}&key=${API_KEY}`;
-            
+
     //         try {
     //           const response = await axios.get(url);
     //           console.log(response)
@@ -262,7 +263,7 @@ const TruckAvailability = () => {
     //     };
     //     // fetchDistance(card.from_location,card.to_location)
     //     fetchDistance("tenkasi","chennai")
-        
+
     // }, [cards.from_location, cards.to_location]);
 
 
@@ -719,12 +720,12 @@ const TruckAvailability = () => {
                                 <div className='card-header mt-2 border-0 mb-2'>
                                     <h5 className="card-title cardmodify">{card.company_name}</h5>
                                     <p className='.fs-6 reviewtext'>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
-                                        </p>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
+                                    </p>
                                 </div>
                                 <div className="card-body p-3 mt-2 mb-2">
                                     <div className='row'>
@@ -768,9 +769,13 @@ const TruckAvailability = () => {
                                 <div className="card-footer mb-3">
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
-                                            <div className="d-flex gap-2 justify-content-between mt-3">
-                                                <a href={`tel:${card.contact_no}`} className="btn cardbutton">Call</a>
-                                                <button className="btn cardbutton" type="button">Message</button>
+                                            <div className="d-flex flex-wrap mt-3">
+                                                <div className='col-6'>
+                                                    <a href={`tel:${card.contact_no}`} className="btn btn-success  w-100" type="button"> <IoCall className='me-3' />Call</a>
+                                                </div>
+                                                <div className='col-6'>
+                                                    <button className="btn cardbutton w-100" type="button">Message</button>
+                                                </div>
                                             </div>
                                         ) :
                                             <div className="d-grid gap-2">

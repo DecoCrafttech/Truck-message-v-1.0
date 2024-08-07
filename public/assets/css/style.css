@@ -20011,3 +20011,8 @@ button {
 .cursor-pointer{
   cursor: pointer;
 }
+
+
+.tableScrollbar::-webkit-scrollbar{
+  width: 0px !important;
+}

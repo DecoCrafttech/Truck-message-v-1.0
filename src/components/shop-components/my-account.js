@@ -42,6 +42,7 @@ const MyAccount = () => {
 
   useEffect(() => {
     fetchUserProfile();
+    window.scrollTo(0,0)
   }, [pageRefresh]);
 
   useEffect(() => {

@@ -647,12 +647,12 @@ const BlogGrid = () => {
                                 <div className='card-header mt-2 border-0 mb-2'>
                                     <h5 className="card-title cardmodify">{card.company_name}</h5>
                                     <p className='.fs-6 reviewtext'>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
-                                        </p>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
+                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
+                                    </p>
                                 </div>
                                 <div className="card-body p-3 mt-2 mb-2">
                                     <div className='row'>
@@ -690,9 +690,14 @@ const BlogGrid = () => {
                                 <div className="card-footer mb-3">
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
-                                            <div className="d-flex gap-2 justify-content-between mt-3">
-                                                <a href={`tel:${card.contact_no}`} className="btn cardbutton" type="button"> <IoCall />Call</a>
-                                                <button className="btn cardbutton" type="button">Message</button>
+
+                                            <div className="d-flex flex-wrap mt-3">
+                                                <div className='col-6'>
+                                                    <a href={`tel:${card.contact_no}`} className="btn btn-success w-100" type="button"> <IoCall  className='me-3' />Call</a>
+                                                </div>
+                                                <div className='col-6'>
+                                                <button className="btn cardbutton w-100" type="button">Message</button>
+                                                </div>
                                             </div>
                                         ) :
                                             <div className="d-grid gap-2">

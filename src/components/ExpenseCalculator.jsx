@@ -90,9 +90,9 @@ export const ExpenseCalculator = () => {
             .then(response => {
                 if (response.data.success) {
                     fetchLoadTrips();
-                    document.getElementById('addModal').classList.remove('show');
-                    document.body.classList.remove('modal-open');
-                    document.querySelector('.modal-backdrop').remove();
+                    
+
+                    document.getElementById('addModalExpenseCalculator').click();
                     setFormData({
                         user_id: '',
                         load_name: '',
@@ -171,7 +171,7 @@ export const ExpenseCalculator = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="addModalLabel">Add Expenses Details</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" id="addModalExpenseCalculator"></button>
                         </div>
                         <div className="modal-body">
                             <form onSubmit={handleSubmit}>

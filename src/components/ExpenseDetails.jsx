@@ -59,7 +59,7 @@ const ExpenseDetails = () => {
                 }, {});
 
                 setData(Object.values(groupedData));
-                setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '',description:'' })
+                setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '', description: '' })
             } catch (error) {
                 console.error('Error fetching cash flow details:', error);
                 setError('Failed to fetch data');
@@ -96,7 +96,7 @@ const ExpenseDetails = () => {
         setForm({ ...form, cash_flow_type: type });
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div className='text-center m-3'>Loading...</div>;
     if (error) return <div>{error}</div>;
 
     return (
@@ -120,22 +120,14 @@ const ExpenseDetails = () => {
                                             <div className='border-bottom' key={index}>
                                                 <div className="row">
                                                     <div className="col-12 col-lg-3">
-                                                        <h5>{entry.date}</h5>
-                                                        <p className="card-text mb-1">
-                                                            <b>Total amount :</b>
-                                                            <span className='ps-2'>{entry.total}</span>
-                                                        </p>
-                                                        <p className="card-text mb-1">
-                                                            <b>Today spend :</b>
-                                                            <span className='ps-2'>{entry.spend}</span>
-                                                        </p>
+                                                        <h5 className='mt-2'>{entry.date}</h5>
                                                         <p className="card-text mb-1">
                                                             <b>Current balance :</b>
                                                             <span className='ps-2'>{entry.balance}</span>
                                                         </p>
                                                     </div>
-                                                    <div className="col-9">
-                                                        <table className="table">
+                                                    <div className="col-12 col-lg-9 overflow-scroll tableScrollbar">
+                                                        <table className="table ">
                                                             <thead>
                                                                 <tr>
                                                                     <th scope="col">S.no</th>
@@ -179,7 +171,7 @@ const ExpenseDetails = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">{modalTitle}</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" id="closeExpenseCalculatorModel" aria-label="Close" onClick={()=>setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '',description:'' })}></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" id="closeExpenseCalculatorModel" aria-label="Close" onClick={() => setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '', description: '' })}></button>
                         </div>
                         <form onSubmit={handleFormSubmit}>
                             <div className="modal-body">
@@ -234,20 +226,22 @@ const ExpenseDetails = () => {
                                         <h5>Amount</h5>
                                         <div className="input-item input-item-name">
                                             <input
-                                                type="text"
+                                                type="number"
                                                 name="amount"
                                                 value={form.amount}
                                                 onChange={handleFormChange}
                                                 placeholder="Enter your Amount"
                                                 required
+                                                className='w-100 py-3'
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '',description:'' })}>Close</button>
-                                <button type="submit" className="btn btn-primary">Save changes</button>
+                                <button type="submit" className="btn btn-primary">Add</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setForm({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '', description: '' })}>Close</button>
+
                             </div>
                         </form>
                     </div>

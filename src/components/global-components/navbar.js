@@ -26,13 +26,27 @@ const Navbar = () => {
     const [step, setStep] = useState(1);
     const [firstName, setFirstName] = useState('');
     const [dob, setDob] = useState('');
-    const [state, setState] = useState('');
     const [category, setCategory] = useState('')
 
     const [operatingStates, setOperatingStates] = useState([])
     const [operatingStateString, setoperatingStateString] = useState('')
     const [operatingStateStringdupli, setoperatingStateStringdupli] = useState('')
-    const [checked, setChecked] = useState(false)
+    const [checked, setChecked] = useState(false);
+
+    const [forgotPassMobNum, setForgotPassMobNum] = useState('');
+    const [forgotPasswordStep, setForgotPasswordStep] = useState(Number);
+    const [forgotPassUSerId,setforgotPassUSerId] = useState('')
+
+    const [updatePass, setUpdatePass] = useState({
+        password: '',
+        confirm_password: ''
+    })
+
+    const [otp, setOtp] = useState('');
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [window.location.pathname])
 
     useEffect(() => {
         const isUserExist = Cookie.get("usrin")
@@ -41,7 +55,7 @@ const Navbar = () => {
         } else {
             dispatch(updateIsLoggedIn(false));
         }
-    })
+    }, [])
 
     const signIn = async () => {
         if (phoneNumber === '' || password === '') {
@@ -59,7 +73,7 @@ const Navbar = () => {
                     const userId = window.btoa(res.data.data[0].id);
                     var date = new Date();
                     date.setDate(date.getDate() + 1);
-                    
+
                     //updating username in cookies
                     Cookie.set("usrin", userId, {
                         expires: date, // 1 day
@@ -198,9 +212,172 @@ const Navbar = () => {
         }
     }
 
-    // const handleCategory = (e) => {
-    //     console.log(e)
-    // }
+    const handleVerifyMobileNumbre = async () => {
+        if (forgotPassMobNum !== '' ) {
+            try {
+                const data = {
+                    phone_number:forgotPassMobNum
+                }
+                const res = await axios.post('https://truck.truckmessage.com/send_forgot_pwd_otp', data)
+
+                if(res.data.error_code === 0){
+                    setForgotPasswordStep(2)
+                    setforgotPassUSerId(res.data.data.user_id)
+                    toast.success(res.data.message)
+                }else{
+                    toast.error(res.data.message)
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        } else {
+            toast.error("Invalid mobile number")
+        }
+    }
+
+    const handleVerifyOtp = async () => {
+        if (otp !== '' && otp.length === 6) {
+            try {
+                const data = {
+                    phone_number:forgotPassMobNum,
+                    otp:otp,
+                    user_id:JSON.stringify(forgotPassUSerId)
+                }
+                const res = await axios.post('https://truck.truckmessage.com/validate_forgot_otp', data)
+
+                if(res.data.error_code === 0){
+                    console.log(res.data)
+                    setForgotPasswordStep(3)
+                    toast.success(res.data.message)
+                }else{
+                    toast.error(res.data.message)
+                }
+            }
+            catch (err) {
+                console.log(err)
+            }
+        } else {
+            toast.error("Invalid otp")
+        }
+    }
+
+    const handleVerifyPasswords = async () => {
+        if (updatePass.password !== '' || updatePass.confirm_password !== '') {
+            if (updatePass.password === updatePass.confirm_password) {
+                try {
+                    const data = {
+                        user_id:JSON.stringify(forgotPassUSerId),
+                        pwd_type:"forgot_pwd",
+                        new_pwd:updatePass.password
+                    }
+                    const res = await axios.post('https://truck.truckmessage.com/update_user_password', data)
+
+                    if(res.data.error_code === 0){
+                        document.getElementById('closeForgotPasswordModel').click()
+                        toast.success(res.data.message)
+                    }else{
+                        toast.error(res.data.message)
+                    }
+                }
+                catch (err) {
+                    console.log(err)
+                }
+            } else {
+                toast.error("password/confirm password does not match")
+            }
+        } else {
+            toast.error("password/confirm password is empty")
+        }
+    }
+
+    const dynamicForgotPassword = () => {
+        switch (forgotPasswordStep) {
+            case 1:
+                return <div className="modal-content">
+                    <div className="modal-header border-0 ">
+                        <h1 className="modal-title fs-5 " id="staticBackdropLabel">Forgot password</h1>
+                        <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close" id="closeForgotPasswordModel"></button>
+                    </div>
+                    <div className="modal-body">
+                        <section>
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="card mx-auto p-3 pb-0 pt-2 border-0" style={{ maxWidth: '520px' }}>
+                                        <div className="card-body py-5">
+                                            <div className="form-group">
+                                                <label>Phone Number</label>
+                                                <input type="number" max={10} className="form-control py-3" placeholder="Phone number" value={forgotPassMobNum} onChange={(e) => setForgotPassMobNum(e.target.value)} />
+                                            </div>
+                                            <button type="button" className="btn btn-primary btn-block" onClick={handleVerifyMobileNumbre}>Verify</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            case 2:
+                return <div className="modal-content">
+                    <div className="modal-header border-0 ">
+                        <h1 className="modal-title fs-5 " id="staticBackdropLabel">Verify OTP</h1>
+                        <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close" id="closeForgotPasswordModel"></button>
+                    </div>
+                    <div className="modal-body">
+                        <section>
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="card mx-auto p-3 pb-0 pt-2 border-0" style={{ maxWidth: '520px' }}>
+                                        <div className="card-body py-5">
+                                            <div className="form-group">
+                                                <label>OTP</label>
+                                                <input type="number" max={6} className="form-control py-3" placeholder="Enter otp" value={otp} onChange={(e) => setOtp(e.target.value)} />
+                                            </div>
+                                            <button type="button" className="btn btn-primary btn-block" onClick={handleVerifyOtp}>Verify otp</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            case 3:
+                return <div className="modal-content">
+                    <div className="modal-header border-0 ">
+                        <h1 className="modal-title fs-5 " id="staticBackdropLabel">Change Password</h1>
+                        <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close" id="closeForgotPasswordModel"></button>
+                    </div>
+                    <div className="modal-body">
+                        <section>
+                            <div className="row">
+                                <div className="col-lg-12">
+                                    <div className="card mx-auto p-3 pb-0 pt-2 border-0" style={{ maxWidth: '520px' }}>
+                                        <div className="card-body py-5">
+                                            <div className="form-group">
+                                                <label>password</label>
+                                                <input type="text" className="form-control" placeholder="Password" value={updatePass.password} onChange={(e) => setUpdatePass({ ...updatePass, password: e.target.value })} />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Confirm password</label>
+                                                <input type="password" className="form-control" placeholder="Confirm Password" value={updatePass.confirm_password} onChange={(e) => setUpdatePass({ ...updatePass, confirm_password: e.target.value })} />
+                                            </div>
+                                            <button type="button" className="btn btn-primary btn-block" onClick={handleVerifyPasswords}>Update password</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+            default:
+                break;
+        }
+    }
+
+
 
     return (
         <>
@@ -382,7 +559,6 @@ const Navbar = () => {
                         </div>
                         <div className="modal-body">
                             <section>
-
                                 <div className="row">
                                     <div className="col-lg-12">
                                         <div className="card mx-auto p-3 pb-0 pt-2 border-0" style={{ maxWidth: '520px' }}>
@@ -394,6 +570,13 @@ const Navbar = () => {
                                                 <div className="form-group">
                                                     <label>Password</label>
                                                     <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+
+                                                    <div className='text-end w-100'>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#forgotpasswordModel" onClick={() => {
+                                                            setForgotPasswordStep(1)
+                                                            document.getElementById("closeSignInModel").click()
+                                                        }}>Forgot password ?</a>
+                                                    </div>
                                                 </div>
                                                 <div className="form-group form-check">
                                                     <input type="checkbox" className="form-check-input" id="termsCheck" checked={termsChecked} onChange={() => setTermsChecked(!termsChecked)} />
@@ -413,6 +596,14 @@ const Navbar = () => {
                             </section>
                         </div>
                     </div>
+                </div>
+            </div>
+
+
+            {/* forgot password modal  */}
+            <div className="modal fade" id="forgotpasswordModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    {dynamicForgotPassword()}
                 </div>
             </div>
 

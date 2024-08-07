@@ -45,79 +45,82 @@ import { Toaster } from "react-hot-toast";
 import Navbar from "./components/global-components/navbar";
 import Footer from './components/global-components/footer';
 import Profile from "./components/Profile";
-import {ExpenseCalculator} from "./components/ExpenseCalculator";
+import { ExpenseCalculator } from "./components/ExpenseCalculator";
 import ExpenseDetails from "./components/ExpenseDetails";
 import TollCalculator from "./components/TollCalculator";
+import { useEffect } from "react";
 
 function App() {
 
+ 
+
   return (
     <>
-      <Toaster/>
+      <Toaster />
 
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Navbar />
-          <Routes>
-            <Route path="/" element={<HomeV1 />} />
-            <Route path="/my_profile" element={<Profile />} />
-            <Route path="/signInPage" element={<SignInPage />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/service" element={<Service />} />
-            <Route path="/service-details" element={<ServiceDetails />} />
-           
-            <Route path="/load-availability" element={<Loadavailablity />} />
-            <Route path="/portfolio-v2" element={<PortfolioV2 />} />
-            {/* ? */}
-            <Route path="/truck_availability" element={<truck_availability />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/team-details" element={<TeamDetails />} />
-            <Route path="/faq" element={<Faq />} />
-            <Route path="/coming-soon" element={<ComingSoon />} />
-            <Route path="/404" element={<Error />} />
-            <Route path="/location" element={<Location />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/shop-grid" element={<ShopGrid />} />
-            <Route path="/shop-left-sidebar" element={<ShopLeftSidebar />} />
-            <Route path="/shop-right-sidebar" element={<ShopRightSidebar />} />
+        <Routes>
+          <Route path="/" element={<HomeV1 />} />
+          <Route path="/my_profile" element={<Profile />} />
+          <Route path="/signInPage" element={<SignInPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/service" element={<Service />} />
+          <Route path="/service-details" element={<ServiceDetails />} />
 
-            {/* <Route path="/load-availabilitypage" element={ <Loadavailablity/> } /> */}
+          <Route path="/load-availability" element={<Loadavailablity />} />
+          <Route path="/portfolio-v2" element={<PortfolioV2 />} />
+          {/* ? */}
+          <Route path="/truck_availability" element={<truck_availability />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/team-details" element={<TeamDetails />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/coming-soon" element={<ComingSoon />} />
+          <Route path="/404" element={<Error />} />
+          <Route path="/location" element={<Location />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/shop-grid" element={<ShopGrid />} />
+          <Route path="/shop-left-sidebar" element={<ShopLeftSidebar />} />
+          <Route path="/shop-right-sidebar" element={<ShopRightSidebar />} />
 
-
-            <Route path="/product-details" element={<ProdductDetails />} />
-            {/* blog */}
-            <Route path="/blog-grid" element={<BlogGrid />} />
-            <Route path="/blog-left-sidebar" element={<BlogLeftSidebar />} />
-            <Route path="/blog-right-sidebar" element={<BlogRightSidebar />} />
-            <Route path="/blog" element={<Blog />} />
+          {/* <Route path="/load-availabilitypage" element={ <Loadavailablity/> } /> */}
 
 
-            <Route path="/blog-details" element={<BlogDetails />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/my-account" element={<MyAccount />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/add-listing" element={<AddListing />} />
-            <Route path="/toll-calculator" element={<TollCalculator/>}/>
+          <Route path="/product-details" element={<ProdductDetails />} />
+          {/* blog */}
+          <Route path="/blog-grid" element={<BlogGrid />} />
+          <Route path="/blog-left-sidebar" element={<BlogLeftSidebar />} />
+          <Route path="/blog-right-sidebar" element={<BlogRightSidebar />} />
+          <Route path="/blog" element={<Blog />} />
 
 
-            <Route path="/wishlist" element={<Wishlist />}>
-              <Route path="load"/>
-              <Route path="truck"/>
-              <Route path="driver"/>
-              <Route path="buy_sell"/>
-            </Route>
-            
-
-            <Route path="/expense-calculator" element={<ExpenseCalculator/>}/>
-            <Route path="/expense-details/:id" element={<ExpenseDetails/>}/>
-            <Route path="/fuelprice" element={<FuelPrice/>}/>
+          <Route path="/blog-details" element={<BlogDetails />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/my-account" element={<MyAccount />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/add-listing" element={<AddListing />} />
+          <Route path="/toll-calculator" element={<TollCalculator />} />
 
 
-            <Route path="/order-tracking" element={<OrderTracking />} />
-            <Route path="/history" element={<History />} />
-          </Routes>
+          <Route path="/wishlist" element={<Wishlist />}>
+            <Route path="load" />
+            <Route path="truck" />
+            <Route path="driver" />
+            <Route path="buy_sell" />
+          </Route>
+
+
+          <Route path="/expense-calculator" element={<ExpenseCalculator />} />
+          <Route path="/expense-details/:id" element={<ExpenseDetails />} />
+          <Route path="/fuelprice" element={<FuelPrice />} />
+
+
+          <Route path="/order-tracking" element={<OrderTracking />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
         <Footer />
       </BrowserRouter>
     </>
