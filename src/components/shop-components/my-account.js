@@ -42,7 +42,7 @@ const MyAccount = () => {
 
   useEffect(() => {
     fetchUserProfile();
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0)
   }, [pageRefresh]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const MyAccount = () => {
     }
   }
 
-  const fetchUserProfile = () => { 
+  const fetchUserProfile = () => {
     const encodedUserId = Cookies.get("usrin");
     if (encodedUserId) {
       const userId = window.atob(encodedUserId);
@@ -211,18 +211,18 @@ const MyAccount = () => {
       const userId = window.atob(encodedUserId);
 
       let formData = new FormData();
-      formData.append("user_id", userId); 
+      formData.append("user_id", userId);
       formData.append("profile_image", updateImage);
-      const res = await axios.post("https://truck.truckmessage.com/update_profile_image", formData,{
-        headers:{
-          "Content-Type":"multipart/form-data"
+      const res = await axios.post("https://truck.truckmessage.com/update_profile_image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
         }
       });
 
-      if(res.data.error_code === 0){
+      if (res.data.error_code === 0) {
         toast.success(res.data.message)
         fetchUserProfile()
-      }else{
+      } else {
         toast.error(res.data.message)
       }
     } catch (err) {
@@ -298,7 +298,7 @@ const MyAccount = () => {
                 <div className="row h-100">
                   <div className='col-lg-4 col-md-4 d-inline-flex '>
                     <div className="ltn-author-introducing clearfix mb-3 w-100 text-center">
-                        <img src={userProfile.profile_image_name || ''} width={250} height={220} className="rounded-circle" alt="Profile" />
+                      <img src={userProfile.profile_image_name || ''} width={180} height={180} className="rounded-circle" alt="Profile" />
                     </div>
                   </div>
                   <div className='col-lg-8 col-md-4'>
@@ -331,12 +331,12 @@ const MyAccount = () => {
                                 <p> <GrMapLocation className='me-3' />   {userProfile.operating_city.length ? userProfile.operating_city.join(', ') : 'Not Available'}</p>
                               </div>
                             </li>
-                            <li>
+                            {/* <li>
                               <div className="footer-address-icon"></div>
                               <div className="footer-address-info">
                                 <p> <GrLocation className='me-3' />   {userProfile.state.length ? userProfile.state.join(', ') : 'Not Available'}</p>
                               </div>
-                            </li>
+                            </li> */}
                           </ul>
                         </div>
                       </div>
@@ -384,7 +384,7 @@ const MyAccount = () => {
                                 </li>
                                 <li className="list-group-item d-flex justify-content-between align-items-start align-items-center mt-0 p-2">
                                   <div className="me-auto ms-2">
-                                    <div className="fw-bold">PUCC</div>
+                                    <div className="fw-bold">Pollution Certificate</div>
                                     <span className="vehicletext">{formatDate(vehicle.pucc_upto)}</span>
                                   </div>
                                   <div className="d-flex">
@@ -411,9 +411,9 @@ const MyAccount = () => {
                                 </li>
                               </ul>
                             </div>
-                            <button className="btn btn-primary text-uppercase mt-3 mb-3" onClick={() => handleViewDetails(vehicle.rc_number)} data-bs-toggle="modal" data-bs-target="#vehicleDetails">
+                            {/* <button className="btn btn-primary text-uppercase mt-3 mb-3" onClick={() => handleViewDetails(vehicle.rc_number)} data-bs-toggle="modal" data-bs-target="#vehicleDetails">
                               View Details
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                       ))}
@@ -423,7 +423,7 @@ const MyAccount = () => {
 
                   {/* Add Vehicle Modal */}
                   <div className="modal fade" id="vehicleNumber" tabIndex="-1" aria-labelledby="vehicleNumberLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-center ">
+                    <div className="modal-dialog modal-dialog-centered ">
                       <div className="modal-content">
                         <div className="modal-header">
                           <h5 className="modal-title" id="vehicleNumberLabel">Add Vehicle</h5>
@@ -436,8 +436,9 @@ const MyAccount = () => {
                           </div>
                         </div>
                         <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={handleAddVehicle}>Add Vehicle</button>
                           <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeModalButton">Close</button>
-                          <button type="button" className="btn btn-primary" onClick={handleAddVehicle}>Add Vehicle</button>
+                          
                         </div>
                       </div>
                     </div>
@@ -575,7 +576,7 @@ const MyAccount = () => {
                                   null}
                               </div>
                               <div className="form-check ms-2 w-100">
-                                <input className="form-check-input" type="checkbox" id="profileAllStatesandCities" onChange={handleCheckbox} checked={checked}/>
+                                <input className="form-check-input" type="checkbox" id="profileAllStatesandCities" onChange={handleCheckbox} checked={checked} />
                                 <label className="form-check-label ps-2" for="profileAllStatesandCities">
                                   All states and cities
                                 </label>

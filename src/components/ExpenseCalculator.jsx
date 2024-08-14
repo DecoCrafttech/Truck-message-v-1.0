@@ -3,6 +3,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { BsExclamationCircle } from 'react-icons/bs';
 
 export const ExpenseCalculator = () => {
     const [loadTrips, setLoadTrips] = useState([]);
@@ -13,53 +15,61 @@ export const ExpenseCalculator = () => {
         to_location: ''
     });
 
+    const [loadTripId, setLoadTripId] = useState('')
+
     const LoginDetails = useSelector((state) => state.login);
     // const pageRender = useNavigate();
 
     useEffect(() => {
-      if (Cookies.get("usrin")) {
-        fetchLoadTrips();
-      }else{
-        setLoadTrips([])
-      }
+        if (Cookies.get("usrin")) {
+            fetchLoadTrips();
+        } else {
+            setLoadTrips([])
+        }
     }, [LoginDetails.isLoggedIn]);
 
     useEffect(() => {
         fetchLoadTrips();
     }, []);
 
-    const fetchLoadTrips = () => {
+    const fetchLoadTrips = async () => {
         const encodedUserId = Cookies.get('usrin');
         if (!encodedUserId) {
-            console.error('User ID not found in cookies');
+            toast.error('User ID not found in cookies');
             return;
         }
         const userId = window.atob(encodedUserId);
-
-        axios.post('https://truck.truckmessage.com/user_load_trip_details', { user_id: userId })
+        
+        await axios.post('https://truck.truckmessage.com/user_load_trip_details', { user_id: userId })
             .then(response => {
                 if (response.data.success) {
                     setLoadTrips(response.data.data);
                 } else {
-                    console.error('Failed to fetch user load trip details');
+                    toast.error('Failed to fetch user load trip details');
                 }
             })
             .catch(error => {
-                console.error('Error fetching user load trip details:', error);
+                toast.error('Error fetching user load trip details:', error);
             });
     };
 
-    const handleDelete = (id) => {
-        axios.delete(`https://truck.truckmessage.com/delete_load_trip/${id}`)
+    const handleDelete = async () => {
+        const data = {
+            load_trip_id: loadTripId
+        }
+
+        await axios.post(`https://truck.truckmessage.com/remove_load_trip_entry`, data)
             .then(response => {
-                if (response.data.success) {
-                    setLoadTrips(prevTrips => prevTrips.filter(trip => trip.id !== id));
+                if (response.data.error_code === 0) {
+                    // setLoadTrips(prevTrips => prevTrips.filter(trip => trip.id !== id));
+                    fetchLoadTrips();
+                    document.getElementById('closeDeletionModal').click();
                 } else {
-                    console.error('Failed to delete load trip');
+                    toast.error('Failed to delete load trip');
                 }
             })
             .catch(error => {
-                console.error('Error deleting load trip:', error);
+                toast.error('Error deleting load trip:', error);
             });
     };
 
@@ -71,12 +81,12 @@ export const ExpenseCalculator = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const encodedUserId = Cookies.get('usrin');
         if (!encodedUserId) {
-            console.error('User ID not found in cookies');
+            toast.error('User ID not found in cookies');
             return;
         }
         const userId = window.atob(encodedUserId);
@@ -86,11 +96,11 @@ export const ExpenseCalculator = () => {
             user_id: userId
         };
 
-        axios.post('https://truck.truckmessage.com/load_trip_entry', updatedFormData)
+        await axios.post('https://truck.truckmessage.com/load_trip_entry', updatedFormData)
             .then(response => {
                 if (response.data.success) {
                     fetchLoadTrips();
-                    
+
 
                     document.getElementById('addModalExpenseCalculator').click();
                     setFormData({
@@ -100,11 +110,11 @@ export const ExpenseCalculator = () => {
                         to_location: ''
                     });
                 } else {
-                    console.error('Failed to add load trip');
+                    toast.error('Failed to add load trip');
                 }
             })
             .catch(error => {
-                console.error('Error adding load trip:', error);
+                toast.error('Error adding load trip:', error);
             });
     };
 
@@ -151,7 +161,9 @@ export const ExpenseCalculator = () => {
                                             <button
                                                 type="button"
                                                 className="btn btn-danger d-flex align-items-center"
-                                                onClick={() => handleDelete(trip.id)}
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteLoadConfirmationModal"
+                                                onClick={() => setLoadTripId(trip.id)}
                                             >
                                                 <i className="fas fa-trash-alt me-2"></i>
                                                 Delete
@@ -161,6 +173,32 @@ export const ExpenseCalculator = () => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="deleteLoadConfirmationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeDeletionModal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div className="py-3">
+                                <div className="col text-center">
+                                    <BsExclamationCircle className='fs-1 text-danger'/>
+                                </div>
+                                <p className='mt-3 text-center'>Are you sure do you want to delete this</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0 row">
+                            <div className="col-6 m-0">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">No</button>
+                            </div>
+                            <div className="col-6 m-0">
+                                <button type="button" class="btn btn-outline-primary" onClick={handleDelete}>Yes</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

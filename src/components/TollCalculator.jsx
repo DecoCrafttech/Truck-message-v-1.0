@@ -46,17 +46,19 @@ const TollCalculator = () => {
         });
     }
 
+
+
     const tollForm = async (e) => {
         e.preventDefault();
-
+    
         const startPoint = document.getElementById('startPoint').value;
         const endPoint = document.getElementById('endPoint').value;
         const vehicleType = document.getElementById('vehicleType').value;
-
+    
         try {
             const result = await calculateRoute(directionsService, directionsRenderer, startPoint, endPoint);
             const routes = result.routes;
-
+    
             // Center map based on the first route
             if (routes.length > 0) {
                 const bounds = new window.google.maps.LatLngBounds();
@@ -68,41 +70,130 @@ const TollCalculator = () => {
                 });
                 map.fitBounds(bounds);
             }
-
-            // Process route information and display results
+    
+            // Process route information and display results in table format
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<h2>Route Details</h2>';
-
+            resultsDiv.innerHTML = '<h6>Route Details</h6>';
+    
             if (routes.length === 0) {
                 resultsDiv.innerHTML += '<p>No routes found.</p>';
             } else {
                 routes.forEach((route, index) => {
                     const tollData = calculateTolls(route, vehicleType);
-                    resultsDiv.innerHTML += `<h3>Route ${index + 1}</h3>`;
-                    resultsDiv.innerHTML += `<p>Distance: ${route.legs[0].distance.text}</p>`;
-                    resultsDiv.innerHTML += `<p>Duration: ${route.legs[0].duration.text}</p>`;
-                    resultsDiv.innerHTML += `<p>Number of Tolls: ${tollData.count}</p>`;
-                    resultsDiv.innerHTML += `<p>Total Toll Cost: <strong> ${tollData.totalCost}<storng/> INR (Approximate value)</p>`;
+                    
+                    // Create a table for each route
+                    resultsDiv.innerHTML += `<h6>Route ${index + 1}</h6>`;
+                    resultsDiv.innerHTML += `
+                        <table class="table table-bordered table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Distance</th>
+                                    <th>Duration</th>
+                                    <th>Number of Tolls</th>
+                                    <th>Total Toll Cost (INR) - Approximate value  </th>
+                                </tr>
+                                
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>${route.legs[0].distance.text}</td>
+                                    <td>${route.legs[0].duration.text}</td>
+                                    <td>${tollData.count}</td>
+                                    <td><strong>${tollData.totalCost}</strong></td>
+                                </tr>
+                            </tbody>
+                              
+                        </table>`;
 
-                    // Display tolls if available
+                        <p>Approximate value</p>  
+    
+                    // If there are tolls, display their locations
                     if (route.legs[0].steps) {
+                        resultsDiv.innerHTML += `
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Toll Locations</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
                         route.legs[0].steps.forEach((step) => {
                             if (step.instructions.includes('Toll')) {
-                                resultsDiv.innerHTML += `<p>Toll Location: ${step.instructions}</p>`;
+                                resultsDiv.innerHTML += `<tr><td>${step.instructions}</td></tr>`;
                             }
                         });
+                        resultsDiv.innerHTML += `</tbody></table>`;
                     } else {
                         resultsDiv.innerHTML += '<p>No tolls on this route.</p>';
                     }
                 });
             }
-
+    
         } catch (error) {
             toast.error('Error fetching directions', error);
             toast.error('Please try again', error);
             document.getElementById('results').innerHTML = '<p>Error fetching directions. Please try again later.</p>';
         }
     };
+    
+
+    // const tollForm = async (e) => {
+    //     e.preventDefault();
+
+    //     const startPoint = document.getElementById('startPoint').value;
+    //     const endPoint = document.getElementById('endPoint').value;
+    //     const vehicleType = document.getElementById('vehicleType').value;
+
+    //     try {
+    //         const result = await calculateRoute(directionsService, directionsRenderer, startPoint, endPoint);
+    //         const routes = result.routes;
+
+    //         // Center map based on the first route
+    //         if (routes.length > 0) {
+    //             const bounds = new window.google.maps.LatLngBounds();
+    //             routes.forEach(route => {
+    //                 route.legs.forEach(leg => {
+    //                     bounds.extend(new window.google.maps.LatLng(leg.start_location.lat(), leg.start_location.lng()));
+    //                     bounds.extend(new window.google.maps.LatLng(leg.end_location.lat(), leg.end_location.lng()));
+    //                 });
+    //             });
+    //             map.fitBounds(bounds);
+    //         }
+
+    //         // Process route information and display results
+    //         const resultsDiv = document.getElementById('results');
+    //         resultsDiv.innerHTML = '<h6>Route Details</h6>';
+
+    //         if (routes.length === 0) {
+    //             resultsDiv.innerHTML += '<p>No routes found.</p>';
+    //         } else {
+    //             routes.forEach((route, index) => {
+    //                 const tollData = calculateTolls(route, vehicleType);
+    //                 resultsDiv.innerHTML += `<h6>Route ${index + 1}</h6>`;
+    //                 resultsDiv.innerHTML += `<p>Distance: ${route.legs[0].distance.text}</p>`;
+    //                 resultsDiv.innerHTML += `<p>Duration: ${route.legs[0].duration.text}</p>`;
+    //                 resultsDiv.innerHTML += `<p>Number of Tolls: ${tollData.count}</p>`;
+    //                 resultsDiv.innerHTML += `<p>Total Toll Cost: <strong> ${tollData.totalCost}<storng/> INR (Approximate value)</p>`;
+
+    //                 // Display tolls if available
+    //                 if (route.legs[0].steps) {
+    //                     route.legs[0].steps.forEach((step) => {
+    //                         if (step.instructions.includes('Toll')) {
+    //                             resultsDiv.innerHTML += `<p>Toll Location: ${step.instructions}</p>`;
+    //                         }
+    //                     });
+    //                 } else {
+    //                     resultsDiv.innerHTML += '<p>No tolls on this route.</p>';
+    //                 }
+    //             });
+    //         }
+
+    //     } catch (error) {
+    //         toast.error('Error fetching directions', error);
+    //         toast.error('Please try again', error);
+    //         document.getElementById('results').innerHTML = '<p>Error fetching directions. Please try again later.</p>';
+    //     }
+    // };
 
 
     // Mock toll calculation function
@@ -115,12 +206,12 @@ const TollCalculator = () => {
 
         // Mock toll cost calculation based on vehicle type
         const tollCosts = {
-            'Truck': 200,
-            'Bus': 150,
-            '6-Axle Vehicle': 300,
-            '8-Axle Vehicle': 400,
-            '10-Axle Vehicle': 500,
-            '12-Axle Vehicle': 600
+            'Car/Jeep/Van': 110,
+            'LCV': 170,
+            'Upto 3 Axle Vehicle': 370,
+            '4 to 6 Axle': 580,
+            '7 or more Axle': 650,
+            'HCM/EME': 750
         };
 
         const totalCost = tollCount * tollCosts[vehicleType];
@@ -133,8 +224,11 @@ const TollCalculator = () => {
                 <div className='text-center mt-5 mb-5'>
                     <h3 >Toll Price Calculator</h3>
                 </div>
+                <div className='col-lg-12 col-md-12'>
+
+                
                 <div className='row' >
-                    <div className='col-6 col-md-6'>
+                    <div className='col-lg-6 col-md-6 col-sm-12'>
 
 
                         <form >
@@ -146,21 +240,22 @@ const TollCalculator = () => {
 
                             <label for="vehicleType">Vehicle Type:</label>
                             <select id="vehicleType">
-                                <option value="Truck">Truck</option>
-                                <option value="Bus">Bus</option>
-                                <option value="6-Axle Vehicle">6-Axle Vehicle</option>
-                                <option value="8-Axle Vehicle">8-Axle Vehicle</option>
-                                <option value="10-Axle Vehicle">10-Axle Vehicle</option>
-                                <option value="12-Axle Vehicle">12-Axle Vehicle</option>
+                                <option value="Car/Jeep/Van">Car/Jeep/Van</option>
+                                <option value="LCV">LCV</option>
+                                <option value="Upto 3 Axle Vehicle">Upto 3 Axle Vehicle</option>
+                                <option value="4 to 6 Axle">4 to 6 Axle</option>
+                                <option value="7 or more Axle">7 or more Axle</option>
+                                <option value="HCM/EME">HCM/EME</option>
                             </select>
 
                             <button type="button" className='btn btn-primary mt-3' onClick={tollForm}>Calculate</button>
                         </form>
 
                     </div>
-                    <div className='col-6 col-md-6'>
+                    <div className='col-lg-6 col-md-6  col-sm-12 mt-3'>
                         <div id="map" className='tollCalculatorMap'></div>
                     </div>
+                </div>
                 </div>
 
             </div>

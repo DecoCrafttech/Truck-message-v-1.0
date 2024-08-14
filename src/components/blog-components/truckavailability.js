@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
-import { FaWeightHanging, FaTruck, FaLocationDot } from "react-icons/fa6";
+import { FaWeightHanging, FaTruck, FaLocationDot, FaTruckFast } from "react-icons/fa6";
 import { SiMaterialformkdocs } from "react-icons/si";
 import { GiCarWheel } from "react-icons/gi";
 import { Link } from 'react-router-dom'; // Assuming you are using react-router for navigation
@@ -67,6 +67,16 @@ const TruckAvailability = () => {
                 console.error('There was an error fetching the data!', error);
             });
     }, []);
+
+    const handleCopy = (contactNo) => {
+        navigator.clipboard.writeText(contactNo)
+            .then(() => {
+                toast.success('Contact number copied to clipboard!'); // Optional, show a success message
+            })
+            .catch(() => {
+                toast.error('Failed to copy contact number.');
+            });
+    };
 
     const handleFilterChange = (e) => {
         setFilters({
@@ -219,52 +229,7 @@ const TruckAvailability = () => {
         }
     }
 
-    const [distance, setDistance] = useState('');
 
-    // useEffect(() => {
-    //     const fetchDistance = async (from_location,to_location) => {
-    //         // try {
-    //         //     const response = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
-    //         //         params: {
-    //         //             origins: from_location,
-    //         //             destinations: to_location,
-    //         //             key: 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw',
-    //         //         }
-    //         //     });
-
-    //         //     const data = response.data;
-    //         //     if (data.rows[0].elements[0].status === 'OK') {
-    //         //         console.log(data.rows[0].elements[0].distance.text)
-    //         //         setDistance(data.rows[0].elements[0].distance.text);
-    //         //     } else {
-    //         //         setDistance('Distance not available');
-    //         //     }
-    //         // } catch (error) {
-    //         //     console.error('Error fetching distance:', error);
-    //         //     setDistance('Error fetching distance');
-    //         // }
-
-    //         const API_KEY = 'AIzaSyA09V2FtRwNpWu7Xh8hc7nf-HOqO7rbFqw';
-    //         const url = `https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${encodeURIComponent("tenkasi")}&destinations=${encodeURIComponent("chennai")}&key=${API_KEY}`;
-
-    //         try {
-    //           const response = await axios.get(url);
-    //           console.log(response)
-    //           if (response.data.rows[0].elements[0].status === 'OK') {
-    //             const distanceText = response.data.rows[0].elements[0].distance.text;
-    //             setDistance(distanceText);
-    //           } else {
-    //             setDistance('Unable to find the distance.');
-    //           }
-    //         } catch (error) {
-    //           console.error('Error fetching the distance:', error);
-    //           setDistance('Error calculating distance.');
-    //         }
-    //     };
-    //     // fetchDistance(card.from_location,card.to_location)
-    //     fetchDistance("tenkasi","chennai")
-
-    // }, [cards.from_location, cards.to_location]);
 
 
     const handleTruckAvailabilityModelOpen = async () => {
@@ -663,11 +628,13 @@ const TruckAvailability = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>Truck Body Type</h6>
                                             <div className="input-item">
-                                                <select className="nice-select" name="truck_body_type" onChange={(e) => SetfilterModelData({ ...filterModelData, truck_body_type: e.target.value })}>
-                                                    <option value="open_body">Open Body</option>
-                                                    <option value="container">Container</option>
-                                                    <option value="trailer">Trailer</option>
+                                            <select className="nice-select" name="truck_body_type" required>
+                                                    <option value="open_body">LCV</option>
+                                                    <option value="container">Bus</option>
+                                                    <option value="trailer">Open body vehicle</option>
                                                     <option value="tanker">Tanker</option>
+                                                    <option value="tanker">Trailer</option>
+                                                    <option value="tanker">Tipper</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -719,12 +686,16 @@ const TruckAvailability = () => {
                             <div className="card h-100 shadow truckcard">
                                 <div className='card-header mt-2 border-0 mb-2'>
                                     <h5 className="card-title cardmodify">{card.company_name}</h5>
-                                    <p className='.fs-6 reviewtext'>
-                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                        <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
+                                    <p className='.fs-6 mb-0 reviewtext '>
+                                        {/* Generate the star ratings based on the response */}
+                                        {[...Array(5)].map((_, index) => (
+                                            <span key={index} className="float-right">
+                                                <i className={`text-warning fa fa-star ${index < card.rating  ? '' : 'text-muted'}`}></i>
+                                            </span>
+                                        ))}
+                                        <span>({card.review_count})</span>
+                                        <p className="float-end mb-0 text-b"> <strong>Posts </strong> : 12</p>
+
                                     </p>
                                 </div>
                                 <div className="card-body p-3 mt-2 mb-2">
@@ -758,7 +729,7 @@ const TruckAvailability = () => {
                                             <label><FaTruck className='me-2' />{card.truck_name}</label>
                                         </div>
                                         <div className="col-lg-6 cardicon">
-                                            <label><FaTruck className='me-2' />{card.vehicle_number}</label>
+                                            <label><FaTruckFast className='me-2' />{card.vehicle_number}</label>
                                         </div>
                                     </div>
                                     <div className='m-2'>
@@ -770,8 +741,18 @@ const TruckAvailability = () => {
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
                                             <div className="d-flex flex-wrap mt-3">
-                                                <div className='col-6'>
+                                                {/* <div className='col-6'>
                                                     <a href={`tel:${card.contact_no}`} className="btn btn-success  w-100" type="button"> <IoCall className='me-3' />Call</a>
+                                                </div> */}
+                                                 <div className='col-6'>
+                                                    {/* <button className="btn btn-success w-100" type="button"> <IoCall  className='me-3' />{card.contact_no}</button> */}
+                                                    <button
+                                                        className="btn btn-success w-100"
+                                                        type="button"
+                                                        onClick={() => handleCopy(card.contact_no)}
+                                                    >
+                                                        <IoCall className='me-3' />{card.contact_no}
+                                                    </button>
                                                 </div>
                                                 <div className='col-6'>
                                                     <button className="btn cardbutton w-100" type="button">Message</button>

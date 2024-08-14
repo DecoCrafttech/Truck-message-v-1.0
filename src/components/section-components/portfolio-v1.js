@@ -69,6 +69,16 @@ const PortfolioV1 = () => {
         });
     };
 
+    const handleCopy = (contactNo) => {
+        navigator.clipboard.writeText(contactNo)
+            .then(() => {
+                toast.success('Contact number copied to clipboard!'); // Optional, show a success message
+            })
+            .catch(() => {
+                toast.error('Failed to copy contact number.');
+            });
+    };
+
     const filterCards = (cards) => {
         return cards.filter(card => {
             const search = filters.search.toLowerCase();
@@ -587,11 +597,13 @@ const PortfolioV1 = () => {
                                         <div className="col-12 col-md-6">
                                             <h6>Truck Body Type</h6>
                                             <div className="input-item">
-                                                <select className="nice-select" name="truck_body_type" onChange={(e) => SetfilterModelData({ ...filterModelData, truck_body_type: e.target.value })}>
-                                                    <option value="open_body">Open Body</option>
-                                                    <option value="container">Container</option>
-                                                    <option value="trailer">Trailer</option>
+                                                <select className="nice-select" name="truck_body_type" required>
+                                                    <option value="open_body">LCV</option>
+                                                    <option value="container">Bus</option>
+                                                    <option value="trailer">Open body vehicle</option>
                                                     <option value="tanker">Tanker</option>
+                                                    <option value="tanker">Trailer</option>
+                                                    <option value="tanker">Tipper</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -645,15 +657,17 @@ const PortfolioV1 = () => {
                             <div className="card h-100 shadow truckcard">
                                 <div className='card-header mt-2 border-0 mb-0 '>
                                     <h5 className="card-title cardmodify">{card.company_name}</h5>
-                                    <div className='col-6 col-md-6 float-right text-start .fs-6 pe-0 ps-0 pb-0 mt-2 mb-0'>
-                                        <p className='.fs-6 reviewtext'>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                            <span className="float-right"><i className="text-warning fa fa-star"></i></span>(12)
-                                        </p>
-                                    </div>
+                                    <p className='.fs-6 mb-0 reviewtext '>
+                                        {/* Generate the star ratings based on the response */}
+                                        {[...Array(5)].map((_, index) => (
+                                            <span key={index} className="float-right">
+                                                <i className={`text-warning fa fa-star ${index < card.rating  ? '' : 'text-muted'}`}></i>
+                                            </span>
+                                        ))}
+                                        <span>({card.review_count})</span>
+                                        <p className="float-end mb-0 text-b"> <strong>Posts </strong> : 12</p>
+
+                                    </p>
 
                                 </div>
 
@@ -694,8 +708,18 @@ const PortfolioV1 = () => {
                                     <div>
                                         {LoginDetails.isLoggedIn ? (
                                             <div className="d-flex flex-wrap mt-3">
-                                                <div className='col-6'>
+                                                {/* <div className='col-6'>
                                                     <a href={`tel:${card.contact_no}`} className="btn btn-success  w-100" type="button"> <IoCall className='me-3' />Call</a>
+                                                </div> */}
+                                                <div className='col-6'>
+                                                    {/* <button className="btn btn-success w-100" type="button"> <IoCall  className='me-3' />{card.contact_no}</button> */}
+                                                    <button
+                                                        className="btn btn-success w-100"
+                                                        type="button"
+                                                        onClick={() => handleCopy(card.contact_no)}
+                                                    >
+                                                        <IoCall className='me-3' />{card.contact_no}
+                                                    </button>
                                                 </div>
                                                 <div className='col-6'>
                                                     <button className="btn cardbutton w-100" type="button">Message</button>

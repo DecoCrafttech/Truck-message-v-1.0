@@ -475,11 +475,13 @@ const BlogList = () => {
                             <div className="col-12 col-md-6">
                                 <h6>Truck Body Type</h6>
                                 <div className="input-item">
-                                    <select className="nice-select" name="truck_body_type" required value={editingData.truck_body_type} onChange={(e) => setEditingData({ ...editingData, truck_body_type: e.target.value })}>
-                                        <option value="open_body">Open Body</option>
-                                        <option value="container">Container</option>
-                                        <option value="trailer">Trailer</option>
+                                    <select className="nice-select" name="truck_body_type" required>
+                                        <option value="open_body">LCV</option>
+                                        <option value="container">Bus</option>
+                                        <option value="trailer">Open body vehicle</option>
                                         <option value="tanker">Tanker</option>
+                                        <option value="tanker">Trailer</option>
+                                        <option value="tanker">Tipper</option>
                                     </select>
                                 </div>
                             </div>
@@ -551,7 +553,7 @@ const BlogList = () => {
             <div className="ltn__product-area ltn__product-gutter mb-50 mt-60">
                 <div className="container">
                     <div className="row">
-                        <div className="col-lg-12">
+                        <div className="col-lg-12 mb-2">
                             <div className="ltn__shop-options">
                                 <ul>
                                     <li>
@@ -561,15 +563,18 @@ const BlogList = () => {
                                     </li>
                                     <div className="header-top-btn">
                                         {LoginDetails.isLoggedIn ? (
-                                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addloadavailability" onClick={handleBuyAndSellModelOpen}>+ Add Load availability</button>
+                                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#addloadavailability" onClick={handleBuyAndSellModelOpen}> + Add vehicle post</button>
 
                                         ) :
-                                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal">+ Add Load availability</button>
+                                            <button type="button " className='cardbutton truck-brand-button ' data-bs-toggle="modal" data-bs-target="#loginModal"> + Add vehicle post</button>
                                         }
                                     </div>
                                 </ul>
                             </div>
                         </div>
+
+                        <hr></hr>
+
                         <div className="col-lg-12">
                             <div className='row'>
                                 <div className="col-lg-8">
@@ -704,15 +709,15 @@ const BlogList = () => {
                                             <div className='col-8 col-md-8 text-start ps-0'>
                                                 <h5 className="card-title text-wrap">{card.brand}</h5>
                                             </div>
-                                            <div className='col-4 col-md-4 text-end .fs-6 pe-0'>
-                                                <p className='.fs-6 reviewtext'>(12)
-                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                                    <span className="float-right"><i className="text-warning fa fa-star"></i></span>
-                                                </p>
-                                            </div>
+                                            <p className='.fs-6 mb-0 reviewtext '>
+                                        {/* Generate the star ratings based on the response */}
+                                        {[...Array(5)].map((_, index) => (
+                                            <span key={index} className="float-right">
+                                                <i className={`text-warning fa fa-star ${index < card.rating  ? '' : 'text-muted'}`}></i>
+                                            </span>
+                                        ))}
+                                        <span>({card.review_count})</span>
+                                    </p>
                                         </div>
                                     </div>
                                     <div>

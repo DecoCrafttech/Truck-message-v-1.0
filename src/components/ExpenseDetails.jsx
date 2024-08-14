@@ -14,6 +14,7 @@ const ExpenseDetails = () => {
     const [error, setError] = useState(null);
     const [form, setForm] = useState({ cash_flow_name: '', category: '', cash_flow_type: 'IN', amount: '' });
     const [modalTitle, setModalTitle] = useState('Credit Entry');
+    const [loadCashDetails, setLoadCashDetails] = useState({})
 
     useEffect(() => {
         fetchCashFlowDetails()
@@ -22,6 +23,11 @@ const ExpenseDetails = () => {
     const fetchCashFlowDetails = async () => {
         if (userId && params.id) {
             try {
+                const res = await axios.post('https://truck.truckmessage.com/initial_cash_in_out', { load_trip_id: params.id })
+                if (res.data.error_code === 0) {
+                    setLoadCashDetails(res.data.data.length > 0 ? res.data.data : [])
+                }
+
                 const response = await axios.post('https://truck.truckmessage.com/get_load_trip_cash_flow', {
                     user_id: userId,
                     load_trip_id: params.id
@@ -109,9 +115,30 @@ const ExpenseDetails = () => {
                     <div className="row shadow">
                         <div className="card w-100 shadow">
                             <div className="card-body">
-                                <div className="d-flex justify-content-center mt-3 mb-3 gap-2">
-                                    <button type="button" className="btn btn-success h-100" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
-                                    <button type="button" className="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('OUT')}>Debit</button>
+                                <div className="col-12 mb-3 row py-3 text-center">
+                                    <div className="col-4">
+                                        <p className="card-text mb-1">
+                                            <b>Load Price :</b>
+                                            <span className='ps-2'>{loadCashDetails[0].load_price}</span>
+                                        </p>
+                                    </div>
+                                    <div className="col-4">
+                                        <p className="card-text mb-1">
+                                            <b>Available amount :</b>
+                                            <span className='ps-2'>{loadCashDetails[0].available_cash}</span>
+                                        </p>
+                                    </div>
+                                    <div className="col-4">
+                                        <p className="card-text mb-1">
+                                            <b>Spend amount :</b>
+                                            <span className='ps-2'>{loadCashDetails[0].spend_amount}</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="d-flex justify-content-center mt-3 mb-5  gap-2">
+                                    <button type="button" className="btn btn-success p-2 h-100" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('IN')}>Credit</button>
+                                    <button type="button" className="btn btn-danger p-2" data-bs-toggle="modal" data-bs-target="#modalForm" onClick={() => handleModalOpen('OUT')}>Debit</button>
                                 </div>
 
                                 <div className="col-12 p-0 mt-3">
@@ -119,19 +146,18 @@ const ExpenseDetails = () => {
                                         {data.map((entry, index) => (
                                             <div className='border-bottom' key={index}>
                                                 <div className="row">
-                                                    <div className="col-12 col-lg-3">
+                                                    <div className="col-12 col-lg-12">
                                                         <h5 className='mt-2'>{entry.date}</h5>
                                                         <p className="card-text mb-1">
                                                             <b>Current balance :</b>
                                                             <span className='ps-2'>{entry.balance}</span>
                                                         </p>
                                                     </div>
-                                                    <div className="col-12 col-lg-9 overflow-scroll tableScrollbar">
-                                                        <table className="table ">
+                                                    <div className="col-12 col-lg-12 overflow-scroll tableScrollbar">
+                                                        <table className="table col-12  table-striped table-hover">
                                                             <thead>
                                                                 <tr>
                                                                     <th scope="col">S.no</th>
-                                                                    <th scope="col">Reason</th>
                                                                     <th scope="col">Description</th>
                                                                     <th scope="col">Debit/Credit</th>
                                                                     <th scope="col">Rupees</th>
@@ -143,7 +169,6 @@ const ExpenseDetails = () => {
                                                                     <tr key={index}>
                                                                         <th scope="row">{index + 1}</th>
                                                                         <td>{transaction.reason}</td>
-                                                                        <td>{transaction.description}</td>
                                                                         <td>{transaction.debitorcredit}</td>
                                                                         <td className={`${transaction.debitorcredit === "credit" ? "text-success" : "text-danger"}`}>{transaction.rupees}</td>
                                                                         <td>{transaction.time}</td>
@@ -167,7 +192,7 @@ const ExpenseDetails = () => {
 
             {/* Modal Form */}
             <div className="modal fade" id="modalForm" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered modal-lg">
+                <div className="modal-dialog modal-dialog-centered ">
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">{modalTitle}</h5>
@@ -176,7 +201,7 @@ const ExpenseDetails = () => {
                         <form onSubmit={handleFormSubmit}>
                             <div className="modal-body">
                                 <div className="row">
-                                    <div className="col-md-6">
+                                    <div className="col-md-12">
                                         <h5>Name</h5>
                                         <div className="input-item input-item-name">
                                             <input
@@ -189,7 +214,7 @@ const ExpenseDetails = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
+                                    {/* <div className="col-md-6">
                                         <h5>Reason</h5>
                                         <div className="input-item input-item-name">
                                             <select
@@ -206,10 +231,10 @@ const ExpenseDetails = () => {
                                                 <option value="Others">Others</option>
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="row">
-                                    <div className="col-md-6">
+                                    <div className="col-md-12">
                                         <h5>Description</h5>
                                         <div className="input-item input-item-name">
                                             <input
@@ -222,7 +247,7 @@ const ExpenseDetails = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-12">
                                         <h5>Amount</h5>
                                         <div className="input-item input-item-name">
                                             <input
